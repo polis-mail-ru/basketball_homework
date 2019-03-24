@@ -1,10 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
+    <ru.ok.technopolis.basketball.RateView
+        android:id="@+id/rateview"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_margin="20dp"
+        android:max="100"
+        android:progress="10"
+        app:count_stars="5"
+        app:star_size="30dp" />
 
-</android.support.constraint.ConstraintLayout>
+
+    <ru.ok.technopolis.basketball.RateView
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:max="100"
+        android:progress="30"
+        app:star_size="30dp" />
+
+    <ru.ok.technopolis.basketball.RateView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:max="100"
+        android:progress="30"
+        app:count_stars="5"
+        app:star_size="50dp" />
+
+    <ru.ok.technopolis.basketball.RateView
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_margin="20dp"
+        android:max="100"
+        android:progress="30"
+        app:count_stars="12"
+        app:star_size="40dp" />
+</LinearLayout>
