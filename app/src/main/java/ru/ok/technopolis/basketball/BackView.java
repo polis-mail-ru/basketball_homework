@@ -9,7 +9,6 @@ import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
 
 public class BackView extends android.support.v7.widget.AppCompatImageView {
     Bitmap bitmap;
@@ -25,7 +24,6 @@ public class BackView extends android.support.v7.widget.AppCompatImageView {
     public void drawLine(Bitmap bitmap) {
         this.bitmap = bitmap;
         super.setImageBitmap(bitmap);
-        Log.d("", "drawLine: dawdadwa1");
     }
 
     @Override
@@ -35,22 +33,19 @@ public class BackView extends android.support.v7.widget.AppCompatImageView {
     }
 
     protected class CustomDrawable extends Drawable {
-        //
         private Bitmap bitmap;
 
-        public CustomDrawable(Bitmap bitmap) {
+        CustomDrawable(Bitmap bitmap) {
             this.bitmap = bitmap;
         }
 
         @Override
         public boolean isStateful() {
-            // always return true
             return true;
         }
 
         @Override
         public int getOpacity() {
-            // see documentation on android developers site
             return PixelFormat.OPAQUE;
         }
 
@@ -60,7 +55,6 @@ public class BackView extends android.support.v7.widget.AppCompatImageView {
 
         @Override
         public void draw(Canvas canvas) {
-            Log.d("", "draw: ddwadwa");
             canvas.drawBitmap(bitmap, 0, 0, new Paint());
         }
 
@@ -72,12 +66,9 @@ public class BackView extends android.support.v7.widget.AppCompatImageView {
 
         @Override
         protected boolean onStateChange(int[] states) {
-            // simplified but working
             for (int state : getState()) {
-                if (state == android.R.attr.state_pressed ||
-                        state == android.R.attr.state_focused)
-                    pressed = true;
-                else pressed = false;
+                pressed = state == android.R.attr.state_pressed ||
+                        state == android.R.attr.state_focused;
             }
             invalidateSelf();
             return true;

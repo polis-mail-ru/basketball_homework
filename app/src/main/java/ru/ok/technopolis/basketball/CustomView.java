@@ -23,7 +23,7 @@ public class CustomView extends android.support.v7.widget.AppCompatImageView {
     public void initStar(int w, int h) {
         bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
-        float mid = h / 2;
+        float mid = (float) h / 2;
         float min = Math.min(w, h);
         float fat = min / 17;
         float half = min / 2;
@@ -68,31 +68,39 @@ public class CustomView extends android.support.v7.widget.AppCompatImageView {
     public void drawStar(int count) {
         Paint paint = new Paint();
         paint.setColor(Color.YELLOW);
-        Bitmap bitmap1 = Bitmap.createBitmap(bitmap);
+        Bitmap bitmap1 = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap1);
-        for (int i = 0; i < count; i++) {
-            canvas.drawBitmap(bitmap, bitmap.getHeight() * i, 0, paint);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setAntiAlias(true);
+        paint.setTextSize(65.0f);
+        paint.setStrokeWidth(7.5f);
+
+        if (count <= 5)
+            for (int i = 0; i < count; i++) {
+                 canvas.drawBitmap(bitmap, bitmap.getHeight() * i, 0, paint);
+            }
+        else {
+            canvas.drawBitmap(bitmap, 0, 0, paint);
+            paint.setColor(Color.WHITE);
+            canvas.drawText("x" + count, 115, 85, paint);
         }
         super.setImageBitmap(bitmap1);
     }
 
     protected class CustomDrawable extends Drawable {
-        //
         private Bitmap bitmap;
 
-        public CustomDrawable(Bitmap bitmap) {
+        CustomDrawable(Bitmap bitmap) {
             this.bitmap = bitmap;
         }
 
         @Override
         public boolean isStateful() {
-            // always return true
             return true;
         }
 
         @Override
         public int getOpacity() {
-            // see documentation on android developers site
             return PixelFormat.OPAQUE;
         }
 
@@ -102,9 +110,7 @@ public class CustomView extends android.support.v7.widget.AppCompatImageView {
 
         @Override
         public void draw(Canvas canvas) {
-            Paint paint = new Paint();
-            paint.setColor(Color.YELLOW);
-            canvas.drawBitmap(bitmap, 0, 0, paint);
+            canvas.drawBitmap(bitmap, 0, 0, new Paint());
         }
 
         @Override
@@ -115,12 +121,9 @@ public class CustomView extends android.support.v7.widget.AppCompatImageView {
 
         @Override
         protected boolean onStateChange(int[] states) {
-            // simplified but working
             for (int state : getState()) {
-                if (state == android.R.attr.state_pressed ||
-                        state == android.R.attr.state_focused)
-                    pressed = true;
-                else pressed = false;
+                pressed = state == android.R.attr.state_pressed ||
+                        state == android.R.attr.state_focused;
             }
             invalidateSelf();
             return true;
