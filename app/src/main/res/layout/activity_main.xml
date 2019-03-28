@@ -18,7 +18,7 @@
         android:id="@+id/colco"
         android:layout_width="400dp"
         android:layout_height="200dp"
-        android:layout_alignTop="@+id/backFromOpt"
+        android:layout_alignTop="@+id/back"
         android:layout_marginStart="500dp"
         android:layout_marginLeft="500dp"
         android:contentDescription="@string/app_name"
@@ -33,7 +33,7 @@
         android:padding="10dp" />
 
     <ru.ok.technopolis.basketball.BackView
-        android:id="@+id/backFromOpt"
+        android:id="@+id/back"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginStart="0dp"
@@ -44,7 +44,7 @@
         android:id="@+id/iv_translate_fling"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_alignBottom="@+id/backFromOpt"
+        android:layout_alignBottom="@+id/back"
         android:layout_marginStart="130dp"
         android:layout_marginLeft="130dp"
         android:layout_marginBottom="125dp"
@@ -65,7 +65,7 @@
         android:id="@+id/player"
         android:layout_width="175dp"
         android:layout_height="175dp"
-        android:layout_alignBottom="@+id/backFromOpt"
+        android:layout_alignBottom="@+id/back"
         android:layout_marginStart="100dp"
         android:layout_marginLeft="100dp"
         android:contentDescription="@string/app_name"

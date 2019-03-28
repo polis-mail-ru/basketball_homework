@@ -181,7 +181,7 @@ public class MenuActivity extends AppCompatActivity {
         musicView = findViewById(R.id.musicButton);
         wallsView = findViewById(R.id.ball_wall);
         vibroView = findViewById(R.id.vibrate);
-        backFromOpt = findViewById(R.id.backFromOpt);
+        backFromOpt = findViewById(R.id.back);
 
         backFromCus = findViewById(R.id.backFromCus);
         left = findViewById(R.id.left);
