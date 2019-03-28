@@ -50,7 +50,7 @@
         android:layout_marginBottom="125dp"
         android:contentDescription="@string/app_name"
         android:visibility="invisible"
-        app:srcCompat="@drawable/basket" />
+        app:srcCompat="@drawable/ball2" />
 
     <ImageView
         android:id="@+id/empty"

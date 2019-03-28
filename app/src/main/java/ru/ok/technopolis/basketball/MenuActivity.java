@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +17,7 @@ public class MenuActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getName();
     MediaPlayer mPlayer;
     ImageView panel;
+    Vibrator vibrator;
 
     ImageView logo;
     Button playButton;
@@ -37,7 +39,7 @@ public class MenuActivity extends AppCompatActivity {
     boolean vibro;
 
     int chosenBall = 0;
-    final int BALL_MAX = 1;
+    final int BALL_MAX = 2;
     int[] balls;
 
     SharedPreferences sp;
@@ -64,6 +66,7 @@ public class MenuActivity extends AppCompatActivity {
         balls = new int[BALL_MAX + 1];
         balls[0] = R.drawable.ball2;
         balls[1] = R.drawable.ball;
+        balls[2] = R.drawable.ball3;
         chosenBall = sp.getInt("ball", 0);
         Log.d(TAG, "initValues: " + chosenBall);
         ballView.setImageResource(balls[chosenBall]);
@@ -117,6 +120,9 @@ public class MenuActivity extends AppCompatActivity {
             public void onClick(View v) {
                 vibro = vibroView.isChecked();
                 sp.edit().putBoolean("vibro", vibro).apply();
+                if (vibro && vibrator.hasVibrator()) {
+                    vibrator.vibrate(100L);
+                }
             }
         });
         wallsView.setOnClickListener(new View.OnClickListener() {
@@ -165,6 +171,7 @@ public class MenuActivity extends AppCompatActivity {
 
     private void initUI() {
         panel = findViewById(R.id.backPanel);
+        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         logo = findViewById(R.id.logo);
         playButton = findViewById(R.id.playButton);

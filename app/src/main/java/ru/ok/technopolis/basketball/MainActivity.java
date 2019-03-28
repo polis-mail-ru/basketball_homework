@@ -115,9 +115,11 @@ public class MainActivity extends AppCompatActivity {
                         y = mViewTobeFlung.getY() + h;
                     }
                     float value = (Float) (animation.getAnimatedValue());
-                    mViewTobeFlung.setTranslationX((float) (distanceInX * direction * Math.cos(value * Math.PI) + distanceInX));
-                    if (dirChanged)
-                        mViewTobeFlung.setX((float) (mViewTobeFlung.getX() + backView.getWidth() - initX + Math.cos(value * Math.PI)));
+                    mViewTobeFlung.setTranslationX((float) (distanceInX * -Math.cos(value * Math.PI) + distanceInX));
+                    if (dirChanged) {
+//                        mViewTobeFlung.setX((float) (mViewTobeFlung.getX() + backView.getWidth() - initX + Math.cos(value * Math.PI)));
+                        mViewTobeFlung.setX(backView.getWidth() - (mViewTobeFlung.getX() + (float) mViewTobeFlung.getWidth() / 2 - backView.getWidth()));
+                    }
                     mViewTobeFlung.setTranslationY((float) (distanceInY * -Math.sin(value * Math.PI)));
                     if (y != mViewTobeFlung.getY() + h && n % 2 == 0) {
                         canvas.drawLine(x, y, mViewTobeFlung.getX() + w, mViewTobeFlung.getY() + h, paint);
