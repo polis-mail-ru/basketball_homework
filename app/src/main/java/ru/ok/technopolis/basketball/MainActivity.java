@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
                     player.setX(player.getX() + (float) player.getWidth() / 4);
                     playerDirection = 1;
                 }
-                animateBoy(Math.min(distanceInY, 500));
+                animateBoy(Math.min(distanceInY, 200));
                 final Paint paint = new Paint();
                 paint.setColor(Color.GREEN);
                 paint.setStrokeWidth(10);
@@ -148,12 +148,14 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                         n++;
-                        if ((y >= point.getY() - point.getHeight() / 4 && y <= point.getY() + point.getHeight()) && (x >= point.getX() - point.getWidth() && x <= point.getX() - point.getWidth() / 2))
+                        if ((y >= point.getY() - point.getHeight() / 4 && y <= point.getY() + point.getHeight()) &&
+                                (x >= point.getX() - point.getWidth() && x <= point.getX() - point.getWidth() / 2))
                             direction = 2;
                         x = mViewTobeFlung.getX() + w;
                         y = mViewTobeFlung.getY() + h;
 
-                        if ((y >= point.getY() - point.getHeight() / 4 && y <= point.getY() + point.getHeight() / 4) && (x >= point.getX() - point.getWidth() / 4 && x <= point.getX() + point.getWidth() / 2) && !scoredThis) {
+                        if ((y >= point.getY() - point.getHeight() / 4 && y <= point.getY() + point.getHeight() / 4) &&
+                                (x >= point.getX() && x <= point.getX() + point.getWidth()) && !scoredThis) {
                             score();
                             if (scoredLast) {
                                 inRow++;
