@@ -35,11 +35,21 @@ public class MainActivity extends AppCompatActivity {
 
     private CountDownTimer timer;
     private boolean timerIsRunning;
+    private boolean timerIsPending;
     private long timeLeftInMillis = START_TIME_IN_MILLIS;
 
     private float[] target = {477, 515, 67, 85};
     private boolean wasHit;
     private int bestScore;
+    private float ballStartPosX;
+    private float ballStartPosY;
+
+    private FlingAnimation flingAnimationX;
+    private FlingAnimation flingAnimationY;
+    private FlingAnimation dropInBasket;
+    private FlingAnimation rotateBall;
+    private SpringAnimation rollbackX;
+    private SpringAnimation rollbackY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         startGameBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FlingAnimation rotateBall = new FlingAnimation(ballView, DynamicAnimation.ROTATION)
+                rotateBall = new FlingAnimation(ballView, DynamicAnimation.ROTATION)
                         .setFriction(1.1f)
                         .setStartVelocity(10_000f);
                 rotateBall.start();
@@ -68,11 +78,44 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         bestScoreView.setText(getString(R.string.best, 0));
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        timer.cancel();
+        timerIsRunning = false;
+        timerIsPending = true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (timerIsPending) {
+            startTimer();
+            timerIsPending = false;
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        cancelAllAnimations(flingAnimationX, flingAnimationY, dropInBasket,
+                rotateBall, rollbackX, rollbackY);
+        ballView.setX(ballStartPosX);
+        ballView.setY(ballStartPosY);
+    }
+
+    private void cancelAllAnimations(DynamicAnimation... animations) {
+        for (DynamicAnimation animation: animations) {
+            if (animation != null && animation.isRunning()) {
+                animation.cancel();
+            }
+        }
     }
 
     private void startTimer() {
-        timer = new CountDownTimer(START_TIME_IN_MILLIS, 1000) {
+        timer = new CountDownTimer(timeLeftInMillis, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 timeLeftInMillis = millisUntilFinished;
@@ -86,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
                     bestScoreView.setText(getString(R.string.best, bestScore));
                 }
                 timerIsRunning = false;
+                timeLeftInMillis = START_TIME_IN_MILLIS;
                 timerView.setVisibility(View.GONE);
                 startGameBtn.setVisibility(View.VISIBLE);
             }
@@ -103,9 +147,9 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressLint("ClickableViewAccessibility")
     private void setBallAnimationThrowing() {
-        final FlingAnimation flingAnimationX = new FlingAnimation(ballView, DynamicAnimation.X)
+        flingAnimationX = new FlingAnimation(ballView, DynamicAnimation.X)
                 .setFriction(2f);
-        final FlingAnimation flingAnimationY = new FlingAnimation(ballView, DynamicAnimation.Y)
+        flingAnimationY = new FlingAnimation(ballView, DynamicAnimation.Y)
                 .setFriction(5f);
 
         flingAnimationX.addEndListener(new DynamicAnimation.OnAnimationEndListener() {
@@ -114,8 +158,8 @@ public class MainActivity extends AppCompatActivity {
                                        boolean canceled, float value,
                                        float velocity)
             {
-                float ballCenterPosX = ballView.getX() + ballView.getWidth() / 2;
-                float ballCenterPosY = ballView.getY() + ballView.getHeight() / 2;
+                float ballCenterPosX = ballView.getX() + ballView.getWidth() / 2f;
+                float ballCenterPosY = ballView.getY() + ballView.getHeight() / 2f;
                 if (estimateThrow(ballCenterPosX, ballCenterPosY)) {
                     if (wasHit) {
                         scoreView.setCount(scoreView.getCount() * 2);
@@ -171,6 +215,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onGlobalLayout() {
+                ballStartPosX = ballView.getX();
+                ballStartPosY = ballView.getY();
                 flingAnimationX.setMinValue(0f).setMaxValue((float) (size.x - ballView.getWidth()));
                 flingAnimationY.setMinValue(0f).setMaxValue((float) (size.y - ballView.getHeight()));
                 ballView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
@@ -179,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void animateHit(){
-        FlingAnimation dropInBasket = new FlingAnimation(ballView, DynamicAnimation.TRANSLATION_Y)
+        dropInBasket = new FlingAnimation(ballView, DynamicAnimation.TRANSLATION_Y)
                 .setFriction(1.5f)
                 .setStartVelocity(5000f);
         dropInBasket.addEndListener(new DynamicAnimation.OnAnimationEndListener() {
@@ -195,13 +241,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void rollbackOfThrowing() {
-        SpringAnimation rollbackX = new SpringAnimation(ballView,DynamicAnimation.TRANSLATION_X);
+        rollbackX = new SpringAnimation(ballView,DynamicAnimation.TRANSLATION_X);
         SpringForce forceX = new SpringForce(0);
         forceX.setDampingRatio(SpringForce.DAMPING_RATIO_LOW_BOUNCY);
         forceX.setStiffness(SpringForce.STIFFNESS_LOW);
         rollbackX.setSpring(forceX);
 
-        SpringAnimation rollbackY = new SpringAnimation(ballView,DynamicAnimation.TRANSLATION_Y);
+        rollbackY = new SpringAnimation(ballView,DynamicAnimation.TRANSLATION_Y);
         SpringForce forceY = new SpringForce(0);
         forceY.setDampingRatio(SpringForce.DAMPING_RATIO_LOW_BOUNCY);
         forceY.setStiffness(SpringForce.STIFFNESS_LOW);

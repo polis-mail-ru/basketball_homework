@@ -90,13 +90,13 @@ public class ScoreCounter extends View implements TallyCounter {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        final int canvasWidth = canvas.getWidth();
-        final int canvasHeight = canvas.getHeight();
-        final float centerX = canvasWidth * 0.5f;
+        int viewWidth = this.getWidth();
+        int viewHeight = this.getHeight();
+        float centerX = viewWidth * 0.5f;
 
-        final float baselineY = Math.round(canvasHeight * 0.6f);
-        final float textWidth = numberPaint.measureText(displayedCount);
-        final float textX = Math.round(centerX - textWidth * 0.5f);
+        float baselineY = Math.round(viewHeight * 0.6f);
+        float textWidth = numberPaint.measureText(displayedCount);
+        float textX = Math.round(centerX - textWidth * 0.5f);
         canvas.drawText(displayedCount, textX, baselineY, numberPaint);
     }
 }
