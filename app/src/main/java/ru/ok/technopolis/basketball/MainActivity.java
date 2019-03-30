@@ -6,7 +6,10 @@ import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import java.security.acl.Group;
 
 import ru.ok.technopolis.basketball.animation.SwipeAnimation;
 import ru.ok.technopolis.basketball.animation.SwipeAnimationBall;
@@ -22,13 +25,12 @@ public class MainActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ImageView player = findViewById(R.drawable.player);
-        ImageView ball = findViewById(R.drawable.ball);
-        ImageView hoop = findViewById(R.drawable.hoop);
+        ImageView ball = findViewById(R.id.main_activity__ball);
         CounterView counterView = findViewById(R.id.main_activity__count_layout);
         final GestureDetector gestureDetector = new GestureDetector(this, gestureListener);
-        swipeAnimationBall = new SwipeAnimationBall(ball);
-        ball.setOnTouchListener(new View.OnTouchListener() {
+        final ViewGroup mainLayout = findViewById(R.id.main_activity__mainLayout);
+        swipeAnimationBall = new SwipeAnimationBall(ball, counterView);
+        mainLayout.setOnTouchListener(new View.OnTouchListener() {
             @SuppressLint("ClickableViewAccessibility")
             @Override
             public boolean onTouch(View v, MotionEvent event) {
