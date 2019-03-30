@@ -14,7 +14,6 @@ import android.view.Display;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -208,18 +207,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Display display = getWindowManager().getDefaultDisplay();
-        final Point size = new Point();
-        display.getSize(size);
-        ballView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-
+        ballView.post(new Runnable() {
             @Override
-            public void onGlobalLayout() {
+            public void run() {
+                Display display = getWindowManager().getDefaultDisplay();
+                Point size = new Point();
+                display.getSize(size);
                 ballStartPosX = ballView.getX();
                 ballStartPosY = ballView.getY();
                 flingAnimationX.setMinValue(0f).setMaxValue((float) (size.x - ballView.getWidth()));
                 flingAnimationY.setMinValue(0f).setMaxValue((float) (size.y - ballView.getHeight()));
-                ballView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
         });
     }
