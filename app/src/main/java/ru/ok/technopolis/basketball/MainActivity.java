@@ -57,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
         player = findViewById(R.id.player);
         getExtra();
         final GestureDetector gestureDetector = new GestureDetector(this, mGestureListener);
-
         mMainLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -71,8 +70,6 @@ public class MainActivity extends AppCompatActivity {
                         mMainLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     }
                 });
-
-
     }
 
     private void getExtra() {
@@ -149,8 +146,9 @@ public class MainActivity extends AppCompatActivity {
                         }
                         n++;
                         if ((y >= point.getY() - point.getHeight() / 4 && y <= point.getY() + point.getHeight()) &&
-                                (x >= point.getX() - point.getWidth() && x <= point.getX() - point.getWidth() / 2))
+                                (x >= point.getX() - point.getWidth() && x <= point.getX() - point.getWidth() / 2)) {
                             direction = 2;
+                        }
                         x = mViewTobeFlung.getX() + w;
                         y = mViewTobeFlung.getY() + h;
 
@@ -181,9 +179,7 @@ public class MainActivity extends AppCompatActivity {
                         scoredThis = false;
                         threw = false;
                     }
-
                 });
-
                 animator.start();
                 mViewTobeFlung.animate().start();
                 backView.drawLine(bitmap);
@@ -196,7 +192,6 @@ public class MainActivity extends AppCompatActivity {
         player.animate().setDuration(500).translationYBy(-y).setListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
-
             }
 
             @Override
@@ -206,12 +201,10 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onAnimationCancel(Animator animation) {
-
             }
 
             @Override
             public void onAnimationRepeat(Animator animation) {
-
             }
         }).start();
 
@@ -226,10 +219,8 @@ public class MainActivity extends AppCompatActivity {
             mPlayer.start();
         }
         score++;
-        Log.d("", "score: SCORED");
         CustomView view = findViewById(R.id.view);
         view.initStar(view.getWidth(), view.getHeight());
         view.drawStar(score);
-
     }
 }

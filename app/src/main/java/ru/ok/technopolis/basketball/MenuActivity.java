@@ -14,34 +14,29 @@ import android.widget.ImageView;
 import android.widget.Switch;
 
 public class MenuActivity extends AppCompatActivity {
+
     private static final String TAG = MainActivity.class.getName();
     MediaPlayer mPlayer;
     ImageView panel;
     Vibrator vibrator;
-
     ImageView logo;
     Button playButton;
     Button optionsButton;
     Button paintButton;
-
     Button backFromOpt;
     Switch musicView;
     Switch wallsView;
     Switch vibroView;
-
     Button backFromCus;
     Button left;
     Button right;
     ImageView ballView;
-
     boolean music;
     boolean walls;
     boolean vibro;
-
     int chosenBall = 0;
     final int BALL_MAX = 2;
     int[] balls;
-
     SharedPreferences sp;
 
     @Override
@@ -62,7 +57,6 @@ public class MenuActivity extends AppCompatActivity {
         vibroView.setChecked(vibro);
         walls = sp.getBoolean("walls", true);
         wallsView.setChecked(walls);
-
         balls = new int[BALL_MAX + 1];
         balls[0] = R.drawable.ball2;
         balls[1] = R.drawable.ball;
@@ -172,17 +166,14 @@ public class MenuActivity extends AppCompatActivity {
     private void initUI() {
         panel = findViewById(R.id.backPanel);
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-
         logo = findViewById(R.id.logo);
         playButton = findViewById(R.id.playButton);
         paintButton = findViewById(R.id.paintButton);
         optionsButton = findViewById(R.id.optionsButton);
-
         musicView = findViewById(R.id.musicButton);
         wallsView = findViewById(R.id.ball_wall);
         vibroView = findViewById(R.id.vibrate);
         backFromOpt = findViewById(R.id.back);
-
         backFromCus = findViewById(R.id.backFromCus);
         left = findViewById(R.id.left);
         right = findViewById(R.id.right);

@@ -33,11 +33,8 @@ public class CustomView extends android.support.v7.widget.AppCompatImageView {
         Path path = new Path();
         paint.setStrokeWidth(fat);
         paint.setStyle(Paint.Style.STROKE);
-
         path.reset();
-
         paint.setStyle(Paint.Style.FILL);
-
         // top left
         path.moveTo(mid + half * 0.5f, half * 0.84f);
         // top right
@@ -74,12 +71,11 @@ public class CustomView extends android.support.v7.widget.AppCompatImageView {
         paint.setAntiAlias(true);
         paint.setTextSize(65.0f);
         paint.setStrokeWidth(7.5f);
-
-        if (count <= 5)
+        if (count <= 5) {
             for (int i = 0; i < count; i++) {
-                 canvas.drawBitmap(bitmap, bitmap.getHeight() * i, 0, paint);
+                canvas.drawBitmap(bitmap, bitmap.getHeight() * i, 0, paint);
             }
-        else {
+        } else {
             canvas.drawBitmap(bitmap, 0, 0, paint);
             paint.setColor(Color.WHITE);
             canvas.drawText("x" + count, 115, 85, paint);
