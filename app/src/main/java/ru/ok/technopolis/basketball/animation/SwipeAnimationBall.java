@@ -20,9 +20,7 @@ public class SwipeAnimationBall implements SwipeAnimation {
         animateBallOnX = new FlingAnimation(this.ballView, DynamicAnimation.X).setFriction(1.5f);
         animateBallOnY = new FlingAnimation(this.ballView, DynamicAnimation.Y).setFriction(3f);
         animateRollOnX = new SpringAnimation(this.ballView, DynamicAnimation.TRANSLATION_X);
-        animateRollOnY = new SpringAnimation(this.ballView, DynamicAnimation.Y);
-        animateRollOnX.setSpring(new SpringForce(0).setDampingRatio(SpringForce.DAMPING_RATIO_LOW_BOUNCY).setStiffness(SpringForce.STIFFNESS_LOW));
-        animateRollOnY.setSpring(new SpringForce(0).setDampingRatio(SpringForce.DAMPING_RATIO_LOW_BOUNCY).setStiffness(SpringForce.STIFFNESS_LOW));
+        animateRollOnY = new SpringAnimation(this.ballView, DynamicAnimation.TRANSLATION_Y);
     }
 
     @Override
@@ -33,14 +31,19 @@ public class SwipeAnimationBall implements SwipeAnimation {
         animateBallOnY.start();
         animateBallOnX.addEndListener(new DynamicAnimation.OnAnimationEndListener() {
             @Override
-            public void onAnimationEnd(DynamicAnimation dynamicAnimation, boolean b, float v, float v1) {
-                //rollback();
+            public void onAnimationEnd(DynamicAnimation dynamicAnimation, boolean cancelled, float value, float velocity) {
+                rollback();
             }
         });
     }
 
     @Override
     public void rollback() {
+        SpringForce springForce = new SpringForce(0);
+        springForce.setDampingRatio(SpringForce.DAMPING_RATIO_LOW_BOUNCY);
+        springForce.setStiffness(SpringForce.STIFFNESS_LOW);
+        animateRollOnX.setSpring(springForce);
+        animateRollOnY.setSpring(springForce);
         animateRollOnX.start();
         animateRollOnY.start();
     }
