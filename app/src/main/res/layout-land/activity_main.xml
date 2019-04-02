@@ -7,7 +7,7 @@
     tools:context=".MainActivity">
 
     <ru.ok.technopolis.basketball.RatingView
-        android:id="@+id/rating"
+        android:id="@+id/rating_custom_view"
         android:layout_width="100dp"
         android:layout_height="50dp"
         app:layout_constraintEnd_toStartOf="@id/reset_score"
@@ -19,7 +19,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:background="@drawable/reset_score"
-        app:layout_constraintStart_toEndOf="@id/rating"
+        app:layout_constraintStart_toEndOf="@id/rating_custom_view"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView

@@ -12,7 +12,8 @@ import java.util.Random;
 
 public class RatingView extends View {
 
-    private final String COUNTER_TEXT_DEFAULT = "00";
+    private static final String COUNTER_TEXT_DEFAULT = "00";
+    private static final float DEFAULT_TEXT_SIZE = 40f;
     private final int[] colors = {android.R.color.black,
             android.R.color.holo_blue_light,
             android.R.color.holo_green_light,
@@ -20,6 +21,8 @@ public class RatingView extends View {
             android.R.color.holo_purple,
             android.R.color.holo_red_light};
     private int counter;
+    private float measuredTextSize;
+
     private String counterText;
     private Random random = new Random();
 
@@ -36,7 +39,7 @@ public class RatingView extends View {
         textPaint.setAntiAlias(true);
         textPaint.setSubpixelText(true);
 
-        float textSize = Math.round(40f * getResources().getDisplayMetrics().density);
+        float textSize = Math.round(DEFAULT_TEXT_SIZE * getResources().getDisplayMetrics().density);
         if (attrs != null) {
             TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.RatingView);
             textSize = typedArray.getDimensionPixelSize(R.styleable.RatingView_android_textSize, Math.round(textSize));
@@ -55,11 +58,12 @@ public class RatingView extends View {
         int measuredWidth = resolveSize(textWidth, widthMeasureSpec);
         int measuredHeight = resolveSize(textHeight, heightMeasureSpec);
         setMeasuredDimension(measuredWidth, measuredHeight);
+        measuredTextSize = textPaint.measureText(counterText);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        int textStartCoord = Math.round(0.5f * (getWidth() - textPaint.measureText(counterText)));
+        int textStartCoord = Math.round(0.5f * (getWidth() - measuredTextSize));
         int textBaselineCoord = Math.round(getHeight() * 0.8f);
         canvas.drawText(counterText, textStartCoord, textBaselineCoord, textPaint);
     }
