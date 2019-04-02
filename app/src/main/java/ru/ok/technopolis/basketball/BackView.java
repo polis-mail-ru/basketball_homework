@@ -1,17 +1,20 @@
 package ru.ok.technopolis.basketball;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.ColorFilter;
+import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PixelFormat;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.widget.ImageView;
 
-public class BackView extends android.support.v7.widget.AppCompatImageView {
-    Bitmap bitmap;
+import java.util.ArrayList;
+
+@SuppressLint("AppCompatCustomView")
+public class BackView extends ImageView {
+    private Paint paint;
+    private ArrayList<Line> stack;
 
     public BackView(Context context) {
         super(context);
@@ -19,59 +22,28 @@ public class BackView extends android.support.v7.widget.AppCompatImageView {
 
     public BackView(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        paint = new Paint();
+        paint.setColor(Color.GREEN);
+        paint.setStrokeWidth(10);
+        stack = new ArrayList<>();
     }
 
-    public void drawLine(Bitmap bitmap) {
-        this.bitmap = bitmap;
-        super.setImageBitmap(bitmap);
+
+    public void drawLine(float x1, float y1, float x2, float y2) {
+        stack.add(new Line(x1, y1, x2, y2));
+        invalidate();
     }
 
     @Override
-    public void setImageDrawable(Drawable drawable) {
-        super.setImageDrawable(new BackView.CustomDrawable(
-                ((BitmapDrawable) drawable).getBitmap()));
+    protected void onDraw(Canvas canvas) {
+        Log.d("", "onDraw: " + stack.size());
+        for (int i = 0; i < stack.size(); i++) {
+            canvas.drawLine(stack.get(i).getX1(), stack.get(i).getY1(), stack.get(i).getX2(), stack.get(i).getY2(), paint);
+        }
     }
 
-    protected class CustomDrawable extends Drawable {
-        private Bitmap bitmap;
-
-        CustomDrawable(Bitmap bitmap) {
-            this.bitmap = bitmap;
-        }
-
-        @Override
-        public boolean isStateful() {
-            return true;
-        }
-
-        @Override
-        public int getOpacity() {
-            return PixelFormat.OPAQUE;
-        }
-
-        @Override
-        public void setColorFilter(ColorFilter colorFilter) {
-        }
-
-        @Override
-        public void draw(Canvas canvas) {
-            canvas.drawBitmap(bitmap, 0, 0, new Paint());
-        }
-
-        @Override
-        public void setAlpha(int i) {
-        }
-
-        boolean pressed = false;
-
-        @Override
-        protected boolean onStateChange(int[] states) {
-            for (int state : getState()) {
-                pressed = state == android.R.attr.state_pressed ||
-                        state == android.R.attr.state_focused;
-            }
-            invalidateSelf();
-            return true;
-        }
+    public void refresh() {
+        stack = new ArrayList<>();
     }
 }

@@ -13,31 +13,33 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Switch;
 
+import java.util.ArrayList;
+
 public class MenuActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getName();
-    MediaPlayer mPlayer;
-    ImageView panel;
-    Vibrator vibrator;
-    ImageView logo;
-    Button playButton;
-    Button optionsButton;
-    Button paintButton;
-    Button backFromOpt;
-    Switch musicView;
-    Switch wallsView;
-    Switch vibroView;
-    Button backFromCus;
-    Button left;
-    Button right;
-    ImageView ballView;
-    boolean music;
-    boolean walls;
-    boolean vibro;
-    int chosenBall = 0;
-    final int BALL_MAX = 2;
-    int[] balls;
-    SharedPreferences sp;
+    private MediaPlayer mPlayer;
+    private ImageView panel;
+    private Vibrator vibrator;
+    private ImageView logo;
+    private Button playButton;
+    private Button optionsButton;
+    private Button paintButton;
+    private Button backFromOpt;
+    private Switch musicView;
+    private Switch wallsView;
+    private Switch vibroView;
+    private Button backFromCus;
+    private Button left;
+    private Button right;
+    private ImageView ballView;
+    private boolean music;
+    private boolean walls;
+    private boolean vibro;
+    private int chosenBall = 0;
+    private ArrayList<Integer> balls;
+    private SharedPreferences sp;
+    private final String SP_NAME = "settings";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,20 +52,24 @@ public class MenuActivity extends AppCompatActivity {
     }
 
     private void initValues() {
-        sp = getSharedPreferences("settings", Context.MODE_PRIVATE);
+        sp = getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
         music = sp.getBoolean("music", true);
         musicView.setChecked(music);
         vibro = sp.getBoolean("vibro", false);
         vibroView.setChecked(vibro);
         walls = sp.getBoolean("walls", true);
         wallsView.setChecked(walls);
-        balls = new int[BALL_MAX + 1];
-        balls[0] = R.drawable.ball2;
-        balls[1] = R.drawable.ball;
-        balls[2] = R.drawable.ball3;
+        loadBalls();
         chosenBall = sp.getInt("ball", 0);
         Log.d(TAG, "initValues: " + chosenBall);
-        ballView.setImageResource(balls[chosenBall]);
+        ballView.setImageResource(balls.get(chosenBall));
+    }
+
+    private void loadBalls() {
+        balls = new ArrayList<>();
+        balls.add(R.drawable.ball2);
+        balls.add(R.drawable.ball);
+        balls.add(R.drawable.ball3);
     }
 
     private void initListeners() {
@@ -131,8 +137,9 @@ public class MenuActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 chosenBall++;
-                if (chosenBall > BALL_MAX)
+                if (chosenBall > balls.size()) {
                     chosenBall = 0;
+                }
                 updateBall();
             }
         });
@@ -140,8 +147,9 @@ public class MenuActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 chosenBall--;
-                if (chosenBall < 0)
-                    chosenBall = BALL_MAX;
+                if (chosenBall < 0) {
+                    chosenBall = balls.size();
+                }
                 updateBall();
             }
         });
@@ -149,7 +157,7 @@ public class MenuActivity extends AppCompatActivity {
     }
 
     private void updateBall() {
-        ballView.setImageResource(balls[chosenBall]);
+        ballView.setImageResource(balls.get(chosenBall));
         sp.edit().putInt("ball", chosenBall).apply();
     }
 
@@ -159,7 +167,7 @@ public class MenuActivity extends AppCompatActivity {
         intent.putExtra("music", music);
         intent.putExtra("walls", walls);
         intent.putExtra("vibro", vibro);
-        intent.putExtra("ball", balls[chosenBall]);
+        intent.putExtra("ball", balls.get(chosenBall));
         MenuActivity.this.startActivity(intent);
     }
 
@@ -213,7 +221,8 @@ public class MenuActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        mPlayer.stop();
+        if (mPlayer != null)
+            mPlayer.stop();
     }
 
     @Override

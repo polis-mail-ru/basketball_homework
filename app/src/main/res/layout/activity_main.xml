@@ -7,7 +7,7 @@
     android:background="@drawable/court">
 
     <ru.ok.technopolis.basketball.CustomView
-        android:id="@+id/view"
+        android:id="@+id/scoreView"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginEnd="200dp"
