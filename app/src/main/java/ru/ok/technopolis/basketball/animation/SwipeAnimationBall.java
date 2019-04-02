@@ -21,7 +21,7 @@ public class SwipeAnimationBall implements SwipeAnimation {
     private SpringAnimation animateRollOnY;
     private ViewGroup mLayout;
 
-    public SwipeAnimationBall (View ballView, Counter counter, View ball_target, ViewGroup mLayout) {
+    public SwipeAnimationBall(View ballView, Counter counter, View ball_target, ViewGroup mLayout) {
         this.ball_target = ball_target;
         this.ballView = ballView;
         this.counter = counter;
@@ -43,18 +43,25 @@ public class SwipeAnimationBall implements SwipeAnimation {
         animateBallOnY.setStartVelocity(velocityY);
         animateBallOnX.setMaxValue(mLayout.getWidth());
         animateRollOnY.setMaxValue(mLayout.getHeight());
+
+
+        animateBallOnX.addUpdateListener(new DynamicAnimation.OnAnimationUpdateListener() {
+            boolean scored = false;
+            @Override
+            public void onAnimationUpdate(DynamicAnimation dynamicAnimation, float v, float v1) {
+                float ballCenterPosX = ballView.getX() + ballView.getWidth() / 2f;
+                float ballCenterPosY = ballView.getY() + ballView.getHeight() / 2f;
+                if (!scored && isHitToBasket(ballCenterPosX, ballCenterPosY)) {
+                    counter.increment();
+                    scored = true;
+                }
+            }
+        });
         animateBallOnX.start();
         animateBallOnY.start();
         animateBallOnX.addEndListener(new DynamicAnimation.OnAnimationEndListener() {
             @Override
             public void onAnimationEnd(DynamicAnimation dynamicAnimation, boolean cancelled, float value, float velocity) {
-                float ballCenterPosX = ballView.getX() + ballView.getWidth() / 2f;
-                float ballCenterPosY = ballView.getY() + ballView.getHeight() / 2f;
-                Log.d("x", String.valueOf(ballCenterPosX));
-                Log.d("y", String.valueOf(ballCenterPosY));
-                if(isHitToBasket(ballCenterPosX, ballCenterPosY)) {
-                    counter.increment();
-                }
                 rollback();
             }
         });
@@ -67,21 +74,12 @@ public class SwipeAnimationBall implements SwipeAnimation {
     }
 
     private boolean isHitToBasket(float x, float y) {
-        
-        /*int upperLeftPosOfTarget [] = new int[2];
-        ball_target.getLocationOnScreen(upperLeftPosOfTarget);
-        //get upper right pos
-        int upperRightPosOfTarget [] = {upperLeftPosOfTarget[0] + ball_target.getWidth(), upperLeftPosOfTarget[1]};
-        //get lower left pos
-        int lowerLeftPosOfTarget [] = {upperLeftPosOfTarget[0], upperLeftPosOfTarget[1] - ball_target.getHeight()};
-        // get lower right pos
-        int lowerRightPosOfTarget [] = {lowerLeftPosOfTarget[0] + ball_target.getWidth(), upperRightPosOfTarget[1] - ball_target.getHeight()};
 
-        return x >= upperLeftPosOfTarget[0] && x <= upperRightPosOfTarget[0] && y >= lowerRightPosOfTarget[1] && y <= upperRightPosOfTarget[1];*/
-
-        float targetCenterPosX = ball_target.getX() + ball_target.getWidth() / 2f;
-        float targetCenterPosY = ball_target.getY() + ball_target.getHeight() / 2f;
-
-        return x == targetCenterPosX && y == targetCenterPosY;
+        float targetLeftPosX = ball_target.getX() - ball_target.getWidth() / 2f;
+        float targetRightPosX = ball_target.getX() + ball_target.getWidth() / 2f;
+        float targetTopPosY = ball_target.getY() - ball_target.getHeight() / 2f;
+        float targetBottomPosY = ball_target.getY() + ball_target.getHeight() / 2f;
+        Log.d("X", "isHitToBasket: " + x + " " + targetLeftPosX + " " + targetRightPosX);
+        return (x >= targetLeftPosX && x <= targetRightPosX) && (y >= targetTopPosY && y <= targetBottomPosY);
     }
 }
