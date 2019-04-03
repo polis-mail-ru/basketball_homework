@@ -1,20 +1,19 @@
 package ru.ok.technopolis.basketball;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.widget.ImageView;
+import android.view.View;
 
 import java.util.ArrayList;
+import java.util.List;
 
-@SuppressLint("AppCompatCustomView")
-public class BackView extends ImageView {
+public class BackView extends View {
     private Paint paint;
-    private ArrayList<Line> stack;
+    private List<Line> stack;
 
     public BackView(Context context) {
         super(context);
@@ -38,12 +37,13 @@ public class BackView extends ImageView {
     @Override
     protected void onDraw(Canvas canvas) {
         Log.d("", "onDraw: " + stack.size());
-        for (int i = 0; i < stack.size(); i++) {
-            canvas.drawLine(stack.get(i).getX1(), stack.get(i).getY1(), stack.get(i).getX2(), stack.get(i).getY2(), paint);
+        for (Line line : stack) {
+            canvas.drawLine(line.getX1(), line.getY1(), line.getX2(), line.getY2(), paint);
+
         }
     }
 
     public void refresh() {
-        stack = new ArrayList<>();
+        stack.clear();
     }
 }

@@ -1,19 +1,17 @@
 package ru.ok.technopolis.basketball;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
-import android.widget.ImageView;
+import android.view.View;
 
-
-@SuppressLint("AppCompatCustomView")
-public class CustomView extends ImageView {
+public class CustomView extends View {
     private Paint paint;
     private int count;
+    private Path path;
 
     public CustomView(Context context) {
         super(context);
@@ -21,13 +19,11 @@ public class CustomView extends ImageView {
 
     public void drawStar(Canvas canvas, int from) {
         float mid = (float) canvas.getHeight() / 2;
-        float min = Math.min(canvas.getWidth(), canvas.getHeight());
+        float min = Math.min(getWidth(), getHeight());
         float fat = min / 17;
         float half = min / 2;
         mid = mid - half;
-        Paint paint = new Paint();
         paint.setColor(Color.YELLOW);
-        Path path = new Path();
         paint.setStrokeWidth(fat);
         paint.setStyle(Paint.Style.STROKE);
         path.reset();
@@ -51,6 +47,7 @@ public class CustomView extends ImageView {
     public CustomView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
+        path = new Path();
         paint = new Paint();
         paint.setColor(Color.YELLOW);
         paint.setStyle(Paint.Style.STROKE);

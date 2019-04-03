@@ -1,6 +1,6 @@
 package ru.ok.technopolis.basketball;
 
-class Line {
+public class Line {
     private final float x1;
     private final float y1;
     private final float x2;

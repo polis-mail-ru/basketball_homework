@@ -14,11 +14,11 @@ import android.widget.ImageView;
 import android.widget.Switch;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MenuActivity extends AppCompatActivity {
 
-    private static final String TAG = MainActivity.class.getName();
-    private MediaPlayer mPlayer;
+    private MediaPlayer musicPlayer;
     private ImageView panel;
     private Vibrator vibrator;
     private ImageView logo;
@@ -36,10 +36,10 @@ public class MenuActivity extends AppCompatActivity {
     private boolean music;
     private boolean walls;
     private boolean vibro;
-    private int chosenBall = 0;
-    private ArrayList<Integer> balls;
+    private int chosenBall;
+    private List<Integer> balls;
     private SharedPreferences sp;
-    private final String SP_NAME = "settings";
+    private static final String SP_NAME = "settings";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,15 +53,14 @@ public class MenuActivity extends AppCompatActivity {
 
     private void initValues() {
         sp = getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
-        music = sp.getBoolean("music", true);
+        music = sp.getBoolean(MainActivity.MUSIC_KEY, true);
         musicView.setChecked(music);
-        vibro = sp.getBoolean("vibro", false);
+        vibro = sp.getBoolean(MainActivity.VIBRO_KEY, false);
         vibroView.setChecked(vibro);
-        walls = sp.getBoolean("walls", true);
+        walls = sp.getBoolean(MainActivity.WALL_KEY, true);
         wallsView.setChecked(walls);
         loadBalls();
-        chosenBall = sp.getInt("ball", 0);
-        Log.d(TAG, "initValues: " + chosenBall);
+        chosenBall = sp.getInt(MainActivity.BALL_KEY, 0);
         ballView.setImageResource(balls.get(chosenBall));
     }
 
@@ -112,7 +111,7 @@ public class MenuActivity extends AppCompatActivity {
             public void onClick(View v) {
                 music = musicView.isChecked();
                 sp.edit().putBoolean("music", music).apply();
-                mPlayer.setVolume(music ? 0.2f : 0, music ? 0.2f : 0);
+                musicPlayer.setVolume(music ? 0.2f : 0, music ? 0.2f : 0);
             }
         });
         vibroView.setOnClickListener(new View.OnClickListener() {
@@ -163,11 +162,10 @@ public class MenuActivity extends AppCompatActivity {
 
     private void loadGame() {
         Intent intent = new Intent(MenuActivity.this, MainActivity.class);
-        intent.putExtra("ballView", 0);
-        intent.putExtra("music", music);
-        intent.putExtra("walls", walls);
-        intent.putExtra("vibro", vibro);
-        intent.putExtra("ball", balls.get(chosenBall));
+        intent.putExtra(MainActivity.MUSIC_KEY, music);
+        intent.putExtra(MainActivity.WALL_KEY, walls);
+        intent.putExtra(MainActivity.VIBRO_KEY, vibro);
+        intent.putExtra(MainActivity.BALL_KEY, balls.get(chosenBall));
         MenuActivity.this.startActivity(intent);
     }
 
@@ -212,22 +210,30 @@ public class MenuActivity extends AppCompatActivity {
     }
 
     private void initPlayer() {
-        mPlayer = MediaPlayer.create(this, R.raw.menusong);
-        mPlayer.setVolume(music ? 0.2f : 0, music ? 0.2f : 0);
-        mPlayer.start();
-        mPlayer.setLooping(true);
+        musicPlayer = MediaPlayer.create(this, R.raw.menusong);
+        musicPlayer.setVolume(music ? 0.2f : 0, music ? 0.2f : 0);
+        musicPlayer.start();
+        musicPlayer.setLooping(true);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if (mPlayer != null)
-            mPlayer.stop();
+        if (musicPlayer != null)
+            musicPlayer.stop();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         initPlayer();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (musicPlayer != null)
+            musicPlayer.release();
+        vibrator.cancel();
     }
 }

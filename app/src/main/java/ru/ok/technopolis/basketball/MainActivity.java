@@ -25,18 +25,19 @@ public class MainActivity extends AppCompatActivity {
     private BackView backView;
     private boolean scoredThis = false;
     private boolean scoredLast;
-    private float x = Float.POSITIVE_INFINITY, y;
+    private float x;
+    private float y;
     private boolean walls;
     private boolean vibro;
     private boolean music;
     private boolean threw = false;
     private int playerDirection = 1;
     private Vibrator vibrator;
-    private MediaPlayer mPlayer;
-    private final String WALL_KEY = "walls";
-    private final String VIBRO_KEY = "vibro";
-    private final String MUSIC_KEY = "music";
-    private final String BALL_KEY = "ball";
+    private MediaPlayer soundsPlayer;
+    public static final String WALL_KEY = "walls";
+    public static final String VIBRO_KEY = "vibro";
+    public static final String MUSIC_KEY = "music";
+    public static final String BALL_KEY = "ball";
     private ValueAnimator animator;
     private CustomView scoreView;
 
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
+        x = Float.POSITIVE_INFINITY;
         ball = findViewById(R.id.iv_translate_fling);
         final RelativeLayout mainLayout = findViewById(R.id.main_layout);
         point = findViewById(R.id.empty);
@@ -166,8 +168,8 @@ public class MainActivity extends AppCompatActivity {
                 backView.setVisibility(View.INVISIBLE);
                 backView.refresh();
                 if (music && !scoredThis) {
-                    mPlayer = MediaPlayer.create(MainActivity.this, R.raw.oww);
-                    mPlayer.start();
+                    soundsPlayer = MediaPlayer.create(MainActivity.this, R.raw.oww);
+                    soundsPlayer.start();
                 }
                 scoredLast = scoredThis;
                 scoredThis = false;
@@ -204,8 +206,8 @@ public class MainActivity extends AppCompatActivity {
             vibrator.vibrate(100L);
         }
         if (music) {
-            mPlayer = MediaPlayer.create(this, R.raw.wow);
-            mPlayer.start();
+            soundsPlayer = MediaPlayer.create(this, R.raw.wow);
+            soundsPlayer.start();
         }
         scoreView.increase();
     }
@@ -213,6 +215,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        animator.end();
+        animator.cancel();
+        vibrator.cancel();
+        if (soundsPlayer != null)
+            soundsPlayer.release();
     }
 }
