@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     boolean doing = false;
     private float startY;
     private View leftSideHoop;
-    private View rightSideView;
+    private View rightSideHoop ;
     private TextView scoreView;
 
     private int score = 0;
@@ -51,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
         mainLayout = findViewById(R.id.main_activity_layout);
         ballView = findViewById(R.id.main_activity_ball);
         scoreView = findViewById(R.id.main_activity_score_text);
+        leftSideHoop = findViewById(R.id.main_activity_left_hoop_view);
+        rightSideHoop = findViewById(R.id.main_activity_right_hoop_view);
         mainLayout.getViewTreeObserver().addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
@@ -59,29 +61,11 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        leftSideHoop = findViewById(R.id.main_activity_left_hoop_view);
+        leftSideHoop.post(() -> leftSideHoop.getLocationOnScreen(leftSideHoopLocation));
 
-        leftSideHoop.getLocationOnScreen(leftSideHoopLocation);
-        rightSideView = findViewById(R.id.main_activity_right_hoop_view);
-
-        rightSideView.getLocationInWindow(rightSideHoopLocation);
-        Log.d(LOG_TAG, "Start1 " +
-        rightSideView.getTop());
-
-        mainLayout.getViewTreeObserver().addOnGlobalLayoutListener(
-                new ViewTreeObserver.OnGlobalLayoutListener() {
-                    public void onGlobalLayout() {
-                        //Remove the listener before proceeding
-                        mainLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-
-                        // measure your views here
-                        rightSideView.getLocationOnScreen(rightSideHoopLocation);
-                    }
-                }
-        );
 
         Log.d(LOG_TAG, "Start1 " +
-                rightSideHoopLocation[0]);
+                leftSideHoopLocation[0]);
 
         radius = ballView.getHeight() * 1.414213;
         Rect myViewRect = new Rect();
