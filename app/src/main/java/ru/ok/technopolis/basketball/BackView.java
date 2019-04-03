@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -36,10 +35,8 @@ public class BackView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        Log.d("", "onDraw: " + stack.size());
         for (Line line : stack) {
             canvas.drawLine(line.getX1(), line.getY1(), line.getX2(), line.getY2(), paint);
-
         }
     }
 

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/court">
 
-    <ru.ok.technopolis.basketball.CustomView
+    <ru.ok.technopolis.basketball.StarView
         android:id="@+id/scoreView"
         android:layout_width="match_parent"
         android:layout_height="50dp"

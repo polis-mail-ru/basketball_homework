@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String MUSIC_KEY = "music";
     public static final String BALL_KEY = "ball";
     private ValueAnimator animator;
-    private CustomView scoreView;
+    private StarView scoreView;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -215,9 +215,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        animator.cancel();
-        vibrator.cancel();
-        if (soundsPlayer != null)
+        if (animator != null) {
+            animator.cancel();
+        }
+        if (vibrator != null) {
+            vibrator.cancel();
+        }
+        if (soundsPlayer != null) {
             soundsPlayer.release();
+        }
     }
 }

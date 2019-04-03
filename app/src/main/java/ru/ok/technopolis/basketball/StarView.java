@@ -6,14 +6,17 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
-public class CustomView extends View {
+public class StarView extends View {
     private Paint paint;
     private int count;
     private Path path;
+    private float TEXT_X;
+    private float TEXT_Y;
 
-    public CustomView(Context context) {
+    public StarView(Context context) {
         super(context);
     }
 
@@ -23,11 +26,8 @@ public class CustomView extends View {
         float fat = min / 17;
         float half = min / 2;
         mid = mid - half;
-        paint.setColor(Color.YELLOW);
         paint.setStrokeWidth(fat);
-        paint.setStyle(Paint.Style.STROKE);
         path.reset();
-        paint.setStyle(Paint.Style.FILL);
         // top left
         path.moveTo(from + mid + half * 0.5f, half * 0.84f);
         // top right
@@ -44,17 +44,23 @@ public class CustomView extends View {
         canvas.drawPath(path, paint);
     }
 
-    public CustomView(Context context, AttributeSet attrs) {
+    public StarView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         path = new Path();
         paint = new Paint();
         paint.setColor(Color.YELLOW);
-        paint.setStyle(Paint.Style.STROKE);
+        paint.setStyle(Paint.Style.FILL);
         paint.setAntiAlias(true);
         paint.setTextSize(65.0f);
-        paint.setStrokeWidth(7.5f);
         count = 0;
+        TEXT_X = fromDptoPx(40);
+        TEXT_Y = fromDptoPx(32);
+        Log.d("", "StarView: " + TEXT_X + " " + TEXT_Y);
+    }
+
+    float fromDptoPx(float dp) {
+        return dp * getContext().getResources().getDisplayMetrics().density;
     }
 
     void increase() {
@@ -73,7 +79,9 @@ public class CustomView extends View {
         } else {
             drawStar(canvas, 0);
             paint.setColor(Color.WHITE);
-            canvas.drawText("x" + count, 115, 85, paint);
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setStrokeWidth(5f);
+            canvas.drawText("x" + count, TEXT_X, TEXT_Y, paint);
         }
     }
 }

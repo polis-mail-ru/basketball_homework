@@ -219,8 +219,9 @@ public class MenuActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (musicPlayer != null)
+        if (musicPlayer != null) {
             musicPlayer.stop();
+        }
     }
 
     @Override
@@ -232,8 +233,11 @@ public class MenuActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (musicPlayer != null)
+        if (musicPlayer != null) {
             musicPlayer.release();
-        vibrator.cancel();
+        }
+        if (vibrator != null) {
+            vibrator.cancel();
+        }
     }
 }
