@@ -1,10 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_activity_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background"
+
     tools:context=".MainActivity">
 
 
-</android.support.constraint.ConstraintLayout>
+
+    <ImageView
+        android:layout_width="300dp"
+        android:layout_height="200dp"
+        android:layout_centerHorizontal="true"
+        android:contentDescription="@string/table"
+        android:src="@drawable/tablemdpi">
+
+
+    </ImageView>
+
+    <TextView
+        android:id="@+id/main_activity_score_text"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="110dp"
+        android:fontFamily="@font/font_to_score"
+        android:text="@string/start_value"
+        android:textColor="@android:color/white"
+        android:textSize="40sp"
+        tools:ignore="RelativeOverlap" />
+
+    <ru.ok.technopolis.basketball.AccuracyView
+        android:id="@+id/main_activity_custom_view"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:id="@+id/main_activity_ball"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="50dp"
+        android:contentDescription="@string/ball"
+        android:src="@drawable/ball_main" />
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <View
+            android:id="@+id/main_activity_right_hoop_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@+id/main_activity_bottom_hoop"
+            app:layout_constraintEnd_toEndOf="@id/main_activity_right_hoop"
+            app:layout_constraintTop_toTopOf="@id/main_activity_top_hoop" />
+        <View
+            android:id="@+id/main_activity_left_hoop_view"
+            android:layout_height="0dp"
+            android:layout_width="0dp"
+            app:layout_constraintTop_toTopOf="@id/main_activity_bottom_hoop"
+            app:layout_constraintStart_toStartOf="@id/main_activity_left_hoop"/>
+
+        <android.support.constraint.Guideline
+            android:id="@+id/main_activity_right_hoop"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.8" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/main_activity_bottom_hoop"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.34" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/main_activity_top_hoop"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.16" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/main_activity_left_hoop"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.73" />
+
+        <ImageView
+            android:layout_marginTop="-50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="57dp"
+            android:src="@drawable/new_hoop"
+            app:layout_constraintEnd_toEndOf="@+id/main_activity_right_hoop"
+            app:layout_constraintTop_toTopOf="@+id/main_activity_bottom_hoop" />
+    </android.support.constraint.ConstraintLayout>
+
+
+</RelativeLayout>
+
+
+
+
