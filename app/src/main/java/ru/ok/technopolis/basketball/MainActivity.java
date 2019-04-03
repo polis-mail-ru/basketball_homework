@@ -140,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.d(LOG_TAG, "start " + speedY + " ");
                     }
 
+
                     @Override
                     public void onAnimationUpdate(ValueAnimator animation) {
                         long time = animation.getCurrentPlayTime();
