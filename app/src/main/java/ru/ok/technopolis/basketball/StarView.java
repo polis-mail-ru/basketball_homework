@@ -13,15 +13,15 @@ public class StarView extends View {
     private Paint paint;
     private int count;
     private Path path;
-    private float TEXT_X;
-    private float TEXT_Y;
+    private float textX;
+    private float textY;
 
     public StarView(Context context) {
         super(context);
     }
 
     public void drawStar(Canvas canvas, int from) {
-        float mid = (float) canvas.getHeight() / 2;
+        float mid = getHeight() / 2f;
         float min = Math.min(getWidth(), getHeight());
         float fat = min / 17;
         float half = min / 2;
@@ -54,12 +54,12 @@ public class StarView extends View {
         paint.setAntiAlias(true);
         paint.setTextSize(65.0f);
         count = 0;
-        TEXT_X = fromDptoPx(40);
-        TEXT_Y = fromDptoPx(32);
-        Log.d("", "StarView: " + TEXT_X + " " + TEXT_Y);
+        textX = fromDpToPx(40);
+        textY = fromDpToPx(32);
+        Log.d("", "StarView: " + textX + " " + textY);
     }
 
-    float fromDptoPx(float dp) {
+    float fromDpToPx(float dp) {
         return dp * getContext().getResources().getDisplayMetrics().density;
     }
 
@@ -81,7 +81,7 @@ public class StarView extends View {
             paint.setColor(Color.WHITE);
             paint.setStyle(Paint.Style.STROKE);
             paint.setStrokeWidth(5f);
-            canvas.drawText("x" + count, TEXT_X, TEXT_Y, paint);
+            canvas.drawText("x" + count, textX, textY, paint);
         }
     }
 }
