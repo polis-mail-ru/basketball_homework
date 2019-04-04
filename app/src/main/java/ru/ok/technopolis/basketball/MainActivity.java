@@ -12,7 +12,7 @@ import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewTreeObserver;
+import android.view.ViewPropertyAnimator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,9 +25,8 @@ public class MainActivity extends AppCompatActivity {
     private ImageView hoopView;
 
     private int prevMaxCombo;
-    private String maxComboStr;
-	private final String sharedPrefName = "MaxScorePref";
-	private final String maxScore = "MAX_SCORE";
+    private static final String sharedPrefName = "MaxScorePref";
+    private static final String maxScore = "MAX_SCORE";
 
     private boolean throwed = false;
     private boolean scored = false;
@@ -36,6 +35,9 @@ public class MainActivity extends AppCompatActivity {
     private float y;
     private float startPositionX;
     private float startPositionY;
+
+    private ValueAnimator animator;
+    private ViewPropertyAnimator ball;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -47,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         maxComboView = findViewById(R.id.activity_main__max_combo);
         ballView = findViewById(R.id.activity_main__ball);
         hoopView = findViewById(R.id.activity_main__hoop);
-        final ConstraintLayout mainLayout = findViewById(R.id.activity_main);
+        final ConstraintLayout mainLayout = findViewById(R.id.activity_main__root);
 
         scoreComboView.setIsIndicator(true);
 
@@ -58,13 +60,7 @@ public class MainActivity extends AppCompatActivity {
                 return gestureDetector.onTouchEvent(event);
             }
         });
-        mainLayout.getViewTreeObserver().addOnGlobalLayoutListener(
-                new ViewTreeObserver.OnGlobalLayoutListener() {
-                    @Override
-                    public void onGlobalLayout() {
-                        mainLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    }
-                });
+
         loadMaxScore();
         scoreComboView.resetScore();
     }
@@ -84,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
                 final float distanceInX = moveEvent.getRawX() - downEvent.getRawX();
                 final float distanceInY = Math.abs(moveEvent.getRawY() - downEvent.getRawY());
 
-                ValueAnimator animator = ValueAnimator.ofFloat(0, 1);
+                animator = ValueAnimator.ofFloat(0, 1);
                 animator.setDuration(1000);
                 animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                     final float w = (float) ballView.getWidth() / 2;
@@ -108,8 +104,7 @@ public class MainActivity extends AppCompatActivity {
                             scoreComboView.incrementScore();
                             if (prevMaxCombo < scoreComboView.getMaxScoreCombo()) {
                                 prevMaxCombo = scoreComboView.getMaxScoreCombo();
-                                maxComboStr = getString(R.string.max_combo) + " " + prevMaxCombo;
-                                maxComboView.setText(maxComboStr);
+                                maxComboView.setText(getString(R.string.max_combo, prevMaxCombo));
                             }
                             scored = true;
                         }
@@ -128,8 +123,9 @@ public class MainActivity extends AppCompatActivity {
                         throwed = false;
                     }
                 });
+                ball = ballView.animate();
                 animator.start();
-                ballView.animate().start();
+                ball.start();
             }
             return true;
         }
@@ -137,17 +133,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadMaxScore() {
         sPref = getSharedPreferences(sharedPrefName, MODE_PRIVATE);
-        String savedMaxScore = sPref.getString(maxScore, "0");
-        prevMaxCombo = Integer.valueOf(savedMaxScore);
+        prevMaxCombo = sPref.getInt(maxScore, 0);
         scoreComboView.setMaxScoreCombo(prevMaxCombo);
-        maxComboStr = getString(R.string.max_combo)+" "+savedMaxScore;
-        maxComboView.setText(maxComboStr);
+        maxComboView.setText(getString(R.string.max_combo, prevMaxCombo));
     }
 
     private void saveMaxScore() {
         sPref = getSharedPreferences(sharedPrefName, MODE_PRIVATE);
         Editor ed = sPref.edit();
-        ed.putString(maxScore, String.valueOf(scoreComboView.getMaxScoreCombo()));
+        ed.putInt(maxScore, scoreComboView.getMaxScoreCombo());
         ed.apply();
     }
 
@@ -155,5 +149,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         saveMaxScore();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (animator != null) {
+            animator.cancel();
+        }
+        if (ball != null) {
+            ball.cancel();
+        }
     }
 }

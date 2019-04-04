@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">Combo basketball</string>
-    <string name="max_combo">Max combo: </string>
+    <string name="max_combo">Max combo: %d</string>
 </resources>

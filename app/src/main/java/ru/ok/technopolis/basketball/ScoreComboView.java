@@ -10,6 +10,14 @@ public class ScoreComboView extends AppCompatRatingBar {
     private int currentScoreCombo = 0;
     private int maxScoreCombo = 0;
 
+    public ScoreComboView(Context context) {
+        super(context);
+    }
+
+    public ScoreComboView(Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+    }
+
     public void resetScore() {
         setCurrentScoreCombo(0);
     }
@@ -28,7 +36,7 @@ public class ScoreComboView extends AppCompatRatingBar {
             setMaxScoreCombo(currentScoreCombo);
         }
         if (maxScoreCombo > 0) {
-            setRating((((float) currentScoreCombo) / ((float) maxScoreCombo)) * 5);
+            setRating((float) currentScoreCombo / maxScoreCombo * 5);
         }
         invalidate();
     }
@@ -43,13 +51,5 @@ public class ScoreComboView extends AppCompatRatingBar {
 
     public int getMaxScoreCombo() {
         return maxScoreCombo;
-    }
-
-    public ScoreComboView(Context context) {
-        super(context);
-    }
-
-    public ScoreComboView(Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
     }
 }
