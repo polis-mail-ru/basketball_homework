@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
+import ru.ok.technopolis.basketball.EventContext;
 import ru.ok.technopolis.basketball.view.Counter;
 
 public class SwipeAnimationBall implements SwipeAnimation {
@@ -20,6 +21,12 @@ public class SwipeAnimationBall implements SwipeAnimation {
     private SpringAnimation animateRollOnX;
     private SpringAnimation animateRollOnY;
     private ViewGroup mLayout;
+    private boolean scored;
+    private EventContext eventContext;
+
+    public void setEventContext(EventContext eventContext) {
+        this.eventContext = eventContext;
+    }
 
     public SwipeAnimationBall(View ballView, Counter counter, View ball_target, ViewGroup mLayout) {
         this.ball_target = ball_target;
@@ -39,32 +46,15 @@ public class SwipeAnimationBall implements SwipeAnimation {
 
     @Override
     public void throwing(float velocityX, float velocityY) {
+        scored = false;
         animateBallOnX.setStartVelocity(velocityX);
         animateBallOnY.setStartVelocity(velocityY);
         animateBallOnX.setMaxValue(mLayout.getWidth());
         animateRollOnY.setMaxValue(mLayout.getHeight());
-
-
-        animateBallOnX.addUpdateListener(new DynamicAnimation.OnAnimationUpdateListener() {
-            boolean scored = false;
-            @Override
-            public void onAnimationUpdate(DynamicAnimation dynamicAnimation, float v, float v1) {
-                float ballCenterPosX = ballView.getX() + ballView.getWidth() / 2f;
-                float ballCenterPosY = ballView.getY() + ballView.getHeight() / 2f;
-                if (!scored && isHitToBasket(ballCenterPosX, ballCenterPosY)) {
-                    counter.increment();
-                    scored = true;
-                }
-            }
-        });
+        animateBallOnX.addUpdateListener(updateListener);
         animateBallOnX.start();
         animateBallOnY.start();
-        animateBallOnX.addEndListener(new DynamicAnimation.OnAnimationEndListener() {
-            @Override
-            public void onAnimationEnd(DynamicAnimation dynamicAnimation, boolean cancelled, float value, float velocity) {
-                rollback();
-            }
-        });
+        animateBallOnX.addEndListener(endListener);
     }
 
     @Override
@@ -74,7 +64,6 @@ public class SwipeAnimationBall implements SwipeAnimation {
     }
 
     private boolean isHitToBasket(float x, float y) {
-
         float targetLeftPosX = ball_target.getX() - ball_target.getWidth() / 2f;
         float targetRightPosX = ball_target.getX() + ball_target.getWidth() / 2f;
         float targetTopPosY = ball_target.getY() - ball_target.getHeight() / 2f;
@@ -82,4 +71,23 @@ public class SwipeAnimationBall implements SwipeAnimation {
         Log.d("X", "isHitToBasket: " + x + " " + targetLeftPosX + " " + targetRightPosX);
         return (x >= targetLeftPosX && x <= targetRightPosX) && (y >= targetTopPosY && y <= targetBottomPosY);
     }
+
+    private final DynamicAnimation.OnAnimationUpdateListener updateListener = new DynamicAnimation.OnAnimationUpdateListener() {
+        @Override
+        public void onAnimationUpdate(DynamicAnimation dynamicAnimation, float v, float v1) {
+            float ballCenterPosX = ballView.getX() + ballView.getWidth() / 2f;
+            float ballCenterPosY = ballView.getY() + ballView.getHeight() / 2f;
+            if (!scored && isHitToBasket(ballCenterPosX, ballCenterPosY)) {
+                counter.increment();
+                scored = true;
+            }
+        }
+    };
+    private final DynamicAnimation.OnAnimationEndListener endListener = new DynamicAnimation.OnAnimationEndListener() {
+        @Override
+        public void onAnimationEnd(DynamicAnimation dynamicAnimation, boolean b, float v, float v1) {
+            rollback();
+            eventContext.throwing(false);
+        }
+    };
 }
