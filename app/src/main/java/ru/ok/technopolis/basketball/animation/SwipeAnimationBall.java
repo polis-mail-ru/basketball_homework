@@ -54,7 +54,7 @@ public class SwipeAnimationBall implements SwipeAnimation {
         animateBallOnX.addUpdateListener(updateListener);
         animateBallOnX.start();
         animateBallOnY.start();
-        animateBallOnX.addEndListener(endListener);
+        animateBallOnX.addEndListener(endListenerFlingAnim);
     }
 
     @Override
@@ -83,11 +83,11 @@ public class SwipeAnimationBall implements SwipeAnimation {
             }
         }
     };
-    private final DynamicAnimation.OnAnimationEndListener endListener = new DynamicAnimation.OnAnimationEndListener() {
+    private final DynamicAnimation.OnAnimationEndListener endListenerFlingAnim = new DynamicAnimation.OnAnimationEndListener() {
         @Override
         public void onAnimationEnd(DynamicAnimation dynamicAnimation, boolean b, float v, float v1) {
-            rollback();
             eventContext.throwing(false);
+            rollback();
         }
     };
 }

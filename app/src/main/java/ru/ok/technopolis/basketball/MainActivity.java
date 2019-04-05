@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity  implements EventContext {
     };
 
     private final GestureDetector.OnGestureListener gestureListener = new GestureDetector.SimpleOnGestureListener() {
+
         @Override
         public boolean onDown(MotionEvent e) {
             return true;
