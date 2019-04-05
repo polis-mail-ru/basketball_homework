@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity  implements EventContext {
 
     private SwipeAnimation swipeAnimationBall;
     public boolean throwing;
+    private GestureDetector gestureDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,17 +28,11 @@ public class MainActivity extends AppCompatActivity  implements EventContext {
         ImageView ball_target = findViewById(R.id.main_activity__target);
         ImageView ball = findViewById(R.id.main_activity__ball);
         Counter counterView = findViewById(R.id.main_activity__count_layout);
-        final GestureDetector gestureDetector = new GestureDetector(this, gestureListener);
+        gestureDetector = new GestureDetector(this, gestureListener);
         final ViewGroup mainLayout = findViewById(R.id.main_activity__mainLayout);
         swipeAnimationBall = new SwipeAnimationBall(ball, counterView, ball_target, mainLayout);
         swipeAnimationBall.setEventContext(this);
-        mainLayout.setOnTouchListener(new View.OnTouchListener() {
-            @SuppressLint("ClickableViewAccessibility")
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return gestureDetector.onTouchEvent(event);
-            }
-        });
+        mainLayout.setOnTouchListener(onTouchListener);
     }
 
     @Override
@@ -45,6 +40,15 @@ public class MainActivity extends AppCompatActivity  implements EventContext {
         super.onStop();
         swipeAnimationBall.rollback();
     }
+
+    private final View.OnTouchListener onTouchListener = new View.OnTouchListener() {
+
+        @SuppressLint("ClickableViewAccessibility")
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            return gestureDetector.onTouchEvent(event);
+        }
+    };
 
     private final GestureDetector.OnGestureListener gestureListener = new GestureDetector.SimpleOnGestureListener() {
         @Override
