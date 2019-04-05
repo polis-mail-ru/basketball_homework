@@ -64,10 +64,10 @@ public class SwipeAnimationBall implements SwipeAnimation {
     }
 
     private boolean isHitToBasket(float x, float y) {
-        float targetLeftPosX = ball_target.getX() - ball_target.getWidth() / 2f;
-        float targetRightPosX = ball_target.getX() + ball_target.getWidth() / 2f;
-        float targetTopPosY = ball_target.getY() - ball_target.getHeight() / 2f;
-        float targetBottomPosY = ball_target.getY() + ball_target.getHeight() / 2f;
+        float targetLeftPosX = ball_target.getX();
+        float targetRightPosX = ball_target.getX() + ball_target.getWidth()*2;
+        float targetTopPosY = ball_target.getY() - ball_target.getHeight() / 4f;
+        float targetBottomPosY = ball_target.getY() + ball_target.getHeight()*2;
         Log.d("X", "isHitToBasket: " + x + " " + targetLeftPosX + " " + targetRightPosX);
         return (x >= targetLeftPosX && x <= targetRightPosX) && (y >= targetTopPosY && y <= targetBottomPosY);
     }
