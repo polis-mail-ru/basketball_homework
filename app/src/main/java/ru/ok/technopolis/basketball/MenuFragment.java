@@ -25,13 +25,13 @@ public class MenuFragment extends Fragment {
         playButton.setOnClickListener(v -> close());
         Button statsButton = view.findViewById(R.id.fragment_menu_stats_button);
         statsButton.setOnClickListener(v -> {
-            FragmentManager fragmentManager = getFragmentManager();
+            FragmentManager fragmentManager = getChildFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager
                     .beginTransaction();
 
             // добавляем фрагмент
             StatisticFragment myFragment = new StatisticFragment();
-            fragmentTransaction.add(R.id.fragment_menu_layout, myFragment).addToBackStack("StatFr");
+            fragmentTransaction.replace(R.id.fragment_menu_layout, myFragment).addToBackStack("StatFr");
             fragmentTransaction.commit();
         });
 

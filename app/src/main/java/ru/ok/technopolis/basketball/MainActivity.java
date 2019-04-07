@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
 
             // добавляем фрагмент
             MenuFragment myFragment = new MenuFragment();
-            fragmentTransaction.add(R.id.main_activity_layout, myFragment).addToBackStack("StatFr");
+            fragmentTransaction.replace(R.id.main_activity_layout, myFragment).addToBackStack("MenuFragment");
             fragmentTransaction.commit();
         });
 
