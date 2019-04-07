@@ -47,8 +47,6 @@ public class WinFragment extends Fragment {
             @Override
             public void onAnimationEnd(Animator animation) {
                 close();
-
-
             }
 
         });

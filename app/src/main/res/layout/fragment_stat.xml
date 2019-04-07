@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:background="#80000000">
+
+    <android.support.constraint.Guideline
+        android:id="@+id/fragment_stat_left_line"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.1"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/fragment_stat_right_line"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.9"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/fragment_stat_center_horizontal_line"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.66" />
+
+    <TextView
+        android:id="@+id/fragment_stat_text"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        app:layout_constraintEnd_toEndOf="@id/fragment_stat_right_line"
+        app:layout_constraintStart_toStartOf="@id/fragment_stat_left_line"
+
+        app:layout_constraintTop_toBottomOf="@+id/fragment_stat_center_horizontal_line"
+        android:background="@android:color/black"
+        android:textColor="@android:color/white"
+        android:fontFamily="@font/score_font"
+        android:padding="10dp"
+        android:textSize="40sp"
+        android:text="@string/statistics"
+
+        />
+
+    <ru.ok.technopolis.basketball.AccuracyView
+        app:layout_constraintBottom_toTopOf="@id/fragment_stat_text"
+        android:id="@+id/fragment_stat_custom_view"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toEndOf="@id/fragment_stat_right_line"
+        app:layout_constraintStart_toStartOf="@id/fragment_stat_left_line"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="10dp"
+        android:maxWidth="100dp"
+        android:layout_marginTop="40dp"
+        />
+
+</android.support.constraint.ConstraintLayout>

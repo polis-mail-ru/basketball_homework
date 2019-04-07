@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:background="@drawable/menu_background">
+
+    <Button
+        android:id="@+id/fragment_menu_play_button"
+        android:layout_height="120dp"
+        android:layout_width="120dp"
+        app:layout_constraintTop_toTopOf="@+id/fragment_menu_top_line"
+        app:layout_constraintEnd_toStartOf="@+id/fragment_menu_stats_button"
+        app:layout_constraintBottom_toBottomOf="@+id/fragment_menu_bottom_line"
+        app:layout_constraintStart_toEndOf="@+id/fragment_menu_settings_button"
+        android:background="@drawable/play_button_black"/>
+
+    <Button
+        android:id="@+id/fragment_menu_stats_button"
+        android:layout_height="80dp"
+        android:layout_width="80dp"
+        app:layout_constraintTop_toTopOf="@+id/fragment_menu_top_line"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/fragment_menu_bottom_line"
+        app:layout_constraintStart_toEndOf="@+id/fragment_menu_play_button"
+        android:background="@drawable/stats_icon_fill_black"/>
+
+    <Button
+        android:id="@+id/fragment_menu_settings_button"
+        android:layout_height="80dp"
+        android:layout_width="80dp"
+        app:layout_constraintTop_toTopOf="@+id/fragment_menu_top_line"
+        app:layout_constraintEnd_toStartOf="@+id/fragment_menu_play_button"
+        app:layout_constraintBottom_toBottomOf="@+id/fragment_menu_bottom_line"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@drawable/settings_button"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/fragment_menu_top_line"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.41" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/fragment_menu_bottom_line"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.82" />
+
+</android.support.constraint.ConstraintLayout>
