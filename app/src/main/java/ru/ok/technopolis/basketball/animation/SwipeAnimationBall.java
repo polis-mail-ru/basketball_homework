@@ -33,8 +33,8 @@ public class SwipeAnimationBall implements SwipeAnimation {
         this.ballView = ballView;
         this.counter = counter;
         this.mLayout = mLayout;
-        animateBallOnX = new FlingAnimation(this.ballView, DynamicAnimation.X).setFriction(2.5f);
-        animateBallOnY = new FlingAnimation(this.ballView, DynamicAnimation.Y).setFriction(5f);
+        animateBallOnX = new FlingAnimation(this.ballView, DynamicAnimation.X).setFriction(4.5f);
+        animateBallOnY = new FlingAnimation(this.ballView, DynamicAnimation.Y).setFriction(8f);
         animateRollOnX = new SpringAnimation(this.ballView, DynamicAnimation.TRANSLATION_X);
         animateRollOnY = new SpringAnimation(this.ballView, DynamicAnimation.TRANSLATION_Y);
         SpringForce springForce = new SpringForce(0);
@@ -50,7 +50,7 @@ public class SwipeAnimationBall implements SwipeAnimation {
         animateBallOnX.setStartVelocity(velocityX);
         animateBallOnY.setStartVelocity(velocityY);
         animateBallOnX.setMaxValue(mLayout.getWidth());
-        animateRollOnY.setMaxValue(mLayout.getHeight());
+        animateBallOnY.setMaxValue(mLayout.getHeight());
         animateBallOnX.addUpdateListener(updateListener);
         animateBallOnX.start();
         animateBallOnY.start();
@@ -86,8 +86,8 @@ public class SwipeAnimationBall implements SwipeAnimation {
     private final DynamicAnimation.OnAnimationEndListener endListenerFlingAnim = new DynamicAnimation.OnAnimationEndListener() {
         @Override
         public void onAnimationEnd(DynamicAnimation dynamicAnimation, boolean b, float v, float v1) {
-            eventContext.throwing(false);
             rollback();
+            eventContext.throwing(false);
         }
     };
 }
