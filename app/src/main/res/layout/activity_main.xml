@@ -19,10 +19,7 @@
         android:layout_height="200dp"
         android:layout_centerHorizontal="true"
         android:contentDescription="@string/table"
-        android:src="@drawable/tablemdpi">
-
-
-    </ImageView>
+        android:src="@drawable/tablemdpi"/>
 
     <Button
         android:id="@+id/main_activity_stop_button"

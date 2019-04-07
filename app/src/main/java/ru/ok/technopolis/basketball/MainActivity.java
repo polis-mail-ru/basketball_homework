@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
                     .beginTransaction();
 
             // добавляем фрагмент
-            StatisticFragment myFragment = new StatisticFragment();
+            MenuFragment myFragment = new MenuFragment();
             fragmentTransaction.add(R.id.main_activity_layout, myFragment).addToBackStack("StatFr");
             fragmentTransaction.commit();
         });
