@@ -1,46 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".MainActivity">
 
+    <TextView
+        android:id="@+id/score"
+        android:layout_gravity="end"
+        tools:text="13/30"
+        android:textSize="30sp"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ball" />
+
+
+
+    <ImageView
+        android:layout_marginTop="80dp"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/hoop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/hoop" />
+
+    <ImageView
+        android:id="@+id/person"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/player"
+        android:layout_gravity="bottom"/>
+
     <ru.ok.technopolis.basketball.RateView
         android:id="@+id/rateview"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:layout_margin="20dp"
         android:max="100"
-        android:progress="10"
+        android:progress="100"
         app:count_stars="5"
         app:star_size="30dp" />
 
-
-    <ru.ok.technopolis.basketball.RateView
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:max="100"
-        android:progress="30"
-        app:star_size="30dp" />
-
-    <ru.ok.technopolis.basketball.RateView
+    <ImageView
+        android:id="@+id/ball"
+        android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:max="100"
-        android:progress="30"
-        app:count_stars="5"
-        app:star_size="50dp" />
+        android:src="@drawable/ball" />
 
-    <ru.ok.technopolis.basketball.RateView
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:layout_margin="20dp"
-        android:max="100"
-        android:progress="30"
-        app:count_stars="12"
-        app:star_size="40dp" />
-</LinearLayout>
+</FrameLayout>

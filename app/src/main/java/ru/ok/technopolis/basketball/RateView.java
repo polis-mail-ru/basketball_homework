@@ -110,8 +110,8 @@ public class RateView extends SeekBar {
         }
 
         if (borderRect != null && paddingRect != null) {
-            canvas.drawRect(borderRect, borderPaint);
-            canvas.drawRect(paddingRect, borderPaint);
+           // canvas.drawRect(borderRect, borderPaint);
+        //    canvas.drawRect(paddingRect, borderPaint);
         }
     }
 }
