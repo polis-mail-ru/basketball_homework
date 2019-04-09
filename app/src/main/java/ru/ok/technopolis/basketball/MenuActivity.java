@@ -6,12 +6,24 @@ import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Switch;
+
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.games.Games;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +45,7 @@ public class MenuActivity extends AppCompatActivity {
     private Button left;
     private Button right;
     private ImageView ballView;
+    private Button leaderboard;
     private boolean music;
     private boolean walls;
     private boolean vibro;
@@ -40,11 +53,27 @@ public class MenuActivity extends AppCompatActivity {
     private List<Integer> balls;
     private SharedPreferences sp;
     private static final String SP_NAME = "settings";
+    private static final int RC_LEADERBOARD_UI = 9004;
+    private static final int RC_SIGN_IN = 9001;
+    GoogleSignInClient mGoogleSignInClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.menu);
+        GoogleSignInOptions gso = new
+
+                GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN)
+                .requestEmail()
+                .build();
+
+        //Делаю вход в Google игры
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+
+//Start the sign-in intent with startActivityForResult//
+
+        startActivityForResult(signInIntent, RC_SIGN_IN);
         getSupportActionBar().hide();
         initUI();
         initValues();
@@ -153,6 +182,59 @@ public class MenuActivity extends AppCompatActivity {
             }
         });
 
+        leaderboard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Пытаюсь загрузить список лидеров
+                if (GoogleSignIn.getLastSignedInAccount(getApplicationContext()) != null) {
+                    Games.getLeaderboardsClient(getApplicationContext(), GoogleSignIn.getLastSignedInAccount(getApplicationContext()))
+                            .getLeaderboardIntent(getString(R.string.leaderboard_id))
+                            .addOnSuccessListener(new OnSuccessListener<Intent>() {
+                                @Override
+                                public void onSuccess(Intent intent) {
+                                    startActivityForResult(intent, RC_LEADERBOARD_UI);
+                                }
+                            });
+                }
+
+            }
+        });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+            // The Task returned from this call is always completed, no need to attach
+            // a listener.
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            handleSignInResult(task);
+        }
+    }
+
+    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+        try {
+            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+
+            // Signed in successfully, show authenticated UI.
+            updateUI(account);
+        } catch (ApiException e) {
+            // The ApiException status code indicates the detailed failure reason.
+            // Please refer to the GoogleSignInStatusCodes class reference for more information.
+            Log.w("", "signInResult:failed code=" + e.getStatusCode());
+            updateUI(null);
+        }
+    }
+
+    private void updateUI(@Nullable GoogleSignInAccount account) {
+        if (account != null) {
+
+//Once the user is signed in, do something, for example hide the ‘Sign In’ button//
+//TO DO//
+        } else {
+        }
     }
 
     private void updateBall() {
@@ -184,6 +266,7 @@ public class MenuActivity extends AppCompatActivity {
         left = findViewById(R.id.left);
         right = findViewById(R.id.right);
         ballView = findViewById(R.id.choose_ball);
+        leaderboard = findViewById(R.id.leaderboardsButton);
     }
 
     private void setMenuInterface(int mode) {
