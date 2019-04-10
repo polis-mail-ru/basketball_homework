@@ -2,49 +2,98 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
     <ImageView
         android:id="@+id/activity_main_hoop"
-        android:layout_width="200dp"
-        android:layout_height="150dp"
-        android:layout_marginRight="10dp"
+        android:layout_width="149dp"
+        android:layout_height="101dp"
         android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
         android:src="@drawable/hoop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/activity_main_player"
-        android:layout_width="100dp"
-        android:layout_height="0dp"
+        android:layout_width="76dp"
+        android:layout_height="131dp"
         android:layout_marginLeft="50dp"
         android:layout_marginBottom="10dp"
         android:src="@drawable/player"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
         android:id="@+id/activity_main_ball"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="88dp"
-        android:layout_marginLeft="88dp"
-        android:layout_marginBottom="232dp"
+        android:layout_width="18dp"
+        android:layout_height="26dp"
+        android:layout_marginStart="92dp"
+        android:layout_marginLeft="92dp"
+        android:layout_marginBottom="140dp"
         android:src="@drawable/ball"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/activity_main_score"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:background="#DDA0DD"
-        app:layout_constraintTop_toTopOf="parent"
+    <ImageView
+        android:id="@+id/imageStar1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
-        android:textColor="#000"
-        android:textSize="24sp" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_grade_black_24dp"
+        tools:alpha="4"
+        android:contentDescription="TODO" />
+
+    <ImageView
+        android:id="@+id/imageStar2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toEndOf="@+id/imageStar1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_grade_black_24dp" />
+
+    <ImageView
+        android:id="@+id/imageStar3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toEndOf="@+id/imageStar2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_grade_black_24dp" />
+
+    <ImageView
+        android:id="@+id/imageStar4"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toEndOf="@+id/imageStar3"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_grade_black_24dp" />
+
+    <ImageView
+        android:id="@+id/imageStar5"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toEndOf="@+id/imageStar4"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_grade_black_24dp" />
+
 
 </android.support.constraint.ConstraintLayout>
