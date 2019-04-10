@@ -14,6 +14,7 @@ import android.view.View;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.net.PasswordAuthentication;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,14 +24,15 @@ public class AccuracyView extends View {
     private static final int DEFAULT_ITEM_COLOR = Color.WHITE;
 
     private final Path wavePath = new Path();
-    private final Paint linePaint = new Paint();
+    private final Paint linePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint goodPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     private final int itemWidth;
     private List<Double> originalData;
 
     private List<Double> measuredData;
 
-    public AccuracyView(Context context){
+    public AccuracyView(Context context) {
         this(context, null);
     }
 
@@ -50,6 +52,9 @@ public class AccuracyView extends View {
         linePaint.setStyle(Paint.Style.STROKE);
         linePaint.setColor(itemColorFromAttr);
         linePaint.setStrokeWidth(itemWidthFromAttr);
+        goodPaint.setStyle(Paint.Style.STROKE);
+        goodPaint.setColor(Color.GREEN);
+        goodPaint.setStrokeWidth(itemWidthFromAttr);
     }
 
     @SuppressLint("DrawAllocation")
@@ -63,7 +68,11 @@ public class AccuracyView extends View {
             originalData = new ArrayList<>();
             originalData.add(0d);
         }
-        int width = originalData.size() * itemWidth * 2 - itemWidth + leftPadding + rightPadding;
+        int len = originalData.size();
+        if(len > 15){
+            len = 15;
+        }
+        int width = len * itemWidth * 2 - itemWidth + leftPadding + rightPadding;
         width = resolveSize(width, widthMeasureSpec);
         int itemCount = originalData.size();
         measuredData = LinearInterpolation.interpolateList(originalData, itemCount);
@@ -82,17 +91,23 @@ public class AccuracyView extends View {
         int currentX = itemWidth + getPaddingLeft();
         int count = 0;
         for (Double data : measuredData) {
-            if(count > 15){
+            if (count > 15) {
                 break;
             }
-            double height = ( data / AccuracyResource.getMaxHeight()) * measuredHeight;
-            double startY = paddingTop +measuredHeight - height;
-            double endY = paddingTop +  startY + measuredHeight;
-            wavePath.moveTo(currentX, (float) startY);
-            wavePath.lineTo(currentX, (float) endY);
+            double height = (data / AccuracyResource.getMaxHeight()) * measuredHeight;
+            float startY = (float) (paddingTop + measuredHeight - height);
+            float endY = paddingTop + startY + measuredHeight;
+
+//            wavePath.moveTo(currentX, startY);
+//            wavePath.lineTo(currentX, endY);
+            if (data >= 0.99) {
+                canvas.drawLine(currentX, startY, currentX, endY, goodPaint);
+            } else {
+                canvas.drawLine(currentX, startY, currentX, endY, linePaint);
+            }
             currentX += itemWidth * 2;
             count++;
         }
-        canvas.drawPath(wavePath, linePaint);
+//        canvas.drawPath(wavePath, linePaint);
     }
 }

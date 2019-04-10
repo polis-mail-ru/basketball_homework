@@ -27,7 +27,7 @@ public class LinearInterpolation {
     }
 
 
-    static List interpolateList(List<Double> originalData, int itemCount) {
+    static List<Double> interpolateList(List<Double> originalData, int itemCount) {
         Double [] finalArray = new Double[originalData.size()];
         for(int  i = 0; i < itemCount; i++){
             if(i < originalData.size())

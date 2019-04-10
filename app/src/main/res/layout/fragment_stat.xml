@@ -4,7 +4,22 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
-    android:background="#80000000">
+    android:background="@drawable/menu_background">
+
+    <FrameLayout android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:background="#80000000"/>
+
+
+    <Button
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:id="@+id/fragment_stat_close_button"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:background="@drawable/close_white"/>
 
     <android.support.constraint.Guideline
         android:id="@+id/fragment_stat_left_line"

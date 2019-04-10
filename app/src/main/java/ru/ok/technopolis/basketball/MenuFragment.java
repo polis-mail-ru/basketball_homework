@@ -1,17 +1,30 @@
 package ru.ok.technopolis.basketball;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
 public class MenuFragment extends Fragment {
+
+    private static final String LOG_TAG = "MenuFragmentLogs";
+    OnMenuListener onMenuListener;
+
+    public static MenuFragment newInstance() {
+
+        Bundle args = new Bundle();
+        MenuFragment fragment = new MenuFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -22,24 +35,32 @@ public class MenuFragment extends Fragment {
         /*Button stop = view.findViewById(R.id.main_activity_stop_button);
         stop.setOnClickListener(v -> close());*/
         Button playButton = view.findViewById(R.id.fragment_menu_play_button);
-        playButton.setOnClickListener(v -> close());
+        playButton.setOnClickListener(v -> {
+            Log.d(LOG_TAG, "play click");
+
+            if(onMenuListener != null){
+                onMenuListener.play();
+            }
+        });
         Button statsButton = view.findViewById(R.id.fragment_menu_stats_button);
         statsButton.setOnClickListener(v -> {
-            FragmentManager fragmentManager = getChildFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager
-                    .beginTransaction();
-
-            // добавляем фрагмент
-            StatisticFragment myFragment = new StatisticFragment();
-            fragmentTransaction.replace(R.id.fragment_menu_layout, myFragment).addToBackStack("StatFr");
-            fragmentTransaction.commit();
+            if(onMenuListener != null){
+                Log.d(LOG_TAG, "stat click");
+                onMenuListener.showStat();
+            }
         });
 
 
         return view;
     }
 
-    private void close(){
-        getActivity().getFragmentManager().beginTransaction().remove(this).commit();
+    public void setOnMenuListener(OnMenuListener onMenuListener) {
+        this.onMenuListener = onMenuListener;
+    }
+
+    interface OnMenuListener {
+        void play();
+        void showStat();
+        void showSettings();
     }
 }

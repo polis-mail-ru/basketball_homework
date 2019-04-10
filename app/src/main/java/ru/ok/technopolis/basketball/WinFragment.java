@@ -3,11 +3,11 @@ package ru.ok.technopolis.basketball;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
-import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +24,7 @@ public class WinFragment extends Fragment {
                 container, false);
         ValueAnimator animator = ValueAnimator.ofFloat(0, 1);
         animator.setDuration(1000);
-        final ImageView view1  = (ImageView) view.findViewById(R.id.fragment_goal_whistle);
+        final ImageView view1  = view.findViewById(R.id.fragment_goal_whistle);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             private float x = 10;
             private float bias = x;
@@ -58,6 +58,6 @@ public class WinFragment extends Fragment {
     }
 
     private void close(){
-        getActivity().getFragmentManager().beginTransaction().remove(this).commit();
+        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
     }
 }
