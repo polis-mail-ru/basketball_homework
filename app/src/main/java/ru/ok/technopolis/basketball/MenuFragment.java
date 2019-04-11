@@ -50,6 +50,14 @@ public class MenuFragment extends Fragment {
             }
         });
 
+        Button settingsButton = view.findViewById(R.id.fragment_menu_settings_button);
+        settingsButton.setOnClickListener(v -> {
+            if(onMenuListener != null){
+                Log.d(LOG_TAG, "setting click");
+                onMenuListener.showSettings();
+            }
+        });
+
 
         return view;
     }

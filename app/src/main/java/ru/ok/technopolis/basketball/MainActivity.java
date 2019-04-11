@@ -1,6 +1,8 @@
 package ru.ok.technopolis.basketball;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -10,23 +12,23 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
-import android.widget.Button;
-import android.widget.RelativeLayout;
 
 public class MainActivity extends AppCompatActivity {
 
-    String LOG_TAG = "Main_Activity_logs";
-
-    private RelativeLayout mainLayout;
+    private String LOG_TAG = "Main_Activity_logs";
 
     int width;
     int height;
+    public static final String APP_PREFERENCES = "settings";
+    public static final String APP_PREFERNCES_SCORE = "score";
+    public static final String APP_PREFERNCES_LEVEL = "level";
+    public static final String APP_PREFERNCES_VIBRATE = "vibrate";
 
-    AppCompatActivity mainActivity = this;
-    FragmentManager fragmentManager;
+    public static SharedPreferences preferences;
+
+    private FragmentManager fragmentManager;
 
     private int score;
-    private int rowHit = 0;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -35,6 +37,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
+        }
+        preferences = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+        if(preferences.contains(APP_PREFERNCES_SCORE)){
+            preferences.getInt(APP_PREFERNCES_SCORE, score);
         }
         fragmentManager = getSupportFragmentManager();
 
@@ -71,18 +77,10 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(LOG_TAG, "stat callback");
                 StatisticFragment statisticFragment= new StatisticFragment();
                 MenuFragment.OnMenuListener listener = this;
-               /* statisticFragment.setCloseListener(() -> {
-                    MenuFragment menuFragment = MenuFragment.newInstance();
-                    menuFragment.setOnMenuListener(listener);
-                    changeFragment(menuFragment);
-                });*/
-               statisticFragment.setCloseListener(new StatisticFragment.OnCloseListener() {
-                   @Override
-                   public void close() {
-                       MenuFragment menuFragment = MenuFragment.newInstance();
-                       menuFragment.setOnMenuListener(listener);
-                       changeFragment(menuFragment);
-                   }
+               statisticFragment.setCloseListener(() -> {
+                   MenuFragment menuFragment1 = MenuFragment.newInstance();
+                   menuFragment1.setOnMenuListener(listener);
+                   changeFragment(menuFragment1);
                });
                 changeFragment(statisticFragment);
 
@@ -91,9 +89,28 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void showSettings() {
 
+                Log.d(LOG_TAG, "settings callback");
+                SettingsFragment settingsFragment= new SettingsFragment();
+                MenuFragment.OnMenuListener listener = this;
+                settingsFragment.setCloseListener(() -> {
+                        MenuFragment menuFragment = MenuFragment.newInstance();
+                        menuFragment.setOnMenuListener(listener);
+                        changeFragment(menuFragment);
+
+                });
+                changeFragment(settingsFragment);
+
             }
         });
         changeFragment(menuFragment);
+    }
+
+    @Override
+    protected void onResume() {
+        if(preferences.contains(APP_PREFERNCES_SCORE)){
+            preferences.getInt(APP_PREFERNCES_SCORE, score);
+        }
+        super.onResume();
     }
 
     private void changeFragment(Fragment f) {
@@ -122,5 +139,11 @@ public class MainActivity extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_FULLSCREEN);
     }
 
-
+    @Override
+    protected void onStop() {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt(APP_PREFERNCES_SCORE, score);
+        editor.apply();
+        super.onStop();
+    }
 }

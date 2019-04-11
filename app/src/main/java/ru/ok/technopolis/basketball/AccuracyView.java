@@ -90,17 +90,18 @@ public class AccuracyView extends View {
         int measuredHeight = getMeasuredHeight() - paddingTop - getPaddingBottom();
         int currentX = itemWidth + getPaddingLeft();
         int count = 0;
-        for (Double data : measuredData) {
-            if (count > 15) {
-                break;
-            }
-            double height = (data / AccuracyResource.getMaxHeight()) * measuredHeight;
+        int len = 0;
+        if(measuredData.size() > 15){
+            len = measuredData.size() - 15;
+        }
+        for (int i = len; i < measuredData.size(); i ++) {
+            double height = (measuredData.get(i) / AccuracyResource.getMaxHeight()) * measuredHeight;
             float startY = (float) (paddingTop + measuredHeight - height);
             float endY = paddingTop + startY + measuredHeight;
 
 //            wavePath.moveTo(currentX, startY);
 //            wavePath.lineTo(currentX, endY);
-            if (data >= 0.99) {
+            if (measuredData.get(i) >= 0.99) {
                 canvas.drawLine(currentX, startY, currentX, endY, goodPaint);
             } else {
                 canvas.drawLine(currentX, startY, currentX, endY, linePaint);

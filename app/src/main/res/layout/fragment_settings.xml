@@ -2,16 +2,91 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/menu_background"
+    >
+
+    <Button
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:id="@+id/fragment_settings_close_button"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:background="@drawable/close_white"/>
+
+    <TextView
+        android:textColor="@android:color/white"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/fragment_settings_horizontal_line"
+        android:text="@string/settings"
+        android:fontFamily="@font/score_font"
+        android:textSize="50sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     <ToggleButton
+        android:id="@+id/fragment_settings_level_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textOff="@string/hard"
         android:textOn="@string/easy"
         android:checked="false"
-        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@android:color/white"
+        android:fontFamily="@font/score_font"
+        android:textSize="50sp"
+        android:background="@android:color/transparent"
+        app:layout_constraintTop_toTopOf="@+id/fragment_settings_horizontal_line"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/fragment_settings_vibration_button"
+        app:layout_constraintBottom_toBottomOf="@+id/fragment_settings_second_horizontal_line"
         />
+
+    <ToggleButton
+        android:id="@+id/fragment_settings_vibration_button"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:background="@drawable/bell"
+        android:thumb="@android:color/transparent"
+        android:checked="true"
+        android:textOn=""
+        android:textOff=""
+        app:layout_constraintTop_toTopOf="@+id/fragment_settings_horizontal_line"
+        app:layout_constraintStart_toEndOf="@+id/fragment_settings_level_button"
+        app:layout_constraintEnd_toStartOf="@+id/fragment_settings_reset_button"
+        app:layout_constraintBottom_toBottomOf="@+id/fragment_settings_second_horizontal_line"
+        />
+
+    <Button
+        android:id="@+id/fragment_settings_reset_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/score_font"
+        android:textSize="50sp"
+        android:textColor="@android:color/white"
+        android:background="@android:color/transparent"
+        android:text="@string/reset"
+        app:layout_constraintTop_toTopOf="@+id/fragment_settings_horizontal_line"
+        app:layout_constraintStart_toEndOf="@+id/fragment_settings_vibration_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/fragment_settings_second_horizontal_line"
+        />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/fragment_settings_horizontal_line"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.46" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/fragment_settings_second_horizontal_line"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.96" />
 
 </android.support.constraint.ConstraintLayout>

@@ -4,9 +4,11 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -31,22 +33,26 @@ public class GameFragment extends Fragment {
     private static final String SCORE_KEY = "score";
     private static final String LOG_TAG = "Main_Activity_logs";
 
-    ImageView ballView;
-    int[] ballStartLocation = new int[2];
-    int[] leftSideHoopLocation = new int[2];
-    int[] rightSideHoopLocation = new int[2];
+    boolean isVibrationOn = true;
+    boolean isEasy = false;
+
+    private Vibrator vibrator;
+    private ImageView ballView;
+    private int[] ballStartLocation = new int[2];
+    private int[] leftSideHoopLocation = new int[2];
+    private int[] rightSideHoopLocation = new int[2];
     private RelativeLayout mainLayout;
     private double radius;
-    boolean doing = false;
+    private boolean doing = false;
     private View leftSideHoop;
     private View rightSideHoop;
     private TextView scoreView;
-    int width;
-    int height;
-    double minAccuracy;
-    Button stopButton;
-    FragmentManager fragmentManager;
-    OnPauseListener onPauseListener;
+    private int width;
+    private int height;
+    private double minAccuracy;
+    private Button stopButton;
+    private FragmentManager fragmentManager;
+    private OnPauseListener onPauseListener;
 
     private int score = 0;
     private int rowHit = 0;
@@ -72,17 +78,20 @@ public class GameFragment extends Fragment {
         width = args.getInt(WIDTH_KEY);
         height = args.getInt(HEIGHT_KEY);
         score = args.getInt(SCORE_KEY);
-
+        MainActivity.preferences.getBoolean(MainActivity.APP_PREFERNCES_VIBRATE, isVibrationOn);
+        MainActivity.preferences.getBoolean(MainActivity.APP_PREFERNCES_LEVEL, isEasy);
         fragmentManager = getChildFragmentManager();
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint({"ClickableViewAccessibility", "SetTextI18n"})
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_game,
                 container, false);
-
+        if(isVibrationOn && getContext() != null){
+            vibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
+        }
         mainLayout = rootView.findViewById(R.id.fragment_game_layout);
         ballView = rootView.findViewById(R.id.main_activity_ball);
         scoreView = rootView.findViewById(R.id.main_activity_score_text);
@@ -90,16 +99,19 @@ public class GameFragment extends Fragment {
         rightSideHoop = rootView.findViewById(R.id.main_activity_right_hoop_view);
         stopButton = rootView.findViewById(R.id.main_activity_stop_button);
         mainLayout.post(() -> {
-            scoreView.setText("0");
+            scoreView.setText(Integer.toString(score));
             leftSideHoop.getLocationOnScreen(leftSideHoopLocation);
             rightSideHoop.getLocationOnScreen(rightSideHoopLocation);
             ballView.getLocationOnScreen(ballStartLocation);
+            if(isEasy){
+                ballStartLocation[0] = width /2;
+            }
             ballView.setX(ballStartLocation[0]);
             ballView.setY(ballStartLocation[1]);
             ballView.setVisibility(View.VISIBLE);
             minAccuracy = Math.sqrt(Math.pow(ballStartLocation[0] - leftSideHoopLocation[0], 2)
                     + Math.pow(ballStartLocation[1] - leftSideHoopLocation[1], 2));
-            radius = ballView.getHeight() * 0.5;
+            radius = ballView.getHeight()*0.5;
 
         });
 
@@ -133,7 +145,6 @@ public class GameFragment extends Fragment {
         fragmentManager.beginTransaction().replace(R.id.fragment_game_layout, f).addToBackStack(f.getClass().getSimpleName()).commit();
     }
 
-
     private GestureDetector.OnGestureListener myGestureListener = new GestureDetector.SimpleOnGestureListener() {
 
         ValueAnimator animator;
@@ -153,7 +164,6 @@ public class GameFragment extends Fragment {
                 final double[] closer = {Double.MAX_VALUE, Double.MAX_VALUE};
                 final double[] tmpAccuracy = {0};
 
-
                 doing = true;
                 animator = ValueAnimator.ofFloat(0, 1);
                 animator.setDuration(4000);
@@ -168,11 +178,9 @@ public class GameFragment extends Fragment {
                     private int collisionCounter = 1;
                     private int[] hitCoords = {ballStartLocation[0], ballStartLocation[1]};
 
-
                     {
                         Log.d(LOG_TAG, "start " + speedY + " ");
                     }
-
 
                     @Override
                     public void onAnimationUpdate(ValueAnimator animation) {
@@ -181,10 +189,10 @@ public class GameFragment extends Fragment {
                         ballView.setY(hitCoords[1] - (speedY) * (time - lastCollisionYTime));
                         ballView.setX(hitCoords[0] + speedX * (time - lastCollisionXTime));
                         ballView.setRotation(2);
-                        if (ballView.getX() + radius >= leftSideHoopLocation[0]
-                                && ballView.getX() + radius <= rightSideHoopLocation[0]
-                                && ballView.getY() + radius < leftSideHoopLocation[1]
-                                && ballView.getY() + radius > leftSideHoopLocation[1] - 100
+                        if (ballView.getX() + ballView.getWidth() >= leftSideHoopLocation[0]-20
+                                && ballView.getX() + ballView.getWidth() <= rightSideHoopLocation[0]
+                                && ballView.getY() + radius < leftSideHoopLocation[1]+10
+                                && ballView.getY() + radius > leftSideHoopLocation[1] - 50
                                 && speedY < 1) {
                             Log.d(LOG_TAG, "speedY = " + speedY);
                             if (!isHit) {
@@ -218,15 +226,14 @@ public class GameFragment extends Fragment {
                             speedX = -speedX;
                         }
 
-                        if (ballView.getX() + radius >= rightSideHoopLocation[0] - 30
+                        if (ballView.getX() + ballView.getWidth() >= rightSideHoopLocation[0]
                                 && ballView.getX() + radius < rightSideHoopLocation[0] + 30
-                                && ballView.getY() > rightSideHoopLocation[1] - rightSideHoop.getHeight() / 2 - 10
-                                && ballView.getY() < rightSideHoopLocation[1] + rightSideHoop.getHeight() / 2 + 10) {
+                                && ballView.getY() + radius > rightSideHoopLocation[1]
+                                && ballView.getY() < rightSideHoopLocation[1] + rightSideHoop.getHeight() + 10) {
                             hitCoords[0] = (int) ballView.getX();
                             lastCollisionXTime = time;
                             speedX = -speedX;
                         }
-
 
                         if (Math.sqrt(Math.pow(ballView.getX() - (leftSideHoopLocation[0] * 0.5 + rightSideHoopLocation[0] * 0.5), 2)
                                 + Math.pow(ballView.getY() - leftSideHoopLocation[1], 2))
@@ -236,37 +243,30 @@ public class GameFragment extends Fragment {
                             closer[1] = ballView.getY();
                         }
 
-
                         if (ballView.getX() > width * 1.5 || ballView.getX() < -width * 0.5) {
                             animator.cancel();
                         }
-
-
                     }
-
-
                 });
 
                 animator.addListener(new AnimatorListenerAdapter() {
                     @SuppressLint("SetTextI18n")
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                        //ballView.setVisibility(View.INVISIBLE);
-
                         if (isHit) {
+                            if(vibrator != null){
+                                vibrator.vibrate(400);
+                            }
                             changeFragment(new WinFragment());
                             isHit = false;
                             scoreView.setText(score + "");
                             rowHit++;
                             if (rowHit > 0) {
-                                //TODO: reverse ball
-                                //ballView.setMinimumHeight((int)(ballView.getHeight()*2));
-                                //ballView.setImageResource(R.drawable.fire_ball);
+
                                 tmpAccuracy[0] = 0.9999;
                             }
                         } else {
                             rowHit = 0;
-                            //ballView.setImageResource(R.drawable.);
                             tmpAccuracy[0] = Math.sqrt(Math.pow(closer[0] - leftSideHoopLocation[0], 2)
                                     + Math.pow(closer[1] - leftSideHoopLocation[1], 2));
                             Log.d(LOG_TAG, "accuracys " + tmpAccuracy[0] + " " + minAccuracy + " clos " + closer[0] + " " + closer[1]);
