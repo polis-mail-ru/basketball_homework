@@ -8,31 +8,39 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
-import ru.ok.technopolis.basketball.EventContext;
+import ru.ok.technopolis.basketball.AnimationContext;
 import ru.ok.technopolis.basketball.view.Counter;
 
 public class SwipeAnimationBall implements SwipeAnimation {
 
     private View ballView;
-    private View ball_target;
+    private View ballTarget;
     private Counter counter;
     private FlingAnimation animateBallOnX;
     private FlingAnimation animateBallOnY;
     private SpringAnimation animateRollOnX;
     private SpringAnimation animateRollOnY;
-    private ViewGroup mLayout;
+    private ViewGroup layout;
     private boolean scored;
-    private EventContext eventContext;
+    private AnimationContext eventContext;
 
-    public void setEventContext(EventContext eventContext) {
+    public void setEventContext(AnimationContext eventContext) {
         this.eventContext = eventContext;
     }
 
-    public SwipeAnimationBall(View ballView, Counter counter, View ball_target, ViewGroup mLayout) {
-        this.ball_target = ball_target;
+    @Override
+    public void stopAnimation() {
+        animateBallOnX.cancel();
+        animateBallOnY.cancel();
+        animateRollOnX.cancel();
+        animateRollOnY.cancel();
+    }
+
+    public SwipeAnimationBall(View ballView, Counter counter, View ballTarget, ViewGroup layout) {
+        this.ballTarget = ballTarget;
         this.ballView = ballView;
         this.counter = counter;
-        this.mLayout = mLayout;
+        this.layout = layout;
         animateBallOnX = new FlingAnimation(this.ballView, DynamicAnimation.X).setFriction(4.5f);
         animateBallOnY = new FlingAnimation(this.ballView, DynamicAnimation.Y).setFriction(8f);
         animateRollOnX = new SpringAnimation(this.ballView, DynamicAnimation.TRANSLATION_X);
@@ -49,8 +57,8 @@ public class SwipeAnimationBall implements SwipeAnimation {
         scored = false;
         animateBallOnX.setStartVelocity(velocityX);
         animateBallOnY.setStartVelocity(velocityY);
-        animateBallOnX.setMaxValue(mLayout.getWidth());
-        animateBallOnY.setMaxValue(mLayout.getHeight());
+        animateBallOnX.setMaxValue(layout.getWidth());
+        animateBallOnY.setMaxValue(layout.getHeight());
         animateBallOnX.addUpdateListener(updateListener);
         animateBallOnX.start();
         animateBallOnY.start();
@@ -64,10 +72,10 @@ public class SwipeAnimationBall implements SwipeAnimation {
     }
 
     private boolean isHitToBasket(float x, float y) {
-        float targetLeftPosX = ball_target.getX();
-        float targetRightPosX = ball_target.getX() + ball_target.getWidth()*2;
-        float targetTopPosY = ball_target.getY() - ball_target.getHeight() / 4f;
-        float targetBottomPosY = ball_target.getY() + ball_target.getHeight()*2;
+        float targetLeftPosX = ballTarget.getX();
+        float targetRightPosX = ballTarget.getX() + ballTarget.getWidth()*2;
+        float targetTopPosY = ballTarget.getY() - ballTarget.getHeight() / 4f;
+        float targetBottomPosY = ballTarget.getY() + ballTarget.getHeight()*2;
         Log.d("X", "isHitToBasket: " + x + " " + targetLeftPosX + " " + targetRightPosX);
         return (x >= targetLeftPosX && x <= targetRightPosX) && (y >= targetTopPosY && y <= targetBottomPosY);
     }

@@ -1,5 +1,5 @@
 package ru.ok.technopolis.basketball;
 
-public interface EventContext {
+public interface AnimationContext {
     void throwing(boolean throwing);
 }

@@ -27,7 +27,7 @@ public class CounterView extends View implements Counter{
         super(context, attrs);
 
         numberPaint.setColor(ContextCompat.getColor(context, android.R.color.black));
-        numberPaint.setTextSize(Math.round(64f * getResources().getDisplayMetrics().scaledDensity));
+        numberPaint.setTextSize(Math.round(64d * getResources().getDisplayMetrics().scaledDensity));
 
         setCount(0);
     }

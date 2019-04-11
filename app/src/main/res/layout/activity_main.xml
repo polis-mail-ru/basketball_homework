@@ -21,7 +21,6 @@
         app:srcCompat="@drawable/hoop"
         tools:ignore="ContentDescription" />
 
-
     <ImageView
         android:id="@+id/main_activity__player"
         android:layout_width="wrap_content"

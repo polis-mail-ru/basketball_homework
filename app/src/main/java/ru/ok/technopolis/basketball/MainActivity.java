@@ -14,7 +14,7 @@ import ru.ok.technopolis.basketball.animation.SwipeAnimation;
 import ru.ok.technopolis.basketball.animation.SwipeAnimationBall;
 import ru.ok.technopolis.basketball.view.Counter;
 
-public class MainActivity extends AppCompatActivity  implements EventContext {
+public class MainActivity extends AppCompatActivity  implements AnimationContext {
 
     private SwipeAnimation swipeAnimationBall;
     public boolean throwing;
@@ -25,12 +25,12 @@ public class MainActivity extends AppCompatActivity  implements EventContext {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ImageView ball_target = findViewById(R.id.main_activity__target);
+        ImageView ballTarget = findViewById(R.id.main_activity__target);
         ImageView ball = findViewById(R.id.main_activity__ball);
         Counter counterView = findViewById(R.id.main_activity__count_layout);
         gestureDetector = new GestureDetector(this, gestureListener);
         final ViewGroup mainLayout = findViewById(R.id.main_activity__mainLayout);
-        swipeAnimationBall = new SwipeAnimationBall(ball, counterView, ball_target, mainLayout);
+        swipeAnimationBall = new SwipeAnimationBall(ball, counterView, ballTarget, mainLayout);
         swipeAnimationBall.setEventContext(this);
         mainLayout.setOnTouchListener(onTouchListener);
     }
@@ -38,7 +38,13 @@ public class MainActivity extends AppCompatActivity  implements EventContext {
     @Override
     protected void onStop() {
         super.onStop();
-        swipeAnimationBall.rollback();
+        swipeAnimationBall.stopAnimation();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        swipeAnimationBall = null;
     }
 
     private final View.OnTouchListener onTouchListener = new View.OnTouchListener() {
