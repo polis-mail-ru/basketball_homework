@@ -34,13 +34,10 @@ public class WinFragment extends Fragment {
             public void onAnimationUpdate(ValueAnimator animation) {
                 view1.setTranslationX(bias);
                 bias += x;
-                if(Math.abs(bias) > 100){
+                if (Math.abs(bias) > 100) {
                     x = -x;
                 }
             }
-
-
-
         });
 
         animator.addListener(new AnimatorListenerAdapter() {
@@ -50,7 +47,6 @@ public class WinFragment extends Fragment {
             }
 
         });
-
 
         animator.start();
         view1.animate().start();

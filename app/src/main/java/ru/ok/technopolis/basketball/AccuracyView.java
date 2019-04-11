@@ -89,7 +89,6 @@ public class AccuracyView extends View {
 
         int measuredHeight = getMeasuredHeight() - paddingTop - getPaddingBottom();
         int currentX = itemWidth + getPaddingLeft();
-        int count = 0;
         int len = 0;
         if(measuredData.size() > 15){
             len = measuredData.size() - 15;
@@ -99,16 +98,12 @@ public class AccuracyView extends View {
             float startY = (float) (paddingTop + measuredHeight - height);
             float endY = paddingTop + startY + measuredHeight;
 
-//            wavePath.moveTo(currentX, startY);
-//            wavePath.lineTo(currentX, endY);
             if (measuredData.get(i) >= 0.99) {
                 canvas.drawLine(currentX, startY, currentX, endY, goodPaint);
             } else {
                 canvas.drawLine(currentX, startY, currentX, endY, linePaint);
             }
             currentX += itemWidth * 2;
-            count++;
         }
-//        canvas.drawPath(wavePath, linePaint);
     }
 }

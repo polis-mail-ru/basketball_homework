@@ -3,7 +3,7 @@ package ru.ok.technopolis.basketball;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AccuracyResource {
+class AccuracyResource {
     private static double maxHeight = Double.MIN_VALUE;
     private static List<Double> accuracy = new ArrayList<>();;
 
@@ -18,12 +18,16 @@ public class AccuracyResource {
         }
     }
 
-    public static List<Double> getElements(){
+    static List<Double> getElements(){
         return accuracy;
     }
 
-    public static double getMaxHeight(){
+    static double getMaxHeight(){
         return  maxHeight;
+    }
+
+    static void deleteAll(){
+        accuracy.clear();
     }
 
 }

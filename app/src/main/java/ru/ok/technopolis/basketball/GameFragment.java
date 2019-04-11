@@ -31,6 +31,8 @@ public class GameFragment extends Fragment {
     private static final String WIDTH_KEY = "width";
     private static final String HEIGHT_KEY = "height";
     private static final String SCORE_KEY = "score";
+    private static final String VIBRO_KEY = "key";
+    private static final String LEVEL_KEY = "level";
     private static final String LOG_TAG = "Main_Activity_logs";
 
     boolean isVibrationOn = true;
@@ -57,12 +59,13 @@ public class GameFragment extends Fragment {
     private int score = 0;
     private int rowHit = 0;
 
-    public static GameFragment newInstance(int width, int height, int score) {
+    public static GameFragment newInstance(int width, int height, int score, boolean isVibrationOn, boolean isEasy) {
         Bundle args = new Bundle();
         GameFragment fragment = new GameFragment();
         args.putInt(WIDTH_KEY, width);
         args.putInt(HEIGHT_KEY, height);
-
+        args.putBoolean(VIBRO_KEY, isVibrationOn);
+        args.putBoolean(LEVEL_KEY, isEasy);
         args.putInt(SCORE_KEY, score);
         fragment.setArguments(args);
         return fragment;
@@ -78,9 +81,20 @@ public class GameFragment extends Fragment {
         width = args.getInt(WIDTH_KEY);
         height = args.getInt(HEIGHT_KEY);
         score = args.getInt(SCORE_KEY);
-        MainActivity.preferences.getBoolean(MainActivity.APP_PREFERNCES_VIBRATE, isVibrationOn);
-        MainActivity.preferences.getBoolean(MainActivity.APP_PREFERNCES_LEVEL, isEasy);
+        isEasy = args.getBoolean(LEVEL_KEY);
+        isVibrationOn = args.getBoolean(VIBRO_KEY);
         fragmentManager = getChildFragmentManager();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Bundle args = getArguments();
+        if (args == null) {
+            throw new IllegalArgumentException();
+        }
+        isEasy = args.getBoolean(LEVEL_KEY);
+        isVibrationOn = args.getBoolean(VIBRO_KEY);
     }
 
     @SuppressLint({"ClickableViewAccessibility", "SetTextI18n"})
@@ -131,7 +145,7 @@ public class GameFragment extends Fragment {
         stopButton.setOnClickListener(v -> {
             // добавляем фрагмент
             if (onPauseListener != null) {
-                onPauseListener.pause(score);
+                onPauseListener.pause(score, isEasy, isVibrationOn);
             }
         });
         return rootView;
@@ -303,6 +317,6 @@ public class GameFragment extends Fragment {
     };
 
     interface OnPauseListener {
-        void pause(int score);
+        void pause(int score, boolean isEasy, boolean isVibrationOn);
     }
 }

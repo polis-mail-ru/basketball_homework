@@ -19,10 +19,12 @@ public class MainActivity extends AppCompatActivity {
 
     int width;
     int height;
+    boolean isEasy;
+    boolean isVibrationOn;
     public static final String APP_PREFERENCES = "settings";
-    public static final String APP_PREFERNCES_SCORE = "score";
-    public static final String APP_PREFERNCES_LEVEL = "level";
-    public static final String APP_PREFERNCES_VIBRATE = "vibrate";
+    public static final String APP_PREFERENCES_SCORE = "score";
+    public static final String APP_PREFERENCES_LEVEL = "level";
+    public static final String APP_PREFERENCES_VIBRATE = "vibrate";
 
     public static SharedPreferences preferences;
 
@@ -39,8 +41,14 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().hide();
         }
         preferences = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
-        if(preferences.contains(APP_PREFERNCES_SCORE)){
-            preferences.getInt(APP_PREFERNCES_SCORE, score);
+        if (preferences.contains(APP_PREFERENCES_SCORE)) {
+            preferences.getInt(APP_PREFERENCES_SCORE, score);
+        }
+        if (preferences.contains(APP_PREFERENCES_LEVEL)) {
+            preferences.getBoolean(APP_PREFERENCES_LEVEL, isEasy);
+        }
+        if (preferences.contains(APP_PREFERENCES_VIBRATE)) {
+            preferences.getBoolean(APP_PREFERENCES_VIBRATE, isVibrationOn);
         }
         fragmentManager = getSupportFragmentManager();
 
@@ -54,16 +62,14 @@ public class MainActivity extends AppCompatActivity {
         score = 0;
 
 
-
-
         MenuFragment menuFragment = MenuFragment.newInstance();
         menuFragment.setOnMenuListener(new MenuFragment.OnMenuListener() {
             @Override
             public void play() {
                 Log.d(LOG_TAG, "play callback");
-                GameFragment gameFragment = GameFragment.newInstance(width, height, score);
+                GameFragment gameFragment = GameFragment.newInstance(width, height, score, isVibrationOn, isEasy);
                 MenuFragment.OnMenuListener listener = this;
-                gameFragment.setOnPauseListener(score -> {
+                gameFragment.setOnPauseListener((score, isEasy, isVibrationOn) -> {
                     MainActivity.this.score = score;
                     MenuFragment menuFragment = MenuFragment.newInstance();
                     menuFragment.setOnMenuListener(listener);
@@ -75,13 +81,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void showStat() {
                 Log.d(LOG_TAG, "stat callback");
-                StatisticFragment statisticFragment= new StatisticFragment();
+                StatisticFragment statisticFragment = new StatisticFragment();
                 MenuFragment.OnMenuListener listener = this;
-               statisticFragment.setCloseListener(() -> {
-                   MenuFragment menuFragment1 = MenuFragment.newInstance();
-                   menuFragment1.setOnMenuListener(listener);
-                   changeFragment(menuFragment1);
-               });
+                statisticFragment.setCloseListener(() -> {
+                    MenuFragment menuFragment1 = MenuFragment.newInstance();
+                    menuFragment1.setOnMenuListener(listener);
+                    changeFragment(menuFragment1);
+                });
                 changeFragment(statisticFragment);
 
             }
@@ -90,12 +96,15 @@ public class MainActivity extends AppCompatActivity {
             public void showSettings() {
 
                 Log.d(LOG_TAG, "settings callback");
-                SettingsFragment settingsFragment= new SettingsFragment();
+                SettingsFragment settingsFragment = SettingsFragment.newInstance(isEasy, isVibrationOn, score);
                 MenuFragment.OnMenuListener listener = this;
-                settingsFragment.setCloseListener(() -> {
-                        MenuFragment menuFragment = MenuFragment.newInstance();
-                        menuFragment.setOnMenuListener(listener);
-                        changeFragment(menuFragment);
+                settingsFragment.setCloseListener((isEasy, isVibrationOn, score) -> {
+                    MainActivity.this.score = score;
+                    MainActivity.this.isEasy = isEasy;
+                    MainActivity.this.isVibrationOn = isVibrationOn;
+                    MenuFragment menuFragment = MenuFragment.newInstance();
+                    menuFragment.setOnMenuListener(listener);
+                    changeFragment(menuFragment);
 
                 });
                 changeFragment(settingsFragment);
@@ -105,13 +114,6 @@ public class MainActivity extends AppCompatActivity {
         changeFragment(menuFragment);
     }
 
-    @Override
-    protected void onResume() {
-        if(preferences.contains(APP_PREFERNCES_SCORE)){
-            preferences.getInt(APP_PREFERNCES_SCORE, score);
-        }
-        super.onResume();
-    }
 
     private void changeFragment(Fragment f) {
         Log.d(LOG_TAG, "Change to " + f.getClass().getSimpleName());
@@ -142,7 +144,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt(APP_PREFERNCES_SCORE, score);
+        editor.putInt(APP_PREFERENCES_SCORE, score);
+        editor.putBoolean(APP_PREFERENCES_LEVEL, isEasy);
+        editor.putBoolean(APP_PREFERENCES_VIBRATE, isVibrationOn);
         editor.apply();
         super.onStop();
     }
