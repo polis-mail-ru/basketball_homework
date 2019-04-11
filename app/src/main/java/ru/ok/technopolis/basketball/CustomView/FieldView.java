@@ -1,0 +1,80 @@
+package ru.ok.technopolis.basketball.CustomView;
+
+import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.support.annotation.Nullable;
+import android.util.AttributeSet;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
+import android.view.View;
+
+import ru.ok.technopolis.basketball.R;
+
+public class FieldView extends View {
+
+    private Float currentX;
+    private Float currentY;
+    private Paint dotPaint = new Paint();
+    private Path dotPath = new Path();
+    private static final int DEFAULT_POINT_COLOR = Color.BLACK;
+    private static final int DEFAULT_POINT_STROKE_WIDTH_DP = 5;
+    private static final int DEFAULT_POINT_RADIUS_DP = 5;
+    private int pointRadius;
+
+    public FieldView(Context context) {
+        super(context);
+    }
+
+    public FieldView(Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        int pointStrokeWidthFromAttr = (int) (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, DEFAULT_POINT_STROKE_WIDTH_DP, displayMetrics) + 0.5f);
+        int pointRadiusFromAttr = (int) (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, DEFAULT_POINT_RADIUS_DP, displayMetrics) + 0.5f);
+        int pointColorFromAttr = DEFAULT_POINT_COLOR;
+        if (attrs != null) {
+            TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.FieldView);
+            pointStrokeWidthFromAttr = typedArray.getDimensionPixelOffset(R.styleable.FieldView_pointStrokeWidth, pointStrokeWidthFromAttr);
+            pointRadiusFromAttr = typedArray.getDimensionPixelSize(R.styleable.FieldView_pointRadius, pointRadiusFromAttr);
+            pointColorFromAttr = typedArray.getColor(R.styleable.FieldView_pointColor, pointColorFromAttr);
+            typedArray.recycle();
+        }
+
+        dotPaint.setStyle(Paint.Style.STROKE);
+        dotPaint.setColor(pointColorFromAttr);
+        dotPaint.setStrokeWidth(pointStrokeWidthFromAttr);
+        pointRadius = pointRadiusFromAttr;
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        if (currentX == null || currentY == null) {
+            canvas.drawPath(dotPath, dotPaint);
+            return;
+        }
+        dotPath.addCircle(currentX, currentY, pointRadius, Path.Direction.CW);
+        canvas.drawPath(dotPath, dotPaint);
+    }
+
+    public void drawDot(float x, float y) {
+        currentX = x;
+        currentY = y;
+        invalidate();
+    }
+
+    public void clearField() {
+        dotPath.reset();
+        currentX = null;
+        currentY = null;
+        invalidate();
+    }
+}

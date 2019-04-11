@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="FieldView">
+        <attr name="pointColor" format="color" />
+        <attr name="pointStrokeWidth" format="dimension" />
+        <attr name="pointRadius" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="ScoreView">
+        <attr name="markColor" format="color" />
+        <attr name="markStrokeWidth" format="dimension" />
+    </declare-styleable>
+</resources>
