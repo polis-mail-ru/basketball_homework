@@ -17,6 +17,7 @@ public class MenuFragment extends Fragment {
     private static final String LOG_TAG = "MenuFragmentLogs";
     OnMenuListener onMenuListener;
 
+
     public static MenuFragment newInstance() {
 
         Bundle args = new Bundle();
@@ -32,8 +33,6 @@ public class MenuFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_menu,
                 container, false);
-        /*Button stop = view.findViewById(R.id.main_activity_stop_button);
-        stop.setOnClickListener(v -> close());*/
         Button playButton = view.findViewById(R.id.fragment_menu_play_button);
         playButton.setOnClickListener(v -> {
             Log.d(LOG_TAG, "play click");

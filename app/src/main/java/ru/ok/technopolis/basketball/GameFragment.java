@@ -5,17 +5,13 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.pm.ActivityInfo;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Display;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -33,10 +29,12 @@ public class GameFragment extends Fragment {
     private static final String SCORE_KEY = "score";
     private static final String VIBRO_KEY = "key";
     private static final String LEVEL_KEY = "level";
+    private static final String MUSIC_KEY = "music";
     private static final String LOG_TAG = "Main_Activity_logs";
 
     boolean isVibrationOn = true;
     boolean isEasy = false;
+    boolean isMusicOn;
 
     private Vibrator vibrator;
     private ImageView ballView;
@@ -50,18 +48,17 @@ public class GameFragment extends Fragment {
     private View rightSideHoop;
     private TextView scoreView;
     private int width;
-    private int height;
     private double minAccuracy;
-    private Button stopButton;
     private FragmentManager fragmentManager;
     private OnPauseListener onPauseListener;
 
     private int score = 0;
     private int rowHit = 0;
 
-    public static GameFragment newInstance(int width, int height, int score, boolean isVibrationOn, boolean isEasy) {
+    public static GameFragment newInstance(int width, int height, int score, boolean isVibrationOn, boolean isEasy, boolean isMusicOn) {
         Bundle args = new Bundle();
         GameFragment fragment = new GameFragment();
+        args.putBoolean(MUSIC_KEY, isMusicOn);
         args.putInt(WIDTH_KEY, width);
         args.putInt(HEIGHT_KEY, height);
         args.putBoolean(VIBRO_KEY, isVibrationOn);
@@ -78,8 +75,8 @@ public class GameFragment extends Fragment {
         if (args == null) {
             throw new IllegalArgumentException();
         }
+        isMusicOn = args.getBoolean(MUSIC_KEY);
         width = args.getInt(WIDTH_KEY);
-        height = args.getInt(HEIGHT_KEY);
         score = args.getInt(SCORE_KEY);
         isEasy = args.getBoolean(LEVEL_KEY);
         isVibrationOn = args.getBoolean(VIBRO_KEY);
@@ -111,7 +108,7 @@ public class GameFragment extends Fragment {
         scoreView = rootView.findViewById(R.id.main_activity_score_text);
         leftSideHoop = rootView.findViewById(R.id.main_activity_left_hoop_view);
         rightSideHoop = rootView.findViewById(R.id.main_activity_right_hoop_view);
-        stopButton = rootView.findViewById(R.id.main_activity_stop_button);
+        Button stopButton = rootView.findViewById(R.id.main_activity_stop_button);
         mainLayout.post(() -> {
             scoreView.setText(Integer.toString(score));
             leftSideHoop.getLocationOnScreen(leftSideHoopLocation);
@@ -271,7 +268,7 @@ public class GameFragment extends Fragment {
                             if(vibrator != null){
                                 vibrator.vibrate(400);
                             }
-                            changeFragment(new WinFragment());
+                            changeFragment(WinFragment.newInstance(isMusicOn));
                             isHit = false;
                             scoreView.setText(score + "");
                             rowHit++;

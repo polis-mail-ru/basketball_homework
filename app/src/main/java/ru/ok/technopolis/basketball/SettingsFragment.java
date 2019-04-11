@@ -1,8 +1,6 @@
 package ru.ok.technopolis.basketball;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,14 +11,18 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ToggleButton;
 
+import java.io.IOException;
+
 public class SettingsFragment extends Fragment {
 
     private boolean level;
     private boolean vibrate;
+    private boolean music;
     private int score;
 
     private static final String LEVEL_KEY = "level";
     private static final String VIBRO_KEY = "vibro";
+    private static final String MUSIC_KEY = "music";
     private static final String SCORE_KEY = "score";
     private static final String LOG_TAG = "SettingFragment";
     OnCloseSetListener closeListener;
@@ -29,9 +31,10 @@ public class SettingsFragment extends Fragment {
         this.closeListener = closeListener;
     }
 
-    public static SettingsFragment newInstance(boolean level, boolean vibrate, int score) {
+    public static SettingsFragment newInstance(boolean level, boolean vibrate, boolean music ,int score) {
 
         Bundle args = new Bundle();
+        args.putBoolean(MUSIC_KEY, music);
         args.putBoolean(LEVEL_KEY, level);
         args.putBoolean(VIBRO_KEY, vibrate);
         args.putInt(SCORE_KEY, score);
@@ -47,6 +50,7 @@ public class SettingsFragment extends Fragment {
         if (args == null) {
             throw new IllegalArgumentException();
         }
+        music = args.getBoolean(MUSIC_KEY);
         level = args.getBoolean(LEVEL_KEY);
         vibrate = args.getBoolean(VIBRO_KEY);
         score = args.getInt(SCORE_KEY);
@@ -60,14 +64,12 @@ public class SettingsFragment extends Fragment {
                 container, false);
         ToggleButton level = view.findViewById(R.id.fragment_settings_level_button);
         level.setChecked(this.level);
-        level.setOnCheckedChangeListener((v, isChecked) -> {
-            SettingsFragment.this.level = isChecked;
-        });
+        level.setOnCheckedChangeListener((v, isChecked) -> SettingsFragment.this.level = isChecked);
 
         ToggleButton vibro = view.findViewById(R.id.fragment_settings_vibration_button);
         if(vibrate) {
 
-            vibro.setBackgroundResource(R.drawable.bell);
+            vibro.setBackgroundResource(R.drawable.vibrating);
         } else {
 
             vibro.setBackgroundResource(R.drawable.main_ball);
@@ -75,18 +77,43 @@ public class SettingsFragment extends Fragment {
         vibro.setOnCheckedChangeListener((v, isChecked) -> {
             if (isChecked) {
                 SettingsFragment.this.vibrate = true;
-                Log.d(LOG_TAG, "ClickCheck " + Boolean.toString(vibrate));
-                v.setBackgroundResource(R.drawable.bell);
+                v.setBackgroundResource(R.drawable.vibrating);
             } else {
                 SettingsFragment.this.vibrate = false;
                 v.setBackgroundResource(R.drawable.main_ball);
             }
         });
 
+        ToggleButton musicButton = view.findViewById(R.id.fragment_settings_music_button);
+        if(music) {
+            musicButton.setBackgroundResource(R.drawable.bell);
+        } else {
+
+            musicButton.setBackgroundResource(R.drawable.fire_ball);
+        }
+        musicButton.setOnCheckedChangeListener((v, isChecked) -> {
+            if (isChecked) {
+
+                    try {
+                        MainActivity.mediaPlayer.prepare();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                MainActivity.mediaPlayer.start();
+                SettingsFragment.this.music = true;
+                v.setBackgroundResource(R.drawable.bell);
+            } else {
+                MainActivity.mediaPlayer.stop();
+                SettingsFragment.this.music = false;
+                v.setBackgroundResource(R.drawable.fire_ball);
+            }
+        });
+
         Button close = view.findViewById(R.id.fragment_settings_close_button);
         close.setOnClickListener(v -> {
             if (closeListener != null) {
-                closeListener.close(this.level, this.vibrate, this.score);
+                closeListener.close(this.level, this.music ,this.vibrate, this.score);
             }
         });
 
@@ -101,7 +128,7 @@ public class SettingsFragment extends Fragment {
 
 
     interface OnCloseSetListener {
-        void close(boolean level, boolean vibro, int score);
+        void close(boolean level, boolean music, boolean vibro, int score);
     }
 
 }

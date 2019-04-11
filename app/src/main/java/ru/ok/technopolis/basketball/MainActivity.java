@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Point;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,18 +14,22 @@ import android.util.Log;
 import android.view.Display;
 import android.view.View;
 
+import java.io.IOException;
+
 public class MainActivity extends AppCompatActivity {
 
     private String LOG_TAG = "Main_Activity_logs";
 
+    static MediaPlayer mediaPlayer;
     int width;
     int height;
     boolean isEasy;
     boolean isVibrationOn;
+    boolean isMusicOn;
     public static final String APP_PREFERENCES = "settings";
-    public static final String APP_PREFERENCES_SCORE = "score";
     public static final String APP_PREFERENCES_LEVEL = "level";
     public static final String APP_PREFERENCES_VIBRATE = "vibrate";
+    public static final String APP_PREFERENCES_MUSIC = "music";
 
     public static SharedPreferences preferences;
 
@@ -41,17 +46,19 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().hide();
         }
         preferences = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
-        if (preferences.contains(APP_PREFERENCES_SCORE)) {
-            preferences.getInt(APP_PREFERENCES_SCORE, score);
-        }
-        if (preferences.contains(APP_PREFERENCES_LEVEL)) {
-            preferences.getBoolean(APP_PREFERENCES_LEVEL, isEasy);
-        }
-        if (preferences.contains(APP_PREFERENCES_VIBRATE)) {
-            preferences.getBoolean(APP_PREFERENCES_VIBRATE, isVibrationOn);
-        }
+        isEasy = preferences.getBoolean(APP_PREFERENCES_LEVEL, false);
+        isVibrationOn = preferences.getBoolean(APP_PREFERENCES_VIBRATE, true);
+        isMusicOn =  preferences.getBoolean(APP_PREFERENCES_MUSIC, true);
+
         fragmentManager = getSupportFragmentManager();
 
+        mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.backgroud_main_music);
+        mediaPlayer.setVolume(0.2f, 0.4f);
+        if (isMusicOn) {
+
+            mediaPlayer.start();
+            mediaPlayer.setLooping(true);
+        }
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         Display display = getWindowManager().getDefaultDisplay();
@@ -67,12 +74,28 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void play() {
                 Log.d(LOG_TAG, "play callback");
-                GameFragment gameFragment = GameFragment.newInstance(width, height, score, isVibrationOn, isEasy);
+                if (mediaPlayer != null) {
+                    mediaPlayer.stop();
+                }
+                GameFragment gameFragment = GameFragment.newInstance(width, height, score, isVibrationOn, isEasy, isMusicOn);
                 MenuFragment.OnMenuListener listener = this;
                 gameFragment.setOnPauseListener((score, isEasy, isVibrationOn) -> {
                     MainActivity.this.score = score;
                     MenuFragment menuFragment = MenuFragment.newInstance();
                     menuFragment.setOnMenuListener(listener);
+
+                    if (mediaPlayer != null && isMusicOn) {
+
+                            try {
+                                mediaPlayer.prepare();
+                            } catch (IOException ignore) {
+
+                            }
+
+
+                        mediaPlayer.start();
+                    }
+
                     changeFragment(menuFragment);
                 });
                 changeFragment(gameFragment);
@@ -96,9 +119,10 @@ public class MainActivity extends AppCompatActivity {
             public void showSettings() {
 
                 Log.d(LOG_TAG, "settings callback");
-                SettingsFragment settingsFragment = SettingsFragment.newInstance(isEasy, isVibrationOn, score);
+                SettingsFragment settingsFragment = SettingsFragment.newInstance(isEasy, isVibrationOn, isMusicOn, score);
                 MenuFragment.OnMenuListener listener = this;
-                settingsFragment.setCloseListener((isEasy, isVibrationOn, score) -> {
+                settingsFragment.setCloseListener((isEasy, isMusicOn, isVibrationOn, score) -> {
+                    MainActivity.this.isMusicOn = isMusicOn;
                     MainActivity.this.score = score;
                     MainActivity.this.isEasy = isEasy;
                     MainActivity.this.isVibrationOn = isVibrationOn;
@@ -114,6 +138,11 @@ public class MainActivity extends AppCompatActivity {
         changeFragment(menuFragment);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(LOG_TAG, "onResume");
+    }
 
     private void changeFragment(Fragment f) {
         Log.d(LOG_TAG, "Change to " + f.getClass().getSimpleName());
@@ -142,12 +171,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop() {
+    protected void onPause() {
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt(APP_PREFERENCES_SCORE, score);
         editor.putBoolean(APP_PREFERENCES_LEVEL, isEasy);
         editor.putBoolean(APP_PREFERENCES_VIBRATE, isVibrationOn);
         editor.apply();
-        super.onStop();
+        super.onPause();
+        if (mediaPlayer != null)
+            mediaPlayer.stop();
     }
 }

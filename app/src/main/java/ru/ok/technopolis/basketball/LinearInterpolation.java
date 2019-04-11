@@ -1,12 +1,11 @@
 package ru.ok.technopolis.basketball;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class LinearInterpolation {
-    public static Double[] interpolateArray(Double[] source, int destinationLength) {
+class LinearInterpolation {
+    private static Double[] interpolateArray(Double[] source, int destinationLength) {
         Double[] destination = new Double [destinationLength];
         destination[0] = source[0];
         int jPrevious = 0;

@@ -49,13 +49,28 @@
         android:id="@+id/fragment_settings_vibration_button"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:background="@drawable/bell"
+        android:background="@drawable/vibrating"
         android:thumb="@android:color/transparent"
         android:checked="true"
         android:textOn=""
         android:textOff=""
         app:layout_constraintTop_toTopOf="@+id/fragment_settings_horizontal_line"
         app:layout_constraintStart_toEndOf="@+id/fragment_settings_level_button"
+        app:layout_constraintEnd_toStartOf="@+id/fragment_settings_music_button"
+        app:layout_constraintBottom_toBottomOf="@+id/fragment_settings_second_horizontal_line"
+        />
+
+    <ToggleButton
+        android:id="@+id/fragment_settings_music_button"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:background="@drawable/bell"
+        android:thumb="@android:color/transparent"
+        android:checked="true"
+        android:textOn=""
+        android:textOff=""
+        app:layout_constraintTop_toTopOf="@+id/fragment_settings_horizontal_line"
+        app:layout_constraintStart_toEndOf="@+id/fragment_settings_vibration_button"
         app:layout_constraintEnd_toStartOf="@+id/fragment_settings_reset_button"
         app:layout_constraintBottom_toBottomOf="@+id/fragment_settings_second_horizontal_line"
         />
@@ -70,7 +85,7 @@
         android:background="@android:color/transparent"
         android:text="@string/reset"
         app:layout_constraintTop_toTopOf="@+id/fragment_settings_horizontal_line"
-        app:layout_constraintStart_toEndOf="@+id/fragment_settings_vibration_button"
+        app:layout_constraintStart_toEndOf="@+id/fragment_settings_music_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="@+id/fragment_settings_second_horizontal_line"
         />

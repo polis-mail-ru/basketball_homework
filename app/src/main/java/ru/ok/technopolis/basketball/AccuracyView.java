@@ -60,7 +60,6 @@ public class AccuracyView extends View {
     @SuppressLint("DrawAllocation")
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int measuredWidth = MeasureSpec.getSize(widthMeasureSpec);
         int height = MeasureSpec.getSize(heightMeasureSpec);
         int leftPadding = getPaddingLeft();
         int rightPadding = getPaddingRight();
