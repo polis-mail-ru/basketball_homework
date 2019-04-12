@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -19,9 +20,13 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
@@ -61,24 +66,127 @@ public class MenuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.menu);
-        GoogleSignInOptions gso = new
+        getSupportActionBar().hide();
+        initUI();
+        initValues();
+        initListeners();
+        // [START configure_signin]
+        // Configure sign-in to request the user's ID, email address, and basic
+        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN)
+                .requestScopes(Games.SCOPE_GAMES_LITE)
+                .requestEmail()
+                .build();
+        // [END configure_signin]
 
+        // [START build_client]
+        // Build a GoogleSignInClient with the options specified by gso.
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        // [END build_client]
+        GoogleSignIn.getClient(this, gso)
+                .silentSignIn()
+                .addOnCompleteListener(
+                        this,
+                        new OnCompleteListener<GoogleSignInAccount>() {
+                            @Override
+                            public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
+                                if (task.isSuccessful()) {
+                                    MenuActivity.this.signIn(task.getResult());
+                                } else {
+                                    Log.d("", "onCreate: SOSI");
+                                }
+                            }
+                        });
+
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // [START on_start_sign_in]
+        // Check for existing Google Sign In account, if the user is already signed in
+        // the GoogleSignInAccount will be non-null.
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        updateUI(account);
+        // [END on_start_sign_in]
+    }
+
+    // [START onActivityResult]
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+            // The Task returned from this call is always completed, no need to attach
+            // a listener.
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            handleSignInResult(task);
+        }
+    }
+    // [END onActivityResult]
+
+    // [START handleSignInResult]
+    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+        try {
+            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+
+            // Signed in successfully, show authenticated UI.
+            updateUI(account);
+        } catch (ApiException e) {
+            // The ApiException status code indicates the detailed failure reason.
+            // Please refer to the GoogleSignInStatusCodes class reference for more information.
+            Log.w("", "signInResult:failed code=" + e.getStatusCode());
+            updateUI(null);
+        }
+    }
+    // [END handleSignInResult]
+
+    // [START signIn]
+    private void signIn(GoogleSignInAccount result) {
+        if(result==null) {
+            Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+            startActivityForResult(signInIntent, RC_SIGN_IN);
+        }
+        else{
+            Log.d("", "signIn: POOOOOOG");
+        }
+    }
+
+    private void updateUI(@Nullable GoogleSignInAccount account) {
+        if (account != null) {
+            Games.getLeaderboardsClient(MenuActivity.this, account)
+                    .getLeaderboardIntent(getString(R.string.leaderboard_id))
+                    .addOnSuccessListener(new OnSuccessListener<Intent>() {
+                        @Override
+                        public void onSuccess(Intent intent) {
+                            //startActivityForResult(intent, RC_LEADERBOARD_UI);
+                        }
+                    });
+        } else {
+            Log.d("", "updateUI: NE POG");
+        }
+    }
+
+
+
+
+    private void login(){
+        GoogleSignInOptions gso = new
                 GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN)
+                .requestScopes(Games.SCOPE_GAMES_LITE)
                 .requestEmail()
                 .build();
 
         //Делаю вход в Google игры
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-
-//Start the sign-in intent with startActivityForResult//
-
         startActivityForResult(signInIntent, RC_SIGN_IN);
-        getSupportActionBar().hide();
-        initUI();
-        initValues();
-        initListeners();
+        GoogleSignIn.hasPermissions(GoogleSignIn.getLastSignedInAccount(getApplicationContext()), Games.SCOPE_GAMES_LITE);
     }
+
 
     private void initValues() {
         sp = getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
@@ -187,55 +295,22 @@ public class MenuActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Пытаюсь загрузить список лидеров
                 if (GoogleSignIn.getLastSignedInAccount(getApplicationContext()) != null) {
-                    Games.getLeaderboardsClient(getApplicationContext(), GoogleSignIn.getLastSignedInAccount(getApplicationContext()))
-                            .getLeaderboardIntent(getString(R.string.leaderboard_id))
-                            .addOnSuccessListener(new OnSuccessListener<Intent>() {
-                                @Override
-                                public void onSuccess(Intent intent) {
-                                    startActivityForResult(intent, RC_LEADERBOARD_UI);
-                                }
-                            });
+                    mGoogleSignInClient.silentSignIn().addOnCompleteListener(new OnCompleteListener<GoogleSignInAccount>() {
+                        @Override
+                        public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
+                            loadLeaderBoard();
+                        }
+                    });
                 }
 
             }
         });
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    private void loadLeaderBoard() {
 
-        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            // The Task returned from this call is always completed, no need to attach
-            // a listener.
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            handleSignInResult(task);
-        }
     }
 
-    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
-        try {
-            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-
-            // Signed in successfully, show authenticated UI.
-            updateUI(account);
-        } catch (ApiException e) {
-            // The ApiException status code indicates the detailed failure reason.
-            // Please refer to the GoogleSignInStatusCodes class reference for more information.
-            Log.w("", "signInResult:failed code=" + e.getStatusCode());
-            updateUI(null);
-        }
-    }
-
-    private void updateUI(@Nullable GoogleSignInAccount account) {
-        if (account != null) {
-
-//Once the user is signed in, do something, for example hide the ‘Sign In’ button//
-//TO DO//
-        } else {
-        }
-    }
 
     private void updateBall() {
         ballView.setImageResource(balls.get(chosenBall));

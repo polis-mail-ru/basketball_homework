@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">basketball_homework</string>
-    <!--<string name="default_web_client_id">711763687760-r6kpfojm4ji5lld7spi32kva0u4c5qs3.apps.googleusercontent.com</string>-->
+    <string name="server_client_id">711763687760-r6kpfojm4ji5lld7spi32kva0u4c5qs3.apps.googleusercontent.com</string>
     <string name="leaderboard_id">CgkI0PKvw9sUEAIQAA</string>
 </resources>
