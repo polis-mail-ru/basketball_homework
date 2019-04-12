@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity  implements AnimationContext
         gestureDetector = new GestureDetector(this, gestureListener);
         final ViewGroup mainLayout = findViewById(R.id.main_activity__mainLayout);
         swipeAnimationBall = new SwipeAnimationBall(ball, counterView, ballTarget, mainLayout);
-        swipeAnimationBall.setEventContext(this);
+        swipeAnimationBall.setAnimationContext(this);
         mainLayout.setOnTouchListener(onTouchListener);
     }
 

@@ -24,7 +24,7 @@ public class SwipeAnimationBall implements SwipeAnimation {
     private boolean scored;
     private AnimationContext eventContext;
 
-    public void setEventContext(AnimationContext eventContext) {
+    public void setAnimationContext(AnimationContext eventContext) {
         this.eventContext = eventContext;
     }
 
