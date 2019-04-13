@@ -9,6 +9,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,12 +17,15 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.Random;
+
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "";
     private ImageView ball;
     private ImageView point;
-    private ImageView player;
     private TextView money;
+    private ImageView player;
     private BackView backView;
     private boolean scoredThis = false;
     private boolean scoredLast;
@@ -40,6 +44,9 @@ public class MainActivity extends AppCompatActivity {
     public static final String BALL_KEY = "ball";
     private ValueAnimator animator;
     private StarView scoreView;
+    private final Random random = new Random();
+    private float lastPos;
+    private float startX;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -54,8 +61,8 @@ public class MainActivity extends AppCompatActivity {
         money = findViewById(R.id.money);
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         backView = findViewById(R.id.back);
-        player = findViewById(R.id.player);
         scoreView = findViewById(R.id.scoreView);
+        player = findViewById(R.id.player);
         getExtra();
         final GestureDetector gestureDetector = new GestureDetector(this, gestureListener);
         mainLayout.setOnTouchListener(new View.OnTouchListener() {
@@ -108,77 +115,6 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private void animateMotion(final float distanceInX, final float distanceInY) {
-        animator = ValueAnimator.ofFloat(0, 1);
-        animator.setDuration(1000);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            float w = (float) ball.getWidth() / 2, h = (float) ball.getHeight() / 2;
-            int n = 0;
-            int direction = -1;
-            boolean dirChanged = false;
-
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                if (x == Float.POSITIVE_INFINITY) {
-                    x = ball.getX() + w;
-                    y = ball.getY() + h;
-                }
-                float value = (Float) (animation.getAnimatedValue());
-                ball.setTranslationX((float) (distanceInX * -Math.cos(value * Math.PI) + distanceInX));
-                if (dirChanged) {
-                    ball.setX(backView.getWidth() - (ball.getX() + (float) ball.getWidth() / 2 - backView.getWidth()));
-                }
-                if (direction == 2 && !dirChanged) {
-                    ball.setX(point.getX() - point.getWidth() - (ball.getX() + (float) ball.getWidth() / 2 - point.getX() + point.getWidth()));
-                }
-                ball.setTranslationY((float) (distanceInY * -Math.sin(value * Math.PI)));
-                if (y != ball.getY() + h && n % 2 == 0) {
-                    backView.drawLine(x, y, ball.getX() + w, ball.getY() + h);
-                }
-                if (direction != 2 && walls && ball.getX() + ball.getWidth() / 2 >= backView.getWidth() && !dirChanged) {
-                    direction *= -1;
-                    dirChanged = true;
-                    if (vibro && vibrator.hasVibrator()) {
-                        vibrator.vibrate(100L);
-                    }
-                }
-                n++;
-                if ((y >= point.getY() - point.getHeight() / 4 && y <= point.getY() + point.getHeight()) &&
-                        (x >= point.getX() - point.getWidth() && x <= point.getX() - point.getWidth() / 2)) {
-                    direction = 2;
-                }
-                x = ball.getX() + w;
-                y = ball.getY() + h;
-
-                if ((y >= point.getY() - point.getHeight() / 4 && y <= point.getY() + point.getHeight() / 4) &&
-                        (x >= point.getX() && x <= point.getX() + point.getWidth()) && !scoredThis) {
-                    score();
-                    if (scoredLast) {
-                        money.setText(String.valueOf(Integer.parseInt(money.getText().toString()) + 1));
-                    }
-                    scoredThis = true;
-                }
-            }
-        });
-
-        animator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                ball.setVisibility(View.INVISIBLE);
-                backView.setVisibility(View.INVISIBLE);
-                backView.refresh();
-                if (music && !scoredThis) {
-                    soundsPlayer = MediaPlayer.create(MainActivity.this, R.raw.oww);
-                    soundsPlayer.start();
-                }
-                scoredLast = scoredThis;
-                scoredThis = false;
-                threw = false;
-            }
-        });
-        animator.start();
-    }
-
     private void animateBoy(final float y) {
         player.animate().setDuration(500).translationYBy(-y).setListener(new Animator.AnimatorListener() {
             @Override
@@ -199,6 +135,99 @@ public class MainActivity extends AppCompatActivity {
             }
         }).start();
 
+    }
+
+    private void animateMotion(final float distanceInX, final float distanceInY) {
+        lastPos = player.getTranslationX();
+        animator = ValueAnimator.ofFloat(0, 1);
+        animator.setDuration(1000);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            float w = (float) ball.getWidth() / 2, h = (float) ball.getHeight() / 2;
+            int n = 0;
+            int direction = -1;
+            boolean dirChanged = false;
+
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float value = (Float) (animation.getAnimatedValue());
+                if (x == Float.POSITIVE_INFINITY) {
+                    x = ball.getX() + w;
+                    y = ball.getY() + h;
+                }
+
+                ball.setTranslationX(startX + (float) (distanceInX * -Math.cos(value * Math.PI) + distanceInX));
+                ball.setTranslationY((float) (distanceInY * -Math.sin(value * Math.PI)));
+                //Смена направления, если столкнулись с правой стеной
+                if (dirChanged) {
+                    ball.setX(backView.getWidth() - (ball.getX() + (float) ball.getWidth() / 2 - backView.getWidth()));
+                }
+                //Смена направления, если столкнулись с левой стенкой кольца
+                if (direction == 2 && !dirChanged) {
+                    ball.setX(point.getX() - point.getWidth() - (ball.getX() + (float) ball.getWidth() / 2 - point.getX() + point.getWidth()));
+                }
+
+                //отрисовка пути
+                if (y != ball.getY() + h && n % 2 == 0) {
+                    backView.drawLine(x, y, ball.getX() + w, ball.getY() + h);
+                }
+
+                //Проверка на правую стенку
+                if (direction != 2 && walls && ball.getX() + ball.getWidth() / 2 >= backView.getWidth() && !dirChanged) {
+                    direction *= -1;
+                    dirChanged = true;
+                    if (vibro && vibrator.hasVibrator()) {
+                        vibrator.vibrate(100L);
+                    }
+                }
+
+                //Проверка на левую стенку
+                if ((y >= point.getY() - point.getHeight() / 4 && y <= point.getY() + point.getHeight()) &&
+                        (x >= point.getX() - point.getWidth() && x <= point.getX() - point.getWidth() / 2)) {
+                    direction = 2;
+                }
+
+                //Изменение координат
+                x = ball.getX() + w;
+                y = ball.getY() + h;
+
+                //Проверка на попадание в кольцо
+                if ((y >= point.getY() - point.getHeight() / 4 && y <= point.getY() + point.getHeight() / 4) &&
+                        (x >= point.getX() && x <= point.getX() + point.getWidth()) && !scoredThis) {
+                    score();
+                    if (scoredLast) {
+                        money.setText(String.valueOf(Integer.parseInt(money.getText().toString()) + 1));
+                    }
+                    scoredThis = true;
+                }
+                //Счётчик для отрисовки не всех линий пути
+                n++;
+            }
+        });
+
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                ball.setVisibility(View.INVISIBLE);
+                backView.setVisibility(View.INVISIBLE);
+                backView.refresh();
+                if (music && !scoredThis) {
+                    soundsPlayer = MediaPlayer.create(MainActivity.this, R.raw.oww);
+                    soundsPlayer.start();
+                }
+                scoredLast = scoredThis;
+                scoredThis = false;
+                threw = false;
+                initBall();
+            }
+        });
+        animator.start();
+    }
+
+    private void initBall() {
+        player.setTranslationX(random.nextInt(backView.getWidth() * 2 / 5));
+        ball.setTranslationX(startX + (player.getTranslationX() - lastPos));
+        startX = ball.getTranslationX();
+        Log.d(TAG, "initBall: " + player.getTranslationX());
     }
 
     private void score() {

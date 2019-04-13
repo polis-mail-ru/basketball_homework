@@ -70,19 +70,15 @@ public class MenuActivity extends AppCompatActivity {
         initUI();
         initValues();
         initListeners();
-        // [START configure_signin]
-        // Configure sign-in to request the user's ID, email address, and basic
-        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+        //startLogin();
+    }
+
+    private void startLogin() {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN)
                 .requestScopes(Games.SCOPE_GAMES_LITE)
                 .requestEmail()
                 .build();
-        // [END configure_signin]
-
-        // [START build_client]
-        // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-        // [END build_client]
         GoogleSignIn.getClient(this, gso)
                 .silentSignIn()
                 .addOnCompleteListener(
@@ -97,60 +93,38 @@ public class MenuActivity extends AppCompatActivity {
                                 }
                             }
                         });
-
-
     }
 
     @Override
     public void onStart() {
         super.onStart();
-
-        // [START on_start_sign_in]
-        // Check for existing Google Sign In account, if the user is already signed in
-        // the GoogleSignInAccount will be non-null.
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         updateUI(account);
-        // [END on_start_sign_in]
     }
 
-    // [START onActivityResult]
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
-            // The Task returned from this call is always completed, no need to attach
-            // a listener.
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);
         }
     }
-    // [END onActivityResult]
 
-    // [START handleSignInResult]
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-
-            // Signed in successfully, show authenticated UI.
             updateUI(account);
         } catch (ApiException e) {
-            // The ApiException status code indicates the detailed failure reason.
-            // Please refer to the GoogleSignInStatusCodes class reference for more information.
-            Log.w("", "signInResult:failed code=" + e.getStatusCode());
             updateUI(null);
         }
     }
-    // [END handleSignInResult]
 
-    // [START signIn]
     private void signIn(GoogleSignInAccount result) {
-        if(result==null) {
+        if (result == null) {
             Intent signInIntent = mGoogleSignInClient.getSignInIntent();
             startActivityForResult(signInIntent, RC_SIGN_IN);
-        }
-        else{
+        } else {
             Log.d("", "signIn: POOOOOOG");
         }
     }
@@ -162,7 +136,7 @@ public class MenuActivity extends AppCompatActivity {
                     .addOnSuccessListener(new OnSuccessListener<Intent>() {
                         @Override
                         public void onSuccess(Intent intent) {
-                            //startActivityForResult(intent, RC_LEADERBOARD_UI);
+                            startActivityForResult(intent, RC_LEADERBOARD_UI);
                         }
                     });
         } else {
@@ -170,10 +144,7 @@ public class MenuActivity extends AppCompatActivity {
         }
     }
 
-
-
-
-    private void login(){
+    private void login() {
         GoogleSignInOptions gso = new
                 GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN)
                 .requestScopes(Games.SCOPE_GAMES_LITE)
