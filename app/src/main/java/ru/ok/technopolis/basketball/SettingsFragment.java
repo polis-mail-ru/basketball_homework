@@ -1,11 +1,14 @@
 package ru.ok.technopolis.basketball;
 
+import android.annotation.SuppressLint;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -57,6 +60,7 @@ public class SettingsFragment extends Fragment {
         Log.d(LOG_TAG, "onCreate args " + Boolean.toString(vibrate));
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -123,12 +127,39 @@ public class SettingsFragment extends Fragment {
             score = 0;
         });
 
+        reset.setOnTouchListener((v, e) -> {
+            switch (e.getAction()) {
+                case MotionEvent.ACTION_DOWN: {
+                    Button viewButton = (Button) v;
+                    viewButton.getBackground().setColorFilter(0x77000000, PorterDuff.Mode.SRC_ATOP);
+                    v.invalidate();
+                    break;
+                }
+                case MotionEvent.ACTION_UP:
+                    // Your action here on button click
+                case MotionEvent.ACTION_CANCEL: {
+                    Button viewButton = (Button) v;
+                    viewButton.getBackground().clearColorFilter();
+                    viewButton.invalidate();
+                    break;
+                }
+            }
+
+            return false;
+        });
+
         return view;
     }
 
 
     interface OnCloseSetListener {
         void close(boolean level, boolean music, boolean vibro, int score);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(LOG_TAG, "onDestroy");
     }
 
 }

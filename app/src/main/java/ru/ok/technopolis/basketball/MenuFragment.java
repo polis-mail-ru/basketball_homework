@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-public class MenuFragment extends Fragment {
+public class MenuFragment extends Fragment implements BackPressListener{
 
     private static final String LOG_TAG = "MenuFragmentLogs";
     OnMenuListener onMenuListener;
@@ -65,9 +65,24 @@ public class MenuFragment extends Fragment {
         this.onMenuListener = onMenuListener;
     }
 
+    @Override
+    public void onBackPressed() {
+        if(getActivity() != null)
+            getActivity().finish();
+
+    }
+
     interface OnMenuListener {
         void play();
         void showStat();
         void showSettings();
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(LOG_TAG, "menu fragment onDestroy");
+    }
+
+
 }

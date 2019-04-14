@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
+import android.widget.Button;
 
 import java.io.IOException;
 
@@ -48,16 +49,16 @@ public class MainActivity extends AppCompatActivity {
         preferences = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
         isEasy = preferences.getBoolean(APP_PREFERENCES_LEVEL, false);
         isVibrationOn = preferences.getBoolean(APP_PREFERENCES_VIBRATE, true);
-        isMusicOn =  preferences.getBoolean(APP_PREFERENCES_MUSIC, true);
+        isMusicOn = preferences.getBoolean(APP_PREFERENCES_MUSIC, true);
 
         fragmentManager = getSupportFragmentManager();
 
         mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.backgroud_main_music);
         mediaPlayer.setVolume(0.2f, 0.4f);
+        mediaPlayer.setLooping(true);
         if (isMusicOn) {
-
             mediaPlayer.start();
-            mediaPlayer.setLooping(true);
+
         }
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -86,18 +87,19 @@ public class MainActivity extends AppCompatActivity {
 
                     if (mediaPlayer != null && isMusicOn) {
 
-                            try {
-                                mediaPlayer.prepare();
-                            } catch (IOException ignore) {
+                        try {
+                            mediaPlayer.prepare();
+                        } catch (IOException ignore) {
 
-                            }
+                        }
 
 
                         mediaPlayer.start();
                     }
-
+                    //fragmentManager.popBackStack();
                     changeFragment(menuFragment);
                 });
+                //fragmentManager.popBackStack();
                 changeFragment(gameFragment);
             }
 
@@ -109,8 +111,10 @@ public class MainActivity extends AppCompatActivity {
                 statisticFragment.setCloseListener(() -> {
                     MenuFragment menuFragment1 = MenuFragment.newInstance();
                     menuFragment1.setOnMenuListener(listener);
+                    //fragmentManager.popBackStack();
                     changeFragment(menuFragment1);
                 });
+                //fragmentManager.popBackStack();
                 changeFragment(statisticFragment);
 
             }
@@ -128,25 +132,70 @@ public class MainActivity extends AppCompatActivity {
                     MainActivity.this.isVibrationOn = isVibrationOn;
                     MenuFragment menuFragment = MenuFragment.newInstance();
                     menuFragment.setOnMenuListener(listener);
+                    //fragmentManager.popBackStack();
                     changeFragment(menuFragment);
 
                 });
+                //fragmentManager.popBackStack();
                 changeFragment(settingsFragment);
 
             }
         });
+        //fragmentManager.popBackStack();
         changeFragment(menuFragment);
+
+
+
+        /*Button exit = findViewById(R.id.activity_main_exit_button);
+        Button backToMenu = findViewById(R.id.activity_main_back_button);*/
+
+        /*exit.setOnClickListener(v -> {
+            MainActivity.this.finish();
+        });
+
+         fragmentManager.getBackStackEntryCount();
+
+        backToMenu.setOnClickListener(v -> {
+            changeFragment(menuFragment);
+        });*/
+    }
+
+
+    @Override
+    public void onBackPressed() {
+
+        BackPressListener backPressListener = null;
+        for (Fragment fr : fragmentManager.getFragments()) {
+            if (fr instanceof BackPressListener) {
+                backPressListener = (BackPressListener) fr;
+                break;
+            }
+        }
+
+        if (backPressListener != null) {
+            backPressListener.onBackPressed();
+        } else {
+            super.onBackPressed();
+        }
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        if (isMusicOn && !mediaPlayer.isPlaying()) {
+            try {
+                mediaPlayer.prepare();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            mediaPlayer.start();
+        }
         Log.d(LOG_TAG, "onResume");
     }
 
     private void changeFragment(Fragment f) {
         Log.d(LOG_TAG, "Change to " + f.getClass().getSimpleName());
-
         fragmentManager.beginTransaction().replace(R.id.activity_main_container, f).addToBackStack(f.getClass().getSimpleName()).commit();
     }
 
@@ -175,6 +224,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putBoolean(APP_PREFERENCES_LEVEL, isEasy);
         editor.putBoolean(APP_PREFERENCES_VIBRATE, isVibrationOn);
+        editor.putBoolean(APP_PREFERENCES_MUSIC, isMusicOn);
         editor.apply();
         super.onPause();
         if (mediaPlayer != null)

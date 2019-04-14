@@ -94,6 +94,12 @@ public class GameFragment extends Fragment {
         isVibrationOn = args.getBoolean(VIBRO_KEY);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(LOG_TAG, "onDestroy");
+    }
+
     @SuppressLint({"ClickableViewAccessibility", "SetTextI18n"})
     @Nullable
     @Override
@@ -224,7 +230,7 @@ public class GameFragment extends Fragment {
                         Log.d(LOG_TAG, "coords " + ballView.getX() + " " + ballView.getY() + " " + Math.sqrt(Math.pow(ballView.getX() - leftSideHoopLocation[0], 2)
                                 + Math.pow(ballView.getY() - leftSideHoopLocation[1], 2)));
 
-                        if (Math.sqrt(Math.pow(ballView.getX() - leftSideHoopLocation[0], 2)
+     /*                   if (Math.sqrt(Math.pow(ballView.getX() - leftSideHoopLocation[0], 2)
                                 + Math.pow(ballView.getY() - leftSideHoopLocation[1], 2)) <= radius
                                 && ballView.getX() <= leftSideHoopLocation[0]) {
                             Log.d(LOG_TAG, "direction change 2 " + ballView.getX() + " " + ballView.getY() + " " + Math.sqrt(Math.pow(ballView.getX() - leftSideHoopLocation[0], 2)
@@ -235,7 +241,7 @@ public class GameFragment extends Fragment {
                             hitCoords[0] = (int) ballView.getX();
                             lastCollisionXTime = time;
                             speedX = -speedX;
-                        }
+                        }*/
 
                         if (ballView.getX() + ballView.getWidth() >= rightSideHoopLocation[0]
                                 && ballView.getX() + radius < rightSideHoopLocation[0] + 30
