@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/menu_background"
+    android:background="@drawable/main_b_gxxhdpi"
     >
 
     <Button
@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/fragment_settings_horizontal_line"
+        app:layout_constraintBottom_toBottomOf="@+id/fragment_settings_basket_bottom_line"
         android:text="@string/settings"
         android:fontFamily="@font/score_font"
         android:textSize="50sp"
@@ -41,7 +41,7 @@
         android:background="@android:color/transparent"
         app:layout_constraintTop_toTopOf="@+id/fragment_settings_horizontal_line"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/fragment_settings_vibration_button"
+        app:layout_constraintEnd_toStartOf="@+id/fragment_settings_reset_button"
         app:layout_constraintBottom_toBottomOf="@+id/fragment_settings_second_horizontal_line"
         />
 
@@ -49,43 +49,42 @@
         android:id="@+id/fragment_settings_vibration_button"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:background="@drawable/vibrating"
-        android:thumb="@android:color/transparent"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/vibrationxxhdpi"
         android:checked="true"
-        android:textOn=""
         android:textOff=""
-        app:layout_constraintTop_toTopOf="@+id/fragment_settings_horizontal_line"
-        app:layout_constraintStart_toEndOf="@+id/fragment_settings_level_button"
+        android:textOn=""
+        android:thumb="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/fragment_settings_music_button"
-        app:layout_constraintBottom_toBottomOf="@+id/fragment_settings_second_horizontal_line"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_settings_level_button" />
 
     <ToggleButton
         android:id="@+id/fragment_settings_music_button"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:background="@drawable/bell"
+        android:background="@drawable/musicxxhdpi"
         android:thumb="@android:color/transparent"
         android:checked="true"
         android:textOn=""
         android:textOff=""
-        app:layout_constraintTop_toTopOf="@+id/fragment_settings_horizontal_line"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_settings_reset_button"
         app:layout_constraintStart_toEndOf="@+id/fragment_settings_vibration_button"
-        app:layout_constraintEnd_toStartOf="@+id/fragment_settings_reset_button"
-        app:layout_constraintBottom_toBottomOf="@+id/fragment_settings_second_horizontal_line"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         />
 
     <Button
         android:id="@+id/fragment_settings_reset_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="120dp"
+        android:layout_height="0dp"
         android:fontFamily="@font/score_font"
         android:textSize="50sp"
         android:textColor="@android:color/white"
-        android:background="@android:color/transparent"
-        android:text="@string/reset"
+        android:background="@drawable/resetxhdpi"
         app:layout_constraintTop_toTopOf="@+id/fragment_settings_horizontal_line"
-        app:layout_constraintStart_toEndOf="@+id/fragment_settings_music_button"
+        app:layout_constraintStart_toEndOf="@+id/fragment_settings_level_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="@+id/fragment_settings_second_horizontal_line"
         />
@@ -95,13 +94,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.46" />
+        app:layout_constraintGuide_percent="0.547" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/fragment_settings_basket_bottom_line"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.47" />
 
     <android.support.constraint.Guideline
         android:id="@+id/fragment_settings_second_horizontal_line"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.96" />
+        app:layout_constraintGuide_percent="0.69" />
 
 </android.support.constraint.ConstraintLayout>

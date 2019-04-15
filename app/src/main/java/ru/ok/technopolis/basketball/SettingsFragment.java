@@ -73,27 +73,27 @@ public class SettingsFragment extends Fragment {
         ToggleButton vibro = view.findViewById(R.id.fragment_settings_vibration_button);
         if(vibrate) {
 
-            vibro.setBackgroundResource(R.drawable.vibrating);
+            vibro.setBackgroundResource(R.drawable.vibrationxxhdpi);
         } else {
 
-            vibro.setBackgroundResource(R.drawable.main_ball);
+            vibro.setBackgroundResource(R.drawable.no_vibrationxxhdpi);
         }
         vibro.setOnCheckedChangeListener((v, isChecked) -> {
             if (isChecked) {
                 SettingsFragment.this.vibrate = true;
-                v.setBackgroundResource(R.drawable.vibrating);
+                v.setBackgroundResource(R.drawable.vibrationxxhdpi);
             } else {
                 SettingsFragment.this.vibrate = false;
-                v.setBackgroundResource(R.drawable.main_ball);
+                v.setBackgroundResource(R.drawable.no_vibrationxxhdpi);
             }
         });
 
         ToggleButton musicButton = view.findViewById(R.id.fragment_settings_music_button);
         if(music) {
-            musicButton.setBackgroundResource(R.drawable.bell);
+            musicButton.setBackgroundResource(R.drawable.no_musicxxhdpi);
         } else {
 
-            musicButton.setBackgroundResource(R.drawable.fire_ball);
+            musicButton.setBackgroundResource(R.drawable.musicxxhdpi);
         }
         musicButton.setOnCheckedChangeListener((v, isChecked) -> {
             if (isChecked) {
@@ -106,11 +106,11 @@ public class SettingsFragment extends Fragment {
 
                 MainActivity.mediaPlayer.start();
                 SettingsFragment.this.music = true;
-                v.setBackgroundResource(R.drawable.bell);
+                v.setBackgroundResource(R.drawable.no_musicxxhdpi);
             } else {
                 MainActivity.mediaPlayer.stop();
                 SettingsFragment.this.music = false;
-                v.setBackgroundResource(R.drawable.fire_ball);
+                v.setBackgroundResource(R.drawable.musicxxhdpi);
             }
         });
 
