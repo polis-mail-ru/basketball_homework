@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
+import android.arch.lifecycle.Lifecycle;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -159,6 +160,7 @@ public class GameFragment extends Fragment {
     }
 
     private void changeFragment(Fragment f) {
+        if(!getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.DESTROYED))
         fragmentManager.beginTransaction().replace(R.id.fragment_game_layout, f).addToBackStack(f.getClass().getSimpleName()).commit();
     }
 
