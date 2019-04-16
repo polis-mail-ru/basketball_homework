@@ -52,6 +52,7 @@ public class GameFragment extends Fragment {
     private double minAccuracy;
     private FragmentManager fragmentManager;
     private OnPauseListener onPauseListener;
+    ValueAnimator animator;
 
     private int score = 0;
     private int rowHit = 0;
@@ -147,9 +148,13 @@ public class GameFragment extends Fragment {
 
         mainLayout.setOnTouchListener((v, event) -> gestureDetector.onTouchEvent(event));
         stopButton.setOnClickListener(v -> {
-            // добавляем фрагмент
             if (onPauseListener != null) {
+
                 onPauseListener.pause(score, isEasy, isVibrationOn);
+                /*if(animator != null){
+                    animator.cancel();
+                    Log.d(LOG_TAG, "animator canceled");
+                }*/
             }
         });
         return rootView;
@@ -160,13 +165,14 @@ public class GameFragment extends Fragment {
     }
 
     private void changeFragment(Fragment f) {
-        if(!getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.DESTROYED))
-        fragmentManager.beginTransaction().replace(R.id.fragment_game_layout, f).addToBackStack(f.getClass().getSimpleName()).commit();
+        if(this.getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
+            fragmentManager.beginTransaction().replace(R.id.fragment_game_layout, f).addToBackStack(f.getClass().getSimpleName()).commit();
+        }
     }
 
     private GestureDetector.OnGestureListener myGestureListener = new GestureDetector.SimpleOnGestureListener() {
 
-        ValueAnimator animator;
+
 
         @Override
         public boolean onDown(MotionEvent arg0) {
@@ -229,8 +235,6 @@ public class GameFragment extends Fragment {
                             }
                         }
 
-                        Log.d(LOG_TAG, "coords " + ballView.getX() + " " + ballView.getY() + " " + Math.sqrt(Math.pow(ballView.getX() - leftSideHoopLocation[0], 2)
-                                + Math.pow(ballView.getY() - leftSideHoopLocation[1], 2)));
 
      /*                   if (Math.sqrt(Math.pow(ballView.getX() - leftSideHoopLocation[0], 2)
                                 + Math.pow(ballView.getY() - leftSideHoopLocation[1], 2)) <= radius
@@ -273,12 +277,12 @@ public class GameFragment extends Fragment {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         if (isHit) {
-                            if(vibrator != null){
+                            if(vibrator != null && GameFragment.this.getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)){
                                 vibrator.vibrate(400);
                             }
                             changeFragment(WinFragment.newInstance(isMusicOn));
                             isHit = false;
-                            scoreView.setText(score + "");
+                            scoreView.setText(Integer.toString(score));
                             rowHit++;
                             if (rowHit > 0) {
 
@@ -288,7 +292,6 @@ public class GameFragment extends Fragment {
                             rowHit = 0;
                             tmpAccuracy[0] = Math.sqrt(Math.pow(closer[0] - leftSideHoopLocation[0], 2)
                                     + Math.pow(closer[1] - leftSideHoopLocation[1], 2));
-                            Log.d(LOG_TAG, "accuracys " + tmpAccuracy[0] + " " + minAccuracy + " clos " + closer[0] + " " + closer[1]);
                             tmpAccuracy[0] = 1 - tmpAccuracy[0] / minAccuracy;
                             if (tmpAccuracy[0] <= 0) {
                                 tmpAccuracy[0] = 0.01;

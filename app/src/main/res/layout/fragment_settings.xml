@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/main_b_gxxhdpi"
+    android:background="@drawable/settings_b_gxxhdpi"
     >
 
     <Button
@@ -36,7 +36,7 @@
         android:textOn="@string/easy"
         android:checked="false"
         android:textColor="@android:color/white"
-        android:fontFamily="@font/score_font"
+        android:fontFamily="@font/font_to_score"
         android:textSize="50sp"
         android:background="@android:color/transparent"
         app:layout_constraintTop_toTopOf="@+id/fragment_settings_horizontal_line"
@@ -62,8 +62,8 @@
 
     <ToggleButton
         android:id="@+id/fragment_settings_music_button"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="65dp"
+        android:layout_height="70dp"
         android:background="@drawable/musicxxhdpi"
         android:thumb="@android:color/transparent"
         android:checked="true"

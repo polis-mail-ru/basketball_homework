@@ -102,13 +102,21 @@
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.73" />
 
+        <android.support.constraint.Guideline
+            android:id="@+id/main_activity_left_shield"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.85" />
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="57dp"
             android:layout_marginTop="-50dp"
             android:src="@drawable/new_hoop"
             app:layout_constraintEnd_toEndOf="@+id/main_activity_right_hoop"
-            app:layout_constraintTop_toTopOf="@+id/main_activity_bottom_hoop" />
+            app:layout_constraintTop_toTopOf="@+id/main_activity_bottom_hoop"
+            android:contentDescription="@string/hoop" />
     </android.support.constraint.ConstraintLayout>
 
 

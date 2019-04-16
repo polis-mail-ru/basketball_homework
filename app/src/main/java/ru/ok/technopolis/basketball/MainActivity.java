@@ -13,7 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
-import android.widget.Button;
 
 import java.io.IOException;
 
@@ -96,10 +95,8 @@ public class MainActivity extends AppCompatActivity {
 
                         mediaPlayer.start();
                     }
-                    //fragmentManager.popBackStack();
                     changeFragment(menuFragment);
                 });
-                //fragmentManager.popBackStack();
                 changeFragment(gameFragment);
             }
 
@@ -111,10 +108,8 @@ public class MainActivity extends AppCompatActivity {
                 statisticFragment.setCloseListener(() -> {
                     MenuFragment menuFragment1 = MenuFragment.newInstance();
                     menuFragment1.setOnMenuListener(listener);
-                    //fragmentManager.popBackStack();
                     changeFragment(menuFragment1);
                 });
-                //fragmentManager.popBackStack();
                 changeFragment(statisticFragment);
 
             }
@@ -132,32 +127,14 @@ public class MainActivity extends AppCompatActivity {
                     MainActivity.this.isVibrationOn = isVibrationOn;
                     MenuFragment menuFragment = MenuFragment.newInstance();
                     menuFragment.setOnMenuListener(listener);
-                    //fragmentManager.popBackStack();
                     changeFragment(menuFragment);
 
                 });
-                //fragmentManager.popBackStack();
                 changeFragment(settingsFragment);
 
             }
         });
-        //fragmentManager.popBackStack();
         changeFragment(menuFragment);
-
-
-
-        /*Button exit = findViewById(R.id.activity_main_exit_button);
-        Button backToMenu = findViewById(R.id.activity_main_back_button);*/
-
-        /*exit.setOnClickListener(v -> {
-            MainActivity.this.finish();
-        });
-
-         fragmentManager.getBackStackEntryCount();
-
-        backToMenu.setOnClickListener(v -> {
-            changeFragment(menuFragment);
-        });*/
     }
 
 
