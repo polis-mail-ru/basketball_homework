@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">basketball_homework</string>
+    <string name="reset_button">reset</string>
+    <string name="hoop_image_desc">this is the hoop</string>
+    <string name="ball_image_desc">this is the ball</string>
+    <string name="player_image_desc">this is the player</string>
+    <string name="reset_button_desc">click to reset the game</string>
 </resources>

@@ -6,5 +6,76 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <android.support.constraint.Guideline
+        android:id="@+id/activity_main_guide_line_for_hoop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.15" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/activity_main_guide_line_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.95" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/activity_main_guide_line_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.05" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/activity_main_guide_line_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.95" />
+
+    <ImageView
+        android:id="@+id/activity_main_hoop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/hoop_image_desc"
+        android:src="@drawable/hoop"
+        app:layout_constraintEnd_toEndOf="@id/activity_main_guide_line_right"
+        app:layout_constraintTop_toTopOf="@id/activity_main_guide_line_for_hoop" />
+
+    <ru.ok.technopolis.basketball.ScoreView
+        android:id="@+id/activity_main_score"
+        android:layout_width="150dp"
+        android:layout_height="80dp"
+        app:layout_constraintStart_toStartOf="@id/activity_main_guide_line_left"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/activity_main_player"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/player_image_desc"
+        android:src="@drawable/player"
+        app:layout_constraintBottom_toBottomOf="@id/activity_main_guide_line_bottom"
+        app:layout_constraintStart_toStartOf="@id/activity_main_guide_line_left" />
+
+    <ImageView
+        android:id="@+id/activity_main_ball"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/ball_image_desc"
+        android:src="@drawable/ball"
+        app:layout_constraintBottom_toTopOf="@id/activity_main_player"
+        app:layout_constraintEnd_toEndOf="@id/activity_main_player"
+        app:layout_constraintStart_toStartOf="@id/activity_main_player" />
+
+    <Button
+        android:id="@+id/activity_main_reset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/reset_button_desc"
+        android:text="@string/reset_button"
+        app:layout_constraintBottom_toBottomOf="@id/activity_main_guide_line_bottom"
+        app:layout_constraintEnd_toEndOf="@id/activity_main_guide_line_right" />
 
 </android.support.constraint.ConstraintLayout>
