@@ -1,7 +1,7 @@
 package ru.ok.technopolis.basketball;
 
 import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -45,8 +45,12 @@ public class MainActivity extends AppCompatActivity {
     private ValueAnimator animator;
     private StarView scoreView;
     private final Random random = new Random();
-    private float lastPos;
+    private float startPosY;
+    private float startPosX;
     private float startX;
+    private final float g = 10;
+    private byte state = 0;
+    private ObjectAnimator anim;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -59,11 +63,17 @@ public class MainActivity extends AppCompatActivity {
         final RelativeLayout mainLayout = findViewById(R.id.main_layout);
         point = findViewById(R.id.empty);
         money = findViewById(R.id.money);
+
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         backView = findViewById(R.id.back);
         scoreView = findViewById(R.id.scoreView);
         player = findViewById(R.id.player);
         getExtra();
+        ball.setVisibility(View.VISIBLE);
+        startPosY = ball.getTranslationY();
+        startPosX = ball.getTranslationX();
+        anim = ObjectAnimator.ofFloat(ball, "rotation", 360);
+        anim.setDuration(3000);
         final GestureDetector gestureDetector = new GestureDetector(this, gestureListener);
         mainLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -90,30 +100,135 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public boolean onFling(MotionEvent downEvent, MotionEvent moveEvent, float velocityX, float velocityY) {
-            if (!threw) {
-                threw = true;
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            if (!threw && state != 1) {
+                rotateBall();
                 ball.setVisibility(View.VISIBLE);
-                backView.setVisibility(View.VISIBLE);
-                final float distanceInX = moveEvent.getRawX() - downEvent.getRawX();
-                final float distanceInY = Math.abs(moveEvent.getRawY() - downEvent.getRawY());
-                if (distanceInX < 0 && playerDirection == 1) {
-                    player.setImageResource(R.drawable.player2mirror);
-                    player.setX(player.getX() - (float) player.getWidth() / 4);
-                    playerDirection = 0;
-                } else if (distanceInX >= 0 && playerDirection == 0) {
-                    player.setImageResource(R.drawable.player2);
-                    player.setX(player.getX() + (float) player.getWidth() / 4);
-                    playerDirection = 1;
-                }
-                animateBoy(Math.min(distanceInY, 200));
-                animateMotion(distanceInX, distanceInY);
-                ball.animate().start();
+                threw = true;
+                animator = ValueAnimator.ofFloat(0, 1);
+                animator.setDuration(4000);
+                final float dY = Math.abs((e2.getRawY() - e1.getRawY()) / (e2.getEventTime() - e1.getEventTime()));
+                final float dX = (e2.getRawX() - e1.getRawX()) / (e2.getEventTime() - e1.getEventTime());
+                animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
 
+                    private float speedX = dX / 2;
+                    private float speedY = dY / 2;
+                    private long lastCollisionYTime = 0;
+                    private long lastCollisionXTime = 0;
+                    private int collisionCounter = 1;
+                    private float[] hitCoords = {ball.getTranslationX(), startPosY};
+                    private float lastPosY = ball.getY();
+                    private boolean dir = (!(speedX > 0));
+
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        long time = animation.getCurrentPlayTime();
+                        speedY = speedY - 0.0001f * (time - lastCollisionYTime);
+                        ball.setTranslationY(hitCoords[1] - (speedY) * (time - lastCollisionYTime));
+                        ball.setTranslationX(hitCoords[0] + speedX * (time - lastCollisionXTime));
+
+                        if (ball.getY() + ball.getHeight() * 2 > backView.getHeight()) {
+                            if (speedY < 0) {
+                                speedY = (float) ((dY / 2) * Math.pow(0.75, collisionCounter));
+                                lastCollisionYTime = time;
+                                hitCoords[1] = (int) ball.getTranslationY();
+                                collisionCounter++;
+                            }
+                            if (Math.abs(lastPosY - ball.getY()) < 3f && state == 0) {
+                                fadeBall();
+                            }
+                            if (state == 2) {
+                                ball.setAlpha(1f);
+                                ball.setVisibility(View.INVISIBLE);
+                                state = 0;
+                                threw = false;
+                                animation.cancel();
+                                anim.cancel();
+                                ball.setTranslationX(startPosX);
+                                ball.setTranslationY(startPosY);
+                            }
+                            lastPosY = ball.getY();
+                        }
+
+                        if (ball.getX() + ball.getWidth() >= backView.getWidth()
+                                && ball.getX() + ball.getHeight() / 2 < backView.getWidth() + 30 && !dir && lastCollisionXTime != time) {
+                            hitCoords[0] = ball.getX();
+                            lastCollisionXTime = time;
+                            speedX = -speedX / 2;
+                            dir = true;
+                        } else if (ball.getX() <= 0
+                                && dir && lastCollisionXTime != time) {
+                            hitCoords[0] = ball.getX();
+                            Log.d(TAG, "onAnimationUpdate: ");
+                            lastCollisionXTime = time;
+                            speedX = -speedX / 2;
+                            dir = false;
+                        }
+                    }
+                });
+                animator.addListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        ball.setAlpha(1f);
+                        ball.setVisibility(View.INVISIBLE);
+                        state = 0;
+                        threw = false;
+                        anim.cancel();
+                        ball.setTranslationX(startPosX);
+                        ball.setTranslationY(startPosY);
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                });
+                animator.start();
             }
-            return true;
+            return false;
         }
+
     };
+
+    private void rotateBall() {
+        anim.start();
+    }
+
+    private void fadeBall() {
+        state = 1;
+        ObjectAnimator anim = ObjectAnimator.ofFloat(ball, "alpha", 0);
+        anim.setDuration(1000);
+        anim.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                state = 2;
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+            }
+        });
+        anim.start();
+
+    }
 
     private void animateBoy(final float y) {
         player.animate().setDuration(500).translationYBy(-y).setListener(new Animator.AnimatorListener() {
@@ -137,95 +252,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void animateMotion(final float distanceInX, final float distanceInY) {
-        lastPos = player.getTranslationX();
-        animator = ValueAnimator.ofFloat(0, 1);
-        animator.setDuration(1000);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            float w = (float) ball.getWidth() / 2, h = (float) ball.getHeight() / 2;
-            int n = 0;
-            int direction = -1;
-            boolean dirChanged = false;
-
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float value = (Float) (animation.getAnimatedValue());
-                if (x == Float.POSITIVE_INFINITY) {
-                    x = ball.getX() + w;
-                    y = ball.getY() + h;
-                }
-
-                ball.setTranslationX(startX + (float) (distanceInX * -Math.cos(value * Math.PI) + distanceInX));
-                ball.setTranslationY((float) (distanceInY * -Math.sin(value * Math.PI)));
-                //Смена направления, если столкнулись с правой стеной
-                if (dirChanged) {
-                    ball.setX(backView.getWidth() - (ball.getX() + (float) ball.getWidth() / 2 - backView.getWidth()));
-                }
-                //Смена направления, если столкнулись с левой стенкой кольца
-                if (direction == 2 && !dirChanged) {
-                    ball.setX(point.getX() - point.getWidth() - (ball.getX() + (float) ball.getWidth() / 2 - point.getX() + point.getWidth()));
-                }
-
-                //отрисовка пути
-                if (y != ball.getY() + h && n % 2 == 0) {
-                    backView.drawLine(x, y, ball.getX() + w, ball.getY() + h);
-                }
-
-                //Проверка на правую стенку
-                if (direction != 2 && walls && ball.getX() + ball.getWidth() / 2 >= backView.getWidth() && !dirChanged) {
-                    direction *= -1;
-                    dirChanged = true;
-                    if (vibro && vibrator.hasVibrator()) {
-                        vibrator.vibrate(100L);
-                    }
-                }
-
-                //Проверка на левую стенку
-                if ((y >= point.getY() - point.getHeight() / 4 && y <= point.getY() + point.getHeight()) &&
-                        (x >= point.getX() - point.getWidth() && x <= point.getX() - point.getWidth() / 2)) {
-                    direction = 2;
-                }
-
-                //Изменение координат
-                x = ball.getX() + w;
-                y = ball.getY() + h;
-
-                //Проверка на попадание в кольцо
-                if ((y >= point.getY() - point.getHeight() / 4 && y <= point.getY() + point.getHeight() / 4) &&
-                        (x >= point.getX() && x <= point.getX() + point.getWidth()) && !scoredThis) {
-                    score();
-                    if (scoredLast) {
-                        money.setText(String.valueOf(Integer.parseInt(money.getText().toString()) + 1));
-                    }
-                    scoredThis = true;
-                }
-                //Счётчик для отрисовки не всех линий пути
-                n++;
-            }
-        });
-
-        animator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                ball.setVisibility(View.INVISIBLE);
-                backView.setVisibility(View.INVISIBLE);
-                backView.refresh();
-                if (music && !scoredThis) {
-                    soundsPlayer = MediaPlayer.create(MainActivity.this, R.raw.oww);
-                    soundsPlayer.start();
-                }
-                scoredLast = scoredThis;
-                scoredThis = false;
-                threw = false;
-                initBall();
-            }
-        });
-        animator.start();
-    }
 
     private void initBall() {
         player.setTranslationX(random.nextInt(backView.getWidth() * 2 / 5));
-        ball.setTranslationX(startX + (player.getTranslationX() - lastPos));
+        ball.setTranslationX(startX + (player.getTranslationX() - startPosY));
         startX = ball.getTranslationX();
         Log.d(TAG, "initBall: " + player.getTranslationX());
     }

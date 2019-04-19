@@ -98,8 +98,8 @@ public class MenuActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        updateUI(account);
+       // GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+       // updateUI(account);
     }
 
     @Override
