@@ -3,5 +3,6 @@
     <declare-styleable name="RateView">
         <attr name="count_stars" format="integer" />
         <attr name="star_size" format="dimension" />
+        <attr name="star_color" format="color" />
     </declare-styleable>
 </resources>

@@ -1,6 +1,5 @@
 package ru.ok.technopolis.basketball;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -13,23 +12,21 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
-import android.widget.SeekBar;
+import android.view.MotionEvent;
 
-@SuppressLint("AppCompatCustomView")
-public class RateView extends SeekBar {
+public class RateView extends android.support.v7.widget.AppCompatSeekBar {
 
     private static final int DEFAULT_STAR_SIZE_DP = 10;
     private static final int DEFAULT_COUNT_STARS = 5;
+    private static final int DEFAULT_STAR_COLOR = Color.YELLOW;
 
     private Rect progressRect;
-    private Rect borderRect;
-    private Rect paddingRect;
     private int starSize;
     private int count;
+    private int color;
     private Bitmap bitmap;
 
     private final Paint paint;
-    private final Paint borderPaint;
 
     public RateView(Context context) {
         this(context, null);
@@ -42,28 +39,30 @@ public class RateView extends SeekBar {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         int starSizeFromAttr = (int) (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, DEFAULT_STAR_SIZE_DP, displayMetrics) + 0.5f);
         int countStarsFromAttr = DEFAULT_COUNT_STARS;
+        int colorStarFromAttr = DEFAULT_STAR_COLOR;
         if (attrs != null) {
             TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.RateView);
             starSizeFromAttr = typedArray.getDimensionPixelSize(R.styleable.RateView_star_size, starSizeFromAttr);
             countStarsFromAttr = typedArray.getInteger(R.styleable.RateView_count_stars, countStarsFromAttr);
+            colorStarFromAttr = typedArray.getInteger(R.styleable.RateView_star_color, colorStarFromAttr);
             typedArray.recycle();
         }
         starSize = starSizeFromAttr;
         count = countStarsFromAttr;
-        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.star);
+        color = colorStarFromAttr;
 
+        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.star);
         bitmap = Bitmap.createScaledBitmap(bitmap, starSize, starSize, true);
 
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setColor(Color.YELLOW);
+        paint.setColor(color);
         paint.setStyle(Paint.Style.FILL);
-
-        borderPaint = new Paint();
-        borderPaint.setColor(Color.BLACK);
-        borderPaint.setStyle(Paint.Style.STROKE);
-        borderPaint.setStrokeWidth(5);
     }
 
+    public void setColor(int color) {
+        this.color = color;
+        paint.setColor(color);
+    }
 
     @Override
     protected synchronized void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -82,8 +81,13 @@ public class RateView extends SeekBar {
         starSize = Math.min(measuredHeight, starSize);
 
         Log.d("RateView-measure", "count = " + count + "width = " + width + " starSize = " + starSize);
-        count = Math.min(count, measuredWidth / starSize );
+        count = Math.min(count, measuredWidth / starSize);
         setMeasuredDimension(width, height);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return false;
     }
 
     @Override
@@ -94,24 +98,14 @@ public class RateView extends SeekBar {
         progressRect.top = getPaddingTop() + measureHeight / 2 - starSize / 2;
         progressRect.bottom = progressRect.top + starSize;
         progressRect.left = (int) ((float) measureWidth / 2f - (float) count * starSize / 2f) + getPaddingLeft();
-
-        borderRect = new Rect(0, 0, w, h);
-        paddingRect = new Rect(getPaddingLeft(), getPaddingTop(), w - getPaddingRight(), h - getPaddingBottom());
     }
-
 
     @Override
     protected synchronized void onDraw(Canvas canvas) {
         progressRect.right = (int) ((double) getProgress() / getMax() * (count * starSize)) + progressRect.left;
         canvas.drawRect(progressRect, paint);
-
         for (int i = 0, x = progressRect.left; i < count && x < getWidth() - getPaddingRight(); i++, x += starSize) {
             canvas.drawBitmap(bitmap, x, progressRect.top, paint);
-        }
-
-        if (borderRect != null && paddingRect != null) {
-           // canvas.drawRect(borderRect, borderPaint);
-        //    canvas.drawRect(paddingRect, borderPaint);
         }
     }
 }

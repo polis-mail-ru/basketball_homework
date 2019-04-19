@@ -5,8 +5,9 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Rect;
-import android.os.VibrationEffect;
+import android.media.MediaPlayer;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,43 +17,89 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
-import android.view.animation.AnimationSet;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity {
+    public static final int RESULT_MESSAGE = 1;
+    public static final String SCORE_KEY = "score";
+    public static final String MODE_KEY = "mode";
+    public static final String AMOUNT_KEY = "amount";
+
+    public enum Mode {
+        easy, medium, hard
+    }
+
     boolean isReady;
     private ImageView person;
     private ImageView ball;
     private ImageView hoop;
+    protected RateView rateView;
+    protected TextView textViewScore;
     private FrameLayout layout;
-    private RateView rateView;
-    private TextView textViewScore;
 
-    private int goodCount;
-    private int count;
+    protected int goodCount;
+    protected int count;
+    protected int maxCount;
     private Rect window;
     private Rect rectBall;
     private Rect rectHoop;
     private Vibrator vibrator;
+    private Mode mode;
+    private MediaPlayer mediaPlayer;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setSettings();
+        setContentView(R.layout.activity_game);
+
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
-        layout = findViewById(R.id.container);
-        ball = findViewById(R.id.ball);
-        person = findViewById(R.id.person);
-        hoop = findViewById(R.id.hoop);
-        rateView = findViewById(R.id.rateview);
-        textViewScore = findViewById(R.id.score);
+        layout = findViewById(R.id.activity_game__container);
+        ball = findViewById(R.id.activity_game__ball);
+        person = findViewById(R.id.activity_game__person);
+        hoop = findViewById(R.id.activity_game__hoop);
+        rateView = findViewById(R.id.activity_game__rateview);
+        textViewScore = findViewById(R.id.activity_game__score);
+        mediaPlayer = MediaPlayer.create(this, R.raw.hlop);
+        startGame();
+    }
+
+    void setSettings() {
+        Intent intent = getIntent();
+        maxCount = intent.getIntExtra(AMOUNT_KEY, 10);
+        int modeId = intent.getIntExtra(MODE_KEY, R.id.medium_level);
+        if (modeId == 0) {
+            mode = Mode.easy;
+        } else {
+            mode = modeId == 2 ? Mode.hard : Mode.medium;
+        }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void startGame() {
+        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        window = new Rect();
+        Display display = getWindowManager().getDefaultDisplay();
+        display.getRectSize(window);
+        rectBall = new Rect();
+        rectHoop = new Rect();
+        goodCount = count = 0;
+        isReady = true;
+
+        Log.d("WINDOWSIZE", window.toShortString());
+        layout.post(new Runnable() {
+            @Override
+            public void run() {
+                setAnimationHoop();
+            }
+        });
+
         final GestureDetector gestureDetector = new GestureDetector(this, gestureListener);
         layout.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -63,42 +110,32 @@ public class MainActivity extends AppCompatActivity {
                 return gestureDetector.onTouchEvent(event);
             }
         });
-
-
-        startGame();
     }
 
-    private void startGame() {
-        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        window = new Rect();
-        Display display = getWindowManager().getDefaultDisplay();
-        display.getRectSize(window);
-        rectBall = new Rect();
-        rectHoop = new Rect();
-        goodCount = count = 0;
-        changeScore();
-        isReady = true;
-        final ValueAnimator animator1 = ValueAnimator.ofInt(window.left, window.right);
-        final ValueAnimator animator2 = ValueAnimator.ofInt(window.right, window.left);
+    private void setAnimationHoop() {
+        if (mode == Mode.easy) {
+            return;
+        }
+        final ValueAnimator animator1 = ValueAnimator.ofInt(window.left + window.right / 7, window.right - hoop.getWidth() - window.right / 7);
+        final ValueAnimator animator2 = ValueAnimator.ofInt(window.right - hoop.getWidth() - window.right / 7, window.left + window.right / 7);
 
         animator1.setInterpolator(new DecelerateInterpolator());
         animator2.setInterpolator(new DecelerateInterpolator());
-        animator1.setDuration(1000);
-        animator2.setDuration(1000);
+        long duration = 3000;
+        duration = mode == Mode.medium ? duration / 2 : duration / 3;
+        animator1.setDuration(duration);
+        animator2.setDuration(duration);
         ValueAnimator.AnimatorUpdateListener listener = new ValueAnimator.AnimatorUpdateListener() {
-
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 int value = (int) animation.getAnimatedValue();
-                if (value >= 0 && value <= window.right - hoop.getWidth()) {
-                    hoop.setX(value);
-               } else {
-                    animation.cancel();
-                }
+                hoop.setX(value);
             }
         };
+
         animator1.addUpdateListener(listener);
         animator2.addUpdateListener(listener);
+
         animator1.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -115,12 +152,21 @@ public class MainActivity extends AppCompatActivity {
         animator1.start();
     }
 
-
     @SuppressLint("SetTextI18n")
-    private void changeScore() {
-        textViewScore.setText(goodCount + "/" + count);
+    protected void changeScore(boolean increase) {
+        if (increase) {
+            goodCount++;
+        }
+        String s = goodCount + "/" + count;
+        textViewScore.setText(s);
         int progress = count == 0 ? 0 : (int) ((double) goodCount / count * 100);
         rateView.setProgress(progress);
+        if (count >= maxCount) {
+            Intent data = new Intent();
+            data.putExtra(SCORE_KEY, "YourScore is " + s);
+            setResult(RESULT_MESSAGE, data);
+            finish();
+        }
     }
 
     private void vibrate() {
@@ -130,29 +176,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     GestureDetector.OnGestureListener gestureListener = new GestureDetector.SimpleOnGestureListener() {
+        private boolean isGoodBall = false;
 
         @Override
         public boolean onDown(MotionEvent e) {
             return true;
         }
 
-
         @Override
         public boolean onFling(MotionEvent downEvent, MotionEvent moveEvent, float velocityX, float velocityY) {
             if (isReady && velocityY < 0) {
                 isReady = false;
-                Log.d("Velocity", "vx = " + velocityX + " vy = " + velocityY);
-                startAnimation(downEvent.getRawX(), downEvent.getRawY(), velocityX / 7, -velocityY / 7);
+                isGoodBall = false;
+                startAnimation(downEvent.getRawX(), Math.max(downEvent.getRawY(), (float) window.bottom / 2), velocityX / 7, -velocityY / 7);
             }
             return true;
         }
-
 
         private void startAnimation(final float x0_b, final float y0_b, final float width, final float height) {
             final ValueAnimator animatorX = ValueAnimator.ofFloat(x0_b, x0_b + width);
             final ValueAnimator animatorY1 = ValueAnimator.ofFloat(y0_b, y0_b - height);
             final ValueAnimator animatorY2 = ValueAnimator.ofFloat(y0_b - height, y0_b);
 
+            person.setY(y0_b);
             animatorY1.setInterpolator(new DecelerateInterpolator());
             animatorY2.setInterpolator(new AccelerateInterpolator());
             animatorX.setDuration(1000);
@@ -178,7 +224,8 @@ public class MainActivity extends AppCompatActivity {
                     float value = (Float) (animation.getAnimatedValue());
                     ball.setY(value);
                     if (inHoop()) {
-                        goodCount++;
+                        isGoodBall = true;
+                        mediaPlayer.start();
                         animatorX.cancel();
                     }
                 }
@@ -189,11 +236,11 @@ public class MainActivity extends AppCompatActivity {
                 public void onAnimationUpdate(ValueAnimator animation) {
                     float value = (Float) (animation.getAnimatedValue());
                     ball.setX(value);
-                    if (crossWall()) {
+
+                    if (value > x0_b + width / 2) if (crossWall()) {
                         vibrate();
                         animation.cancel();
                     }
-
                 }
             });
 
@@ -202,11 +249,11 @@ public class MainActivity extends AppCompatActivity {
                 public void onAnimationEnd(Animator animation) {
                     animatorY1.cancel();
                     animatorY2.cancel();
-                    ball.setX(200);
-                    ball.setY(1000);
+                    ball.setX((float) window.right / 2);
+                    ball.setY((float) window.bottom / 2);
                     isReady = true;
                     count++;
-                    changeScore();
+                    changeScore(isGoodBall);
                 }
             });
 
@@ -216,20 +263,15 @@ public class MainActivity extends AppCompatActivity {
         }
 
         private boolean crossWall() {
-            return ball.getX() > window.right || ball.getX() < window.left || ball.getY() > window.bottom || ball.getY() < window.top;
+            return ball.getX() > window.right || ball.getX() < window.left || ball.getY() > window.bottom;
         }
 
         private boolean inHoop() {
             getRectBall(rectBall);
             getRectHoop(rectHoop);
-            Log.d("MainActivityWall", "hoop = " + rectHoop.toShortString() + " ball = " + rectBall.toShortString());
-
             return Rect.intersects(rectBall, rectHoop);
         }
-
-
     };
-
 
     private void getRectBall(Rect rect) {
         if (rect == null) {
@@ -250,5 +292,4 @@ public class MainActivity extends AppCompatActivity {
         rect.top = (int) (hoop.getY() + hoop.getHeight() / 2);
         rect.bottom = (int) (hoop.getY() + hoop.getHeight());
     }
-
 }
