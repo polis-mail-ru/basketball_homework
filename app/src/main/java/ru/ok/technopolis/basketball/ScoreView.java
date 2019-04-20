@@ -16,6 +16,10 @@ public class ScoreView extends View {
     private float starBlockMidY;
     private float starBlockMidX;
     private float starDiam;
+    private int goldColor = getResources().getColor(R.color.colorGold);
+    private int silverColor = getResources().getColor(R.color.colorSilver);
+    private int bronzeColor = getResources().getColor(R.color.colorBronze);
+    private int blackColor = getResources().getColor(R.color.colorBlack);
 
     public ScoreView(Context context) {
         super(context, null);
@@ -26,23 +30,24 @@ public class ScoreView extends View {
         score = 0;
         path = new Path();
         paint = new Paint();
+        paint.setColor(blackColor);
     }
 
     public void incrementScore() {
         score++;
         if (score > 39) {
-            paint.setColor(getResources().getColor(R.color.colorGold));
+            paint.setColor(goldColor);
         } else if (score > 19) {
-            paint.setColor(getResources().getColor(R.color.colorSilver));
+            paint.setColor(silverColor);
         } else if (score > 9) {
-            paint.setColor(getResources().getColor(R.color.colorBronze));
+            paint.setColor(bronzeColor);
         }
         invalidate();
     }
 
     public void resetScore() {
         score = 0;
-        paint.setColor(getResources().getColor(R.color.colorBlack));
+        paint.setColor(blackColor);
         invalidate();
     }
 
@@ -77,7 +82,6 @@ public class ScoreView extends View {
         starBlockMidX = starBlockWidth / 2f;
         starBlockMidY = h / 2f;
         starDiam = Math.min(starBlockMidX, starBlockMidY);
-        paint.setColor(getResources().getColor(R.color.colorBlack));
         paint.setTextSize(starDiam);
     }
 }
