@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -20,7 +19,6 @@ public class MainActivity extends AppCompatActivity {
     private ImageView playerImageView;
     private CustomCounterView counterView;
 
-    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,20 +39,11 @@ public class MainActivity extends AppCompatActivity {
         ballImageView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        break;
-                    case MotionEvent.ACTION_MOVE:
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        float dx = event.getX();
-                        float dy = event.getY();
-                        Log.d("dx,dy", dx + "----" + dy);
-                        startAnimation2(dx, dy);
-                        break;
-                    case MotionEvent.ACTION_CANCEL:
-                        break;
-
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    float dx = event.getX();
+                    float dy = event.getY();
+                    Log.d("dx,dy: ", dx + "----" + dy);
+                    startAnimation2(dx, dy);
                 }
                 return true;
             }
