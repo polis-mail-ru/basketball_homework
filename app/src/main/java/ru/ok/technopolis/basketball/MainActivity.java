@@ -1,7 +1,6 @@
 package ru.ok.technopolis.basketball;
 
 import android.animation.Animator;
-import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -9,7 +8,6 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,10 +17,12 @@ import android.widget.TextView;
 
 import java.util.Random;
 
+import ru.ok.technopolis.basketball.controllers.AnimationController;
+import ru.ok.technopolis.basketball.objects.Ball;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "";
-    private ImageView ball;
     private ImageView point;
     private TextView money;
     private ImageView player;
@@ -34,23 +34,18 @@ public class MainActivity extends AppCompatActivity {
     private boolean walls;
     private boolean vibro;
     private boolean music;
-    private boolean threw = false;
-    private int playerDirection = 1;
     private Vibrator vibrator;
     private MediaPlayer soundsPlayer;
     public static final String WALL_KEY = "walls";
     public static final String VIBRO_KEY = "vibro";
     public static final String MUSIC_KEY = "music";
-    public static final String BALL_KEY = "ball";
+    public static final String BALL_KEY = "ballView";
     private ValueAnimator animator;
     private StarView scoreView;
     private final Random random = new Random();
-    private float startPosY;
-    private float startPosX;
-    private float startX;
     private final float g = 10;
-    private byte state = 0;
-    private ObjectAnimator anim;
+    private Ball ball;
+    private AnimationController animationController;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -59,21 +54,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
         x = Float.POSITIVE_INFINITY;
-        ball = findViewById(R.id.iv_translate_fling);
         final RelativeLayout mainLayout = findViewById(R.id.main_layout);
         point = findViewById(R.id.empty);
         money = findViewById(R.id.money);
-
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         backView = findViewById(R.id.back);
         scoreView = findViewById(R.id.scoreView);
         player = findViewById(R.id.player);
         getExtra();
-        ball.setVisibility(View.VISIBLE);
-        startPosY = ball.getTranslationY();
-        startPosX = ball.getTranslationX();
-        anim = ObjectAnimator.ofFloat(ball, "rotation", 360);
-        anim.setDuration(3000);
+        //ballView.setVisibility(View.VISIBLE);
         final GestureDetector gestureDetector = new GestureDetector(this, gestureListener);
         mainLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -89,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
             walls = extras.getBoolean(WALL_KEY, true);
             vibro = extras.getBoolean(VIBRO_KEY, false);
             music = extras.getBoolean(MUSIC_KEY, true);
-            ball.setImageResource(extras.getInt(BALL_KEY, R.drawable.ball2));
+            //ballView.setImageResource(extras.getInt(BALL_KEY, R.drawable.ball2));
         }
     }
 
@@ -101,96 +90,79 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            if (!threw && state != 1) {
-                rotateBall();
-                ball.setVisibility(View.VISIBLE);
-                threw = true;
+            if (ball == null || (!ball.isThrown() && AnimationController.state != 1)) {
                 animator = ValueAnimator.ofFloat(0, 1);
-                animator.setDuration(4000);
+                animator.setDuration(AnimationController.BALL_DURATION);
                 final float dY = Math.abs((e2.getRawY() - e1.getRawY()) / (e2.getEventTime() - e1.getEventTime()));
                 final float dX = (e2.getRawX() - e1.getRawX()) / (e2.getEventTime() - e1.getEventTime());
+                if (ball == null) {
+                    ball = new Ball(dX > 0 ? Ball.Direction.RIGHT : Ball.Direction.LEFT, (ImageView) findViewById(R.id.iv_translate_fling));
+                    animationController = new AnimationController(ball.getObject());
+                } else {
+                    ball = new Ball(dX > 0 ? Ball.Direction.RIGHT : Ball.Direction.LEFT, ball.getObject());
+                }
+                ball.throwBall(dY / 2, dX / 2);
                 animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-
-                    private float speedX = dX / 2;
-                    private float speedY = dY / 2;
-                    private long lastCollisionYTime = 0;
-                    private long lastCollisionXTime = 0;
                     private int collisionCounter = 1;
-                    private float[] hitCoords = {ball.getTranslationX(), startPosY};
+                    private float[] hitCoords = {ball.getObject().getTranslationX(), ball.getObject().getTranslationY()};
                     private float lastPosY = ball.getY();
-                    private boolean dir = (!(speedX > 0));
 
                     @Override
                     public void onAnimationUpdate(ValueAnimator animation) {
                         long time = animation.getCurrentPlayTime();
-                        speedY = speedY - 0.0001f * (time - lastCollisionYTime);
-                        ball.setTranslationY(hitCoords[1] - (speedY) * (time - lastCollisionYTime));
-                        ball.setTranslationX(hitCoords[0] + speedX * (time - lastCollisionXTime));
-
-                        if (ball.getY() + ball.getHeight() * 2 > backView.getHeight()) {
-                            if (speedY < 0) {
-                                speedY = (float) ((dY / 2) * Math.pow(0.75, collisionCounter));
-                                lastCollisionYTime = time;
-                                hitCoords[1] = (int) ball.getTranslationY();
+                        ball.setSpeedY(ball.getSpeedY() - 0.0001f * (time - ball.getLastCollisionYTime()));
+                        ball.update(hitCoords[1] - (ball.getSpeedY()) * (time - ball.getLastCollisionYTime()),
+                                hitCoords[0] + ball.getSpeedX() * (time - ball.getLastCollisionXTime()));
+                        if (ball.getY() + ball.getRadius() * 4 > backView.getHeight()) {
+                            if (ball.getSpeedY() < 0) {
+                                ball.setSpeedY((float) ((dY / 2) * Math.pow(0.75, collisionCounter)));
+                                ball.setLastCollisionYTime(time);
+                                hitCoords[1] = ball.getObject().getTranslationY();
                                 collisionCounter++;
+                                if (collisionCounter == 2) { // ball hits ground
+                                    if (ball.getDirection() == Ball.Direction.RIGHT) {
+                                        ball.rotateRight();
+                                    } else {
+                                        ball.rotateLeft();
+                                    }
+                                }
                             }
-                            if (Math.abs(lastPosY - ball.getY()) < 3f && state == 0) {
-                                fadeBall();
+                            if (Math.abs(lastPosY - ball.getY()) < 3f && AnimationController.state == 0) { //fade ball
+                                ball.fade();
                             }
-                            if (state == 2) {
-                                ball.setAlpha(1f);
-                                ball.setVisibility(View.INVISIBLE);
-                                state = 0;
-                                threw = false;
+                            if (AnimationController.state == 2) {
+                                AnimationController.state = 0;
                                 animation.cancel();
-                                anim.cancel();
-                                ball.setTranslationX(startPosX);
-                                ball.setTranslationY(startPosY);
                             }
                             lastPosY = ball.getY();
                         }
-
-                        if (ball.getX() + ball.getWidth() >= backView.getWidth()
-                                && ball.getX() + ball.getHeight() / 2 < backView.getWidth() + 30 && !dir && lastCollisionXTime != time) {
+                        if (ball.hitRightWall(backView, time)) {
                             hitCoords[0] = ball.getX();
-                            lastCollisionXTime = time;
-                            speedX = -speedX / 2;
-                            dir = true;
-                        } else if (ball.getX() <= 0
-                                && dir && lastCollisionXTime != time) {
+                            ball.changeDirection(time);
+                        } else if (ball.hirLeftWall(time)) {
                             hitCoords[0] = ball.getX();
-                            Log.d(TAG, "onAnimationUpdate: ");
-                            lastCollisionXTime = time;
-                            speedX = -speedX / 2;
-                            dir = false;
+                            ball.changeDirection(time);
                         }
                     }
                 });
                 animator.addListener(new Animator.AnimatorListener() {
                     @Override
                     public void onAnimationStart(Animator animation) {
-
                     }
 
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                        ball.setAlpha(1f);
-                        ball.setVisibility(View.INVISIBLE);
-                        state = 0;
-                        threw = false;
-                        anim.cancel();
-                        ball.setTranslationX(startPosX);
-                        ball.setTranslationY(startPosY);
+                        AnimationController.state = 0;
+                        ball.resetBall();
+                        AnimationController.anim.cancel();
                     }
 
                     @Override
                     public void onAnimationCancel(Animator animation) {
-
                     }
 
                     @Override
                     public void onAnimationRepeat(Animator animation) {
-
                     }
                 });
                 animator.start();
@@ -199,36 +171,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
     };
-
-    private void rotateBall() {
-        anim.start();
-    }
-
-    private void fadeBall() {
-        state = 1;
-        ObjectAnimator anim = ObjectAnimator.ofFloat(ball, "alpha", 0);
-        anim.setDuration(1000);
-        anim.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                state = 2;
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-            }
-        });
-        anim.start();
-
-    }
 
     private void animateBoy(final float y) {
         player.animate().setDuration(500).translationYBy(-y).setListener(new Animator.AnimatorListener() {
@@ -250,14 +192,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }).start();
 
-    }
-
-
-    private void initBall() {
-        player.setTranslationX(random.nextInt(backView.getWidth() * 2 / 5));
-        ball.setTranslationX(startX + (player.getTranslationX() - startPosY));
-        startX = ball.getTranslationX();
-        Log.d(TAG, "initBall: " + player.getTranslationX());
     }
 
     private void score() {
