@@ -22,12 +22,12 @@ import ru.ok.technopolis.basketball.controllers.AnimationController;
 import ru.ok.technopolis.basketball.controllers.ScoreController;
 import ru.ok.technopolis.basketball.objects.Ball;
 import ru.ok.technopolis.basketball.objects.Basket;
+import ru.ok.technopolis.basketball.objects.Player;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "";
     private TextView money;
-    private ImageView player;
     private BackView backView;
     private boolean scoredThis = false;
     private boolean scoredLast;
@@ -48,8 +48,9 @@ public class MainActivity extends AppCompatActivity {
     private final float g = 10;
     private Ball ball;
     private Basket basket;
-    private AnimationController animationController;
+    private Player player;
     private ScoreController scoreController;
+    private AnimationController animationController;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -63,9 +64,9 @@ public class MainActivity extends AppCompatActivity {
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         backView = findViewById(R.id.back);
         scoreView = findViewById(R.id.scoreView);
-        player = findViewById(R.id.player);
+        player = new Player(findViewById(R.id.player));
         getExtra();
-        basket = new Basket((ImageView) findViewById(R.id.empty));
+        basket = new Basket(findViewById(R.id.empty));
         final GestureDetector gestureDetector = new GestureDetector(this, gestureListener);
         mainLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -105,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
                     ball = new Ball(dX > 0 ? Ball.Direction.RIGHT : Ball.Direction.LEFT, ball.getObject());
                 }
                 ball.throwBall(dY / 2, dX / 2);
+                player.jump(Math.min(dY * 100, 200));
                 animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                     private int collisionCounter = 1;
                     private float[] hitCoords = {ball.getObject().getTranslationX(), ball.getObject().getTranslationY()};
@@ -140,6 +142,13 @@ public class MainActivity extends AppCompatActivity {
                             lastPosY = ball.getY();
                         }
                         if (ball.hitBasket(basket) && !ball.isScored()) {
+                            if (vibro && vibrator.hasVibrator()) {
+                                vibrator.vibrate(100L);
+                            }
+                            if (music) {
+                                soundsPlayer = MediaPlayer.create(MainActivity.this, R.raw.wow);
+                                soundsPlayer.start();
+                            }
                             scoreController.score();
                             ball.score();
                         }
@@ -183,42 +192,10 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private void setUpControllers() {
-        animationController = new AnimationController(ball.getObject());
+        animationController = new AnimationController();
         scoreController = new ScoreController((StarView) findViewById(R.id.scoreView));
     }
 
-    private void animateBoy(final float y) {
-        player.animate().setDuration(500).translationYBy(-y).setListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                player.animate().setDuration(500).translationYBy(y).setListener(null).start();
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-            }
-        }).start();
-
-    }
-
-    private void score() {
-        if (vibro && vibrator.hasVibrator()) {
-            vibrator.vibrate(100L);
-        }
-        if (music) {
-            soundsPlayer = MediaPlayer.create(this, R.raw.wow);
-            soundsPlayer.start();
-        }
-        scoreView.increase();
-    }
 
     @Override
     protected void onDestroy() {

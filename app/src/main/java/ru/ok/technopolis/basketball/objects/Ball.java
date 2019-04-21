@@ -1,8 +1,6 @@
 package ru.ok.technopolis.basketball.objects;
 
-import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 
 import ru.ok.technopolis.basketball.controllers.AnimationController;
 import ru.ok.technopolis.basketball.BackView;
@@ -13,7 +11,7 @@ public class Ball {
     private boolean isThrown;
     private float speedY;
     private float speedX;
-    private final ImageView object;
+    private final View object;
     private final float startPosX;
     private final float startPosY;
     private final float radius;
@@ -22,13 +20,13 @@ public class Ball {
     private final AnimationController animationController;
     private boolean scored;
 
-    public Ball(Direction direction, ImageView object) {
+    public Ball(Direction direction, View object) {
         this.direction = direction;
         this.object = object;
         this.startPosX = object.getTranslationX();
         this.startPosY = object.getTranslationY();
         this.radius = object.getHeight() / 2f;
-        this.animationController = new AnimationController(object);
+        this.animationController = new AnimationController();
     }
 
     public boolean isThrown() {
@@ -47,7 +45,7 @@ public class Ball {
         return speedX;
     }
 
-    public ImageView getObject() {
+    public View getObject() {
         return object;
     }
 
@@ -76,7 +74,7 @@ public class Ball {
         speedY = dY;
         speedX = dX;
         object.setVisibility(View.VISIBLE);
-        animationController.startBallRotation();
+        animationController.startBallRotation(getObject());
     }
 
     public void resetBall() {
@@ -117,7 +115,6 @@ public class Ball {
 
     public boolean hitRightWall(BackView backView, long time) {
         return getX() + getRadius() * 2 >= backView.getWidth()
-                && getX() + getRadius() < backView.getWidth() + 30
                 && getDirection() == Ball.Direction.RIGHT && lastCollisionXTime != time;
     }
 
@@ -127,17 +124,17 @@ public class Ball {
     }
 
     public void rotateRight() {
-        animationController.setBallRotation(-1);
-        animationController.setBallRotation(1);
+        animationController.setBallRotation(getObject(),-1);
+        animationController.setBallRotation(getObject(),1);
     }
 
     public void rotateLeft() {
-        animationController.setBallRotation(1);
-        animationController.setBallRotation(-1);
+        animationController.setBallRotation(getObject(),1);
+        animationController.setBallRotation(getObject(),-1);
     }
 
     public void fade() {
-        animationController.fadeBall();
+        animationController.fadeBall(getObject());
     }
 
     public boolean hitBasket(Basket basket) {

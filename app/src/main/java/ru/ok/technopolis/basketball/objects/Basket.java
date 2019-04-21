@@ -1,16 +1,16 @@
 package ru.ok.technopolis.basketball.objects;
 
-import android.widget.ImageView;
+import android.view.View;
 
 public class Basket {
 
-    private final ImageView object;
+    private final View object;
 
-    public Basket(ImageView object) {
+    public Basket(View object) {
         this.object = object;
     }
 
-    public ImageView getObject() {
+    public View getObject() {
         return object;
     }
 

@@ -3,20 +3,18 @@ package ru.ok.technopolis.basketball.controllers;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.view.View;
 import android.view.animation.LinearInterpolator;
-import android.widget.ImageView;
 
 public class AnimationController {
     public static byte state;
     public static ObjectAnimator anim;
-    private final ImageView ball;
-    public static final int BALL_DURATION = 4000;
+    public static final int BALL_DURATION = 8000;
 
-    public AnimationController(ImageView ball) {
-        this.ball = ball;
+    public AnimationController() {
     }
 
-    public void setBallRotation(int i) {
+    public void setBallRotation(View ball, int i) {
         anim.end();
         anim.removeAllListeners();
         anim = ObjectAnimator.ofFloat(ball, "rotation", i * 360);
@@ -26,7 +24,7 @@ public class AnimationController {
         anim.start();
     }
 
-    public void startBallRotation() {
+    public void startBallRotation(View ball) {
         anim = ObjectAnimator.ofFloat(ball, "rotation", 360);
         anim.setRepeatCount(ValueAnimator.INFINITE);
         anim.setDuration(2000);
@@ -34,7 +32,7 @@ public class AnimationController {
         anim.start();
     }
 
-    public void fadeBall() {
+    public void fadeBall(View ball) {
         AnimationController.state = 1;
         ObjectAnimator anim = ObjectAnimator.ofFloat(ball, "alpha", 0);
         anim.setDuration(1000);
@@ -60,4 +58,25 @@ public class AnimationController {
 
     }
 
+    public void jumpPlayer(final View player, final float y) {
+        player.animate().setDuration(350).translationYBy(-y).setListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                player.animate().setDuration(350).translationYBy(y).setListener(null).start();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+            }
+        }).start();
+
+    }
 }
