@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onAnimationUpdate(ValueAnimator animation) {
                         long time = animation.getCurrentPlayTime();
-                        ball.setSpeedY(ball.getSpeedY() - 0.00005f * (time - ball.getLastCollisionYTime()));
+                        ball.setSpeedY(ball.getSpeedY() - 0.000075f * (time - ball.getLastCollisionYTime()));
                         ball.update(hitCoords[1] - (ball.getSpeedY()) * (time - ball.getLastCollisionYTime()),
                                 hitCoords[0] + ball.getSpeedX() * (time - ball.getLastCollisionXTime()));
                         if (ball.getY() + ball.getRadius() * 4 > backView.getHeight()) {
