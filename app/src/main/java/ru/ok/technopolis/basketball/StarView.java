@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.view.View;
 
 public class StarView extends View {
@@ -57,9 +58,10 @@ public class StarView extends View {
         textY = fromDpToPx(32);
     }
 
-    float fromDpToPx(float dp) {
+    public float fromDpToPx(float dp) {
         return dp * getContext().getResources().getDisplayMetrics().density;
     }
+
 
     public void increase() {
         count++;

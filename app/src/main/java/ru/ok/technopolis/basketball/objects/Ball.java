@@ -1,8 +1,11 @@
 package ru.ok.technopolis.basketball.objects;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
 
-import ru.ok.technopolis.basketball.controllers.AnimationController;
 import ru.ok.technopolis.basketball.BackView;
 
 public class Ball {
@@ -78,7 +81,7 @@ public class Ball {
     }
 
     public void resetBall() {
-        object.setVisibility(View.INVISIBLE);
+        object.setVisibility(View.VISIBLE);
         isThrown = false;
         object.setTranslationX(startPosX);
         object.setTranslationY(startPosY);
@@ -157,8 +160,77 @@ public class Ball {
                 && getDirection() == Ball.Direction.RIGHT && lastCollisionXTime != time;
     }
 
+    public AnimationController getAnimationController() {
+        return animationController;
+    }
+
     public enum Direction {
         RIGHT,
         LEFT
+    }
+
+    public class AnimationController {
+        ObjectAnimator anim;
+        private int state;
+        public static final int BALL_DURATION = 8000;
+
+        AnimationController() {
+        }
+
+        public ObjectAnimator getAnim() {
+            return anim;
+        }
+
+        void setBallRotation(View ball, int i) {
+            anim.end();
+            anim.removeAllListeners();
+            anim = ObjectAnimator.ofFloat(ball, "rotation", i * 360);
+            anim.setRepeatCount(ValueAnimator.INFINITE);
+            anim.setDuration(1250);
+            anim.setInterpolator(new LinearInterpolator());
+            anim.start();
+        }
+
+        void startBallRotation(View ball) {
+            anim = ObjectAnimator.ofFloat(ball, "rotation", 360);
+            anim.setRepeatCount(ValueAnimator.INFINITE);
+            anim.setDuration(2000);
+            anim.setInterpolator(new LinearInterpolator());
+            anim.start();
+        }
+
+        void fadeBall(View ball) {
+            getAnimationController().setState(1);
+            ObjectAnimator anim = ObjectAnimator.ofFloat(ball, "alpha", 0);
+            anim.setDuration(1000);
+            anim.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    getAnimationController().setState(2);
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+                }
+            });
+            anim.start();
+
+        }
+
+        public void setState(int state) {
+            this.state = state;
+        }
+
+        public int getState() {
+            return state;
+        }
     }
 }

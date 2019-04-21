@@ -10,7 +10,11 @@ public class ScoreController {
         this.view = view;
     }
 
-    public void score() {
+    void score() {
         view.increase();
+    }
+
+    public StarView getView() {
+        return view;
     }
 }
