@@ -1,5 +1,6 @@
 package ru.ok.technopolis.basketball.objects;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -19,6 +20,7 @@ public class Ball {
     private long lastCollisionXTime;
     private long lastCollisionYTime;
     private final AnimationController animationController;
+    private boolean scored;
 
     public Ball(Direction direction, ImageView object) {
         this.direction = direction;
@@ -106,10 +108,9 @@ public class Ball {
         speedX = -speedX / 2;
         direction = direction == Direction.RIGHT ? Direction.LEFT : Direction.RIGHT;
         setLastCollisionXTime(time);
-        if(direction == Direction.RIGHT){
+        if (direction == Direction.RIGHT) {
             rotateRight();
-        }
-        else{
+        } else {
             rotateLeft();
         }
     }
@@ -137,6 +138,26 @@ public class Ball {
 
     public void fade() {
         animationController.fadeBall();
+    }
+
+    public boolean hitBasket(Basket basket) {
+        return getX() > basket.getX() - basket.getRadius() && getX() < basket.getX() + basket.getRadius()
+                && getY() > basket.getY() - basket.getRadius() && getY() < basket.getY() + basket.getRadius();
+    }
+
+    public void score() {
+        scored = true;
+    }
+
+    public boolean isScored() {
+        return scored;
+    }
+
+    public boolean hitLeftBasket(Basket basket, long time) {
+        return getX() + getRadius() * 3 >= basket.getX()
+                && getY() + getRadius() * 2 >= basket.getY()
+                && getY() + getRadius() * 3 <= basket.getY() + basket.getRadius() * 4
+                && getDirection() == Ball.Direction.RIGHT && lastCollisionXTime != time;
     }
 
     public enum Direction {

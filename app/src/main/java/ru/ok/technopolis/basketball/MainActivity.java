@@ -8,6 +8,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,12 +19,13 @@ import android.widget.TextView;
 import java.util.Random;
 
 import ru.ok.technopolis.basketball.controllers.AnimationController;
+import ru.ok.technopolis.basketball.controllers.ScoreController;
 import ru.ok.technopolis.basketball.objects.Ball;
+import ru.ok.technopolis.basketball.objects.Basket;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "";
-    private ImageView point;
     private TextView money;
     private ImageView player;
     private BackView backView;
@@ -45,7 +47,9 @@ public class MainActivity extends AppCompatActivity {
     private final Random random = new Random();
     private final float g = 10;
     private Ball ball;
+    private Basket basket;
     private AnimationController animationController;
+    private ScoreController scoreController;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -55,14 +59,13 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         x = Float.POSITIVE_INFINITY;
         final RelativeLayout mainLayout = findViewById(R.id.main_layout);
-        point = findViewById(R.id.empty);
         money = findViewById(R.id.money);
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         backView = findViewById(R.id.back);
         scoreView = findViewById(R.id.scoreView);
         player = findViewById(R.id.player);
         getExtra();
-        //ballView.setVisibility(View.VISIBLE);
+        basket = new Basket((ImageView) findViewById(R.id.empty));
         final GestureDetector gestureDetector = new GestureDetector(this, gestureListener);
         mainLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -97,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
                 final float dX = (e2.getRawX() - e1.getRawX()) / (e2.getEventTime() - e1.getEventTime());
                 if (ball == null) {
                     ball = new Ball(dX > 0 ? Ball.Direction.RIGHT : Ball.Direction.LEFT, (ImageView) findViewById(R.id.iv_translate_fling));
-                    animationController = new AnimationController(ball.getObject());
+                    setUpControllers();
                 } else {
                     ball = new Ball(dX > 0 ? Ball.Direction.RIGHT : Ball.Direction.LEFT, ball.getObject());
                 }
@@ -110,12 +113,12 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onAnimationUpdate(ValueAnimator animation) {
                         long time = animation.getCurrentPlayTime();
-                        ball.setSpeedY(ball.getSpeedY() - 0.0001f * (time - ball.getLastCollisionYTime()));
+                        ball.setSpeedY(ball.getSpeedY() - 0.00005f * (time - ball.getLastCollisionYTime()));
                         ball.update(hitCoords[1] - (ball.getSpeedY()) * (time - ball.getLastCollisionYTime()),
                                 hitCoords[0] + ball.getSpeedX() * (time - ball.getLastCollisionXTime()));
                         if (ball.getY() + ball.getRadius() * 4 > backView.getHeight()) {
                             if (ball.getSpeedY() < 0) {
-                                ball.setSpeedY((float) ((dY / 2) * Math.pow(0.75, collisionCounter)));
+                                ball.setSpeedY((float) ((dY / 3 * 2) * Math.pow(0.75, collisionCounter)));
                                 ball.setLastCollisionYTime(time);
                                 hitCoords[1] = ball.getObject().getTranslationY();
                                 collisionCounter++;
@@ -136,7 +139,14 @@ public class MainActivity extends AppCompatActivity {
                             }
                             lastPosY = ball.getY();
                         }
-                        if (ball.hitRightWall(backView, time)) {
+                        if (ball.hitBasket(basket) && !ball.isScored()) {
+                            scoreController.score();
+                            ball.score();
+                        }
+                        if (ball.hitLeftBasket(basket, time)) {
+                            hitCoords[0] = ball.getX();
+                            ball.changeDirection(time);
+                        } else if (ball.hitRightWall(backView, time)) {
                             hitCoords[0] = ball.getX();
                             ball.changeDirection(time);
                         } else if (ball.hirLeftWall(time)) {
@@ -171,6 +181,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
     };
+
+    private void setUpControllers() {
+        animationController = new AnimationController(ball.getObject());
+        scoreController = new ScoreController((StarView) findViewById(R.id.scoreView));
+    }
 
     private void animateBoy(final float y) {
         player.animate().setDuration(500).translationYBy(-y).setListener(new Animator.AnimatorListener() {

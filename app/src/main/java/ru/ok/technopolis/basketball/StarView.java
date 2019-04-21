@@ -61,7 +61,7 @@ public class StarView extends View {
         return dp * getContext().getResources().getDisplayMetrics().density;
     }
 
-    void increase() {
+    public void increase() {
         count++;
         invalidate();
     }

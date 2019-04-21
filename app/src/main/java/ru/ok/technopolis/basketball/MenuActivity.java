@@ -73,76 +73,76 @@ public class MenuActivity extends AppCompatActivity {
         //startLogin();
     }
 
-    private void startLogin() {
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN)
-                .requestScopes(Games.SCOPE_GAMES_LITE)
-                .requestEmail()
-                .build();
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-        GoogleSignIn.getClient(this, gso)
-                .silentSignIn()
-                .addOnCompleteListener(
-                        this,
-                        new OnCompleteListener<GoogleSignInAccount>() {
-                            @Override
-                            public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
-                                if (task.isSuccessful()) {
-                                    MenuActivity.this.signIn(task.getResult());
-                                } else {
-                                    Log.d("", "onCreate: SOSI");
-                                }
-                            }
-                        });
-    }
+//    private void startLogin() {
+//        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN)
+//                .requestScopes(Games.SCOPE_GAMES_LITE)
+//                .requestEmail()
+//                .build();
+//        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+//        GoogleSignIn.getClient(this, gso)
+//                .silentSignIn()
+//                .addOnCompleteListener(
+//                        this,
+//                        new OnCompleteListener<GoogleSignInAccount>() {
+//                            @Override
+//                            public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
+//                                if (task.isSuccessful()) {
+//                                    MenuActivity.this.signIn(task.getResult());
+//                                } else {
+//                                    Log.d("", "onCreate: SOSI");
+//                                }
+//                            }
+//                        });
+//    }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-       // GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-       // updateUI(account);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            handleSignInResult(task);
-        }
-    }
-
-    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
-        try {
-            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            updateUI(account);
-        } catch (ApiException e) {
-            updateUI(null);
-        }
-    }
-
-    private void signIn(GoogleSignInAccount result) {
-        if (result == null) {
-            Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-            startActivityForResult(signInIntent, RC_SIGN_IN);
-        } else {
-            Log.d("", "signIn: POOOOOOG");
-        }
-    }
-
-    private void updateUI(@Nullable GoogleSignInAccount account) {
-        if (account != null) {
-            Games.getLeaderboardsClient(MenuActivity.this, account)
-                    .getLeaderboardIntent(getString(R.string.leaderboard_id))
-                    .addOnSuccessListener(new OnSuccessListener<Intent>() {
-                        @Override
-                        public void onSuccess(Intent intent) {
-                            startActivityForResult(intent, RC_LEADERBOARD_UI);
-                        }
-                    });
-        } else {
-            Log.d("", "updateUI: NE POG");
-        }
-    }
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//       // GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+//       // updateUI(account);
+//    }
+//
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (requestCode == RC_SIGN_IN) {
+//            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+//            handleSignInResult(task);
+//        }
+//    }
+//
+//    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+//        try {
+//            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+//            updateUI(account);
+//        } catch (ApiException e) {
+//            updateUI(null);
+//        }
+//    }
+//
+//    private void signIn(GoogleSignInAccount result) {
+//        if (result == null) {
+//            Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+//            startActivityForResult(signInIntent, RC_SIGN_IN);
+//        } else {
+//            Log.d("", "signIn: POOOOOOG");
+//        }
+//    }
+//
+//    private void updateUI(@Nullable GoogleSignInAccount account) {
+//        if (account != null) {
+//            Games.getLeaderboardsClient(MenuActivity.this, account)
+//                    .getLeaderboardIntent(getString(R.string.leaderboard_id))
+//                    .addOnSuccessListener(new OnSuccessListener<Intent>() {
+//                        @Override
+//                        public void onSuccess(Intent intent) {
+//                            startActivityForResult(intent, RC_LEADERBOARD_UI);
+//                        }
+//                    });
+//        } else {
+//            Log.d("", "updateUI: NE POG");
+//        }
+//    }
 
     private void login() {
         GoogleSignInOptions gso = new
