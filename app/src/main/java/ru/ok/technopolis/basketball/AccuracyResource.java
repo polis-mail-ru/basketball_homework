@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 class AccuracyResource {
-    private static double maxHeight = Double.MIN_VALUE;
-    private static List<Double> accuracy = new ArrayList<>();
+    private double maxHeight = Double.MIN_VALUE;
+    private List<Double> accuracy = new ArrayList<>();
 
 
     static class SingletonHolder {
@@ -13,7 +13,6 @@ class AccuracyResource {
     }
 
     static AccuracyResource getInstance() {
-        accuracy = new ArrayList<>();
         return SingletonHolder.HOLDER_INSTANCE;
     }
 

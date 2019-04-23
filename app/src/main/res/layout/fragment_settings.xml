@@ -32,23 +32,24 @@
         android:id="@+id/fragment_settings_level_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:background="@android:color/transparent"
+        android:checked="false"
+        android:fontFamily="@font/font_to_score"
+        android:textColor="@android:color/white"
         android:textOff="@string/hard"
         android:textOn="@string/easy"
-        android:checked="false"
-        android:textColor="@android:color/white"
-        android:fontFamily="@font/font_to_score"
         android:textSize="50sp"
-        android:background="@android:color/transparent"
-        app:layout_constraintTop_toTopOf="@+id/fragment_settings_horizontal_line"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/fragment_settings_reset_button"
         app:layout_constraintBottom_toBottomOf="@+id/fragment_settings_second_horizontal_line"
-        />
+        app:layout_constraintEnd_toStartOf="@+id/fragment_settings_center_vertical_line"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/fragment_settings_horizontal_line" />
 
     <ToggleButton
         android:id="@+id/fragment_settings_vibration_button"
         android:layout_width="80dp"
         android:layout_height="80dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/vibrationxxhdpi"
         android:checked="true"
@@ -56,7 +57,7 @@
         android:textOn=""
         android:thumb="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/fragment_settings_music_button"
+        app:layout_constraintEnd_toStartOf="@+id/fragment_settings_center_vertical_line"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fragment_settings_level_button" />
 
@@ -64,30 +65,30 @@
         android:id="@+id/fragment_settings_music_button"
         android:layout_width="65dp"
         android:layout_height="70dp"
+        android:layout_marginStart="8dp"
         android:background="@drawable/musicxxhdpi"
-        android:thumb="@android:color/transparent"
         android:checked="true"
-        android:textOn=""
         android:textOff=""
-        app:layout_constraintTop_toBottomOf="@+id/fragment_settings_reset_button"
-        app:layout_constraintStart_toEndOf="@+id/fragment_settings_vibration_button"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textOn=""
+        android:thumb="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/fragment_settings_center_vertical_line"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_settings_reset_button" />
 
     <Button
         android:id="@+id/fragment_settings_reset_button"
         android:layout_width="120dp"
         android:layout_height="0dp"
-        android:fontFamily="@font/score_font"
-        android:textSize="50sp"
-        android:textColor="@android:color/white"
+        android:layout_marginStart="8dp"
         android:background="@drawable/resetxhdpi"
-        app:layout_constraintTop_toTopOf="@+id/fragment_settings_horizontal_line"
-        app:layout_constraintStart_toEndOf="@+id/fragment_settings_level_button"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:fontFamily="@font/score_font"
+        android:textColor="@android:color/white"
+        android:textSize="50sp"
         app:layout_constraintBottom_toBottomOf="@+id/fragment_settings_second_horizontal_line"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/fragment_settings_center_vertical_line"
+        app:layout_constraintTop_toTopOf="@+id/fragment_settings_horizontal_line" />
 
     <android.support.constraint.Guideline
         android:id="@+id/fragment_settings_horizontal_line"
@@ -109,5 +110,12 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.69" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/fragment_settings_center_vertical_line"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.50" />
 
 </android.support.constraint.ConstraintLayout>

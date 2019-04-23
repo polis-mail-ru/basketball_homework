@@ -57,7 +57,7 @@ public class SettingsFragment extends Fragment {
         level = args.getBoolean(LEVEL_KEY);
         vibrate = args.getBoolean(VIBRO_KEY);
         score = args.getInt(SCORE_KEY);
-        Log.d(LOG_TAG, "onCreate args " + Boolean.toString(vibrate));
+        Log.d(LOG_TAG, "onCreate args " + vibrate);
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -123,7 +123,7 @@ public class SettingsFragment extends Fragment {
 
         Button reset = view.findViewById(R.id.fragment_settings_reset_button);
         reset.setOnClickListener(v -> {
-            AccuracyResource.deleteAll();
+            AccuracyResource.getInstance().deleteAll();
             score = 0;
         });
 
