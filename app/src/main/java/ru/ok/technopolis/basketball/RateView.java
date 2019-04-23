@@ -80,7 +80,7 @@ public class RateView extends android.support.v7.widget.AppCompatSeekBar {
         height = resolveSize(height, heightMeasureSpec);
         starSize = Math.min(measuredHeight, starSize);
 
-        Log.d("RateView-measure", "count = " + count + "width = " + width + " starSize = " + starSize);
+        Log.d("RateView-measure", "countBalls = " + count + "width = " + width + " starSize = " + starSize);
         count = Math.min(count, measuredWidth / starSize);
         setMeasuredDimension(width, height);
     }

@@ -29,10 +29,18 @@ public class GameActivity extends AppCompatActivity {
     public static final String AMOUNT_KEY = "amount";
 
     public enum Mode {
-        easy, medium, hard
+        EASY(0),
+        MEDIUM(3000),
+        HARD(1000);
+
+        private long duration;
+
+        Mode(long duration) {
+            this.duration = duration;
+        }
     }
 
-    boolean isReady;
+    private boolean ready;
     private ImageView person;
     private ImageView ball;
     private ImageView hoop;
@@ -40,8 +48,8 @@ public class GameActivity extends AppCompatActivity {
     protected TextView textViewScore;
     private FrameLayout layout;
 
-    protected int goodCount;
-    protected int count;
+    protected int goodCountBallsPlayer1;
+    protected int countBalls;
     protected int maxCount;
     private Rect window;
     private Rect rectBall;
@@ -50,7 +58,6 @@ public class GameActivity extends AppCompatActivity {
     private Mode mode;
     private MediaPlayer mediaPlayer;
 
-    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,9 +82,9 @@ public class GameActivity extends AppCompatActivity {
         maxCount = intent.getIntExtra(AMOUNT_KEY, 10);
         int modeId = intent.getIntExtra(MODE_KEY, R.id.medium_level);
         if (modeId == 0) {
-            mode = Mode.easy;
+            mode = Mode.EASY;
         } else {
-            mode = modeId == 2 ? Mode.hard : Mode.medium;
+            mode = modeId == 2 ? Mode.HARD : Mode.MEDIUM;
         }
     }
 
@@ -89,8 +96,8 @@ public class GameActivity extends AppCompatActivity {
         display.getRectSize(window);
         rectBall = new Rect();
         rectHoop = new Rect();
-        goodCount = count = 0;
-        isReady = true;
+        goodCountBallsPlayer1 = countBalls = 0;
+        ready = true;
 
         Log.d("WINDOWSIZE", window.toShortString());
         layout.post(new Runnable() {
@@ -113,18 +120,17 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void setAnimationHoop() {
-        if (mode == Mode.easy) {
+        if (mode == Mode.EASY) {
             return;
         }
-        final ValueAnimator animator1 = ValueAnimator.ofInt(window.left + window.right / 7, window.right - hoop.getWidth() - window.right / 7);
-        final ValueAnimator animator2 = ValueAnimator.ofInt(window.right - hoop.getWidth() - window.right / 7, window.left + window.right / 7);
+        final ValueAnimator animatorGoRight = ValueAnimator.ofInt(window.left + window.right / 7, window.right - hoop.getWidth() - window.right / 7);
+        final ValueAnimator animatorGoLeft = ValueAnimator.ofInt(window.right - hoop.getWidth() - window.right / 7, window.left + window.right / 7);
 
-        animator1.setInterpolator(new DecelerateInterpolator());
-        animator2.setInterpolator(new DecelerateInterpolator());
-        long duration = 3000;
-        duration = mode == Mode.medium ? duration / 2 : duration / 3;
-        animator1.setDuration(duration);
-        animator2.setDuration(duration);
+        animatorGoRight.setInterpolator(new DecelerateInterpolator());
+        animatorGoLeft.setInterpolator(new DecelerateInterpolator());
+
+        animatorGoRight.setDuration(mode.duration);
+        animatorGoLeft.setDuration(mode.duration);
         ValueAnimator.AnimatorUpdateListener listener = new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -133,35 +139,34 @@ public class GameActivity extends AppCompatActivity {
             }
         };
 
-        animator1.addUpdateListener(listener);
-        animator2.addUpdateListener(listener);
+        animatorGoRight.addUpdateListener(listener);
+        animatorGoLeft.addUpdateListener(listener);
 
-        animator1.addListener(new AnimatorListenerAdapter() {
+        animatorGoRight.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                animator2.start();
+                animatorGoLeft.start();
             }
         });
 
-        animator2.addListener(new AnimatorListenerAdapter() {
+        animatorGoLeft.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                animator1.start();
+                animatorGoRight.start();
             }
         });
-        animator1.start();
+        animatorGoRight.start();
     }
 
-    @SuppressLint("SetTextI18n")
     protected void changeScore(boolean increase) {
         if (increase) {
-            goodCount++;
+            goodCountBallsPlayer1++;
         }
-        String s = goodCount + "/" + count;
+        String s = goodCountBallsPlayer1 + "/" + countBalls;
         textViewScore.setText(s);
-        int progress = count == 0 ? 0 : (int) ((double) goodCount / count * 100);
+        int progress = countBalls == 0 ? 0 : (int) ((double) goodCountBallsPlayer1 / countBalls * 100);
         rateView.setProgress(progress);
-        if (count >= maxCount) {
+        if (countBalls >= maxCount) {
             Intent data = new Intent();
             data.putExtra(SCORE_KEY, "YourScore is " + s);
             setResult(RESULT_MESSAGE, data);
@@ -185,8 +190,8 @@ public class GameActivity extends AppCompatActivity {
 
         @Override
         public boolean onFling(MotionEvent downEvent, MotionEvent moveEvent, float velocityX, float velocityY) {
-            if (isReady && velocityY < 0) {
-                isReady = false;
+            if (ready && velocityY < 0) {
+                ready = false;
                 isGoodBall = false;
                 startAnimation(downEvent.getRawX(), Math.max(downEvent.getRawY(), (float) window.bottom / 2), velocityX / 7, -velocityY / 7);
             }
@@ -251,8 +256,8 @@ public class GameActivity extends AppCompatActivity {
                     animatorY2.cancel();
                     ball.setX((float) window.right / 2);
                     ball.setY((float) window.bottom / 2);
-                    isReady = true;
-                    count++;
+                    ready = true;
+                    countBalls++;
                     changeScore(isGoodBall);
                 }
             });

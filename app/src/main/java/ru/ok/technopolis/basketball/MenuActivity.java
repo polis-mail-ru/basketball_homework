@@ -1,6 +1,5 @@
 package ru.ok.technopolis.basketball;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,7 +12,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
 public class MenuActivity extends AppCompatActivity {
     private static final String SETTINGS_KEY = "settings";
@@ -57,13 +55,12 @@ public class MenuActivity extends AppCompatActivity {
         }
     }
 
-    @SuppressLint("SetTextI18n")
     private void createDialogs() {
         AlertDialog.Builder builder = new AlertDialog.Builder(MenuActivity.this, R.style.AlertDialogTheme);
-        builder.setMessage("Do you really want to exit?");
+        builder.setMessage(R.string.exit_message);
         builder.setTitle(R.string.exit);
 
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
@@ -75,7 +72,7 @@ public class MenuActivity extends AppCompatActivity {
 
         builder.setTitle(R.string.help);
         builder.setMessage(R.string.text_help);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
@@ -92,7 +89,7 @@ public class MenuActivity extends AppCompatActivity {
         final RadioGroup radioGroup = view.findViewById(R.id.levels_groups);
         builder.setView(view);
 
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 SharedPreferences.Editor editor = settings.edit();
@@ -104,7 +101,6 @@ public class MenuActivity extends AppCompatActivity {
                     }
                     if (check) {
                         int amount = Integer.parseInt(textAmountBalls.getText().toString());
-                        Toast.makeText(MenuActivity.this, "dkmkde", Toast.LENGTH_SHORT).show();
                         editor.putInt(GameActivity.AMOUNT_KEY, amount);
                     }
                 }
@@ -118,7 +114,7 @@ public class MenuActivity extends AppCompatActivity {
         toolsDialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
-                textAmountBalls.setText("" + settings.getInt(GameActivity.AMOUNT_KEY, 10));
+                textAmountBalls.setText(getString(R.string.amount_balls, settings.getInt(GameActivity.AMOUNT_KEY, 10)));
                 radioGroup.check(settings.getInt(GameActivity.MODE_KEY, R.id.easy_level));
             }
         });
