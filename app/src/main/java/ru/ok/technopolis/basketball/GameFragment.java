@@ -33,9 +33,9 @@ public class GameFragment extends Fragment {
     private static final String MUSIC_KEY = "music";
     private static final String LOG_TAG = "Main_Activity_logs";
 
-    boolean isVibrationOn = true;
-    boolean isEasy = false;
-    boolean isMusicOn;
+    private boolean isVibrationOn = true;
+    private boolean isEasy = false;
+    private boolean isMusicOn;
 
     private Vibrator vibrator;
     private ImageView ballView;
@@ -108,7 +108,7 @@ public class GameFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_game,
                 container, false);
-        if(isVibrationOn && getContext() != null){
+        if (isVibrationOn && getContext() != null) {
             vibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
         }
         mainLayout = rootView.findViewById(R.id.fragment_game_layout);
@@ -122,15 +122,15 @@ public class GameFragment extends Fragment {
             leftSideHoop.getLocationOnScreen(leftSideHoopLocation);
             rightSideHoop.getLocationOnScreen(rightSideHoopLocation);
             ballView.getLocationOnScreen(ballStartLocation);
-            if(isEasy){
-                ballStartLocation[0] = width /2;
+            if (isEasy) {
+                ballStartLocation[0] = width / 2;
             }
             ballView.setX(ballStartLocation[0]);
             ballView.setY(ballStartLocation[1]);
             ballView.setVisibility(View.VISIBLE);
             minAccuracy = Math.sqrt(Math.pow(ballStartLocation[0] - leftSideHoopLocation[0], 2)
                     + Math.pow(ballStartLocation[1] - leftSideHoopLocation[1], 2));
-            radius = ballView.getHeight()*0.5;
+            radius = ballView.getHeight() * 0.5;
 
         });
 
@@ -165,13 +165,12 @@ public class GameFragment extends Fragment {
     }
 
     private void changeFragment(Fragment f) {
-        if(this.getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
+        if (this.getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
             fragmentManager.beginTransaction().replace(R.id.fragment_game_layout, f).addToBackStack(f.getClass().getSimpleName()).commit();
         }
     }
 
     private GestureDetector.OnGestureListener myGestureListener = new GestureDetector.SimpleOnGestureListener() {
-
 
 
         @Override
@@ -207,6 +206,7 @@ public class GameFragment extends Fragment {
                         Log.d(LOG_TAG, "start " + speedY + " ");
                     }
 
+                    @SuppressLint("SetTextI18n")
                     @Override
                     public void onAnimationUpdate(ValueAnimator animation) {
                         long time = animation.getCurrentPlayTime();
@@ -214,15 +214,20 @@ public class GameFragment extends Fragment {
                         ballView.setY(hitCoords[1] - (speedY) * (time - lastCollisionYTime));
                         ballView.setX(hitCoords[0] + speedX * (time - lastCollisionXTime));
                         ballView.setRotation(2);
-                        if (ballView.getX() + ballView.getWidth() >= leftSideHoopLocation[0]-20
+                        if (ballView.getX() + ballView.getWidth() >= leftSideHoopLocation[0] - 20
                                 && ballView.getX() + ballView.getWidth() <= rightSideHoopLocation[0]
-                                && ballView.getY() + radius < leftSideHoopLocation[1]+10
+                                && ballView.getY() + radius < leftSideHoopLocation[1] + 10
                                 && ballView.getY() + radius > leftSideHoopLocation[1] - 50
                                 && speedY < 1) {
                             Log.d(LOG_TAG, "speedY = " + speedY);
                             if (!isHit) {
                                 score++;
                                 isHit = true;
+                                scoreView.setText(Integer.toString(score));
+                                changeFragment(WinFragment.newInstance(isMusicOn));
+                                if (vibrator != null && GameFragment.this.getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
+                                    vibrator.vibrate(400);
+                                }
                                 Log.d(LOG_TAG, "Hit");
                             }
                         }
@@ -235,8 +240,7 @@ public class GameFragment extends Fragment {
                             }
                         }
 
-
-     /*                   if (Math.sqrt(Math.pow(ballView.getX() - leftSideHoopLocation[0], 2)
+                        /*if (Math.sqrt(Math.pow(ballView.getX() - leftSideHoopLocation[0], 2)
                                 + Math.pow(ballView.getY() - leftSideHoopLocation[1], 2)) <= radius
                                 && ballView.getX() <= leftSideHoopLocation[0]) {
                             Log.d(LOG_TAG, "direction change 2 " + ballView.getX() + " " + ballView.getY() + " " + Math.sqrt(Math.pow(ballView.getX() - leftSideHoopLocation[0], 2)
@@ -277,12 +281,7 @@ public class GameFragment extends Fragment {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         if (isHit) {
-                            if(vibrator != null && GameFragment.this.getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)){
-                                vibrator.vibrate(400);
-                            }
-                            changeFragment(WinFragment.newInstance(isMusicOn));
                             isHit = false;
-                            scoreView.setText(Integer.toString(score));
                             rowHit++;
                             if (rowHit > 0) {
 
@@ -301,7 +300,7 @@ public class GameFragment extends Fragment {
                         ballView.setX(ballStartLocation[0]);
                         ballView.setY(ballStartLocation[1]);
                         doing = false;
-                        AccuracyResource.addElement(tmpAccuracy[0]);
+                        AccuracyResource.getInstance().addElement(tmpAccuracy[0]);
                         Log.d(LOG_TAG, "accuracy " + tmpAccuracy[0]);
                     }
 

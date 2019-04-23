@@ -14,7 +14,6 @@ import android.view.View;
 
 import org.jetbrains.annotations.Nullable;
 
-import java.net.PasswordAuthentication;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +25,8 @@ public class AccuracyView extends View {
     private final Path wavePath = new Path();
     private final Paint linePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint goodPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+    private final AccuracyResource res = AccuracyResource.getInstance();
 
     private final int itemWidth;
     private List<Double> originalData;
@@ -48,7 +49,7 @@ public class AccuracyView extends View {
             typedArray.recycle();
         }
         itemWidth = itemWidthFromAttr;
-        originalData = AccuracyResource.getElements();
+        originalData = res.getElements();
         linePaint.setStyle(Paint.Style.STROKE);
         linePaint.setColor(itemColorFromAttr);
         linePaint.setStrokeWidth(itemWidthFromAttr);
@@ -93,7 +94,7 @@ public class AccuracyView extends View {
             len = measuredData.size() - 15;
         }
         for (int i = len; i < measuredData.size(); i ++) {
-            double height = (measuredData.get(i) / AccuracyResource.getMaxHeight()) * measuredHeight;
+            double height = (measuredData.get(i) / res.getMaxHeight()) * measuredHeight;
             float startY = (float) (paddingTop + measuredHeight - height);
             float endY = paddingTop + startY + measuredHeight;
 

@@ -17,7 +17,6 @@ public class MenuFragment extends Fragment implements BackPressListener{
     private static final String LOG_TAG = "MenuFragmentLogs";
     OnMenuListener onMenuListener;
 
-
     public static MenuFragment newInstance() {
 
         Bundle args = new Bundle();

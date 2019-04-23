@@ -5,28 +5,34 @@ import java.util.List;
 
 class AccuracyResource {
     private static double maxHeight = Double.MIN_VALUE;
-    private static List<Double> accuracy = new ArrayList<>();;
+    private static List<Double> accuracy = new ArrayList<>();
 
-    private AccuracyResource(){
-        accuracy = new ArrayList<>();
+
+    static class SingletonHolder {
+        static final AccuracyResource HOLDER_INSTANCE = new AccuracyResource();
     }
 
-    static void addElement(double value){
+    static AccuracyResource getInstance() {
+        accuracy = new ArrayList<>();
+        return SingletonHolder.HOLDER_INSTANCE;
+    }
+
+    void addElement(double value){
         accuracy.add(value);
         if(maxHeight < value){
             maxHeight = value;
         }
     }
 
-    static List<Double> getElements(){
+    List<Double> getElements(){
         return accuracy;
     }
 
-    static double getMaxHeight(){
+    double getMaxHeight(){
         return  maxHeight;
     }
 
-    static void deleteAll(){
+    void deleteAll(){
         accuracy.clear();
     }
 

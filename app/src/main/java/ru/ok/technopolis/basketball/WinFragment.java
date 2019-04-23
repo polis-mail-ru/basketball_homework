@@ -85,6 +85,7 @@ public class WinFragment extends Fragment {
     private void close() {
         if(mediaPlayer.isPlaying()) {
             mediaPlayer.stop();
+            mediaPlayer.release();
         }
         if (getActivity() != null)
             getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();

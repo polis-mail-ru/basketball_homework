@@ -8,11 +8,11 @@ class LinearInterpolation {
     private static Double[] interpolateArray(Double[] source, int destinationLength) {
         Double[] destination = new Double [destinationLength];
         destination[0] = source[0];
-        int jPrevious = 0;
+        int Previous = 0;
         for (int i = 1; i < source.length; i++) {
             int j = i * (destination.length - 1) / (source.length - 1);
-            interpolate(destination, jPrevious, j, source[i - 1], source[i]);
-            jPrevious = j;
+            interpolate(destination, Previous, j, source[i - 1], source[i]);
+            Previous = j;
         }
         return destination;
     }

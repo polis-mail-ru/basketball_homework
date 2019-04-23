@@ -2,17 +2,13 @@
 
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fragment_game_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
-
     tools:context=".MainActivity">
-
-
 
     <ImageView
         android:layout_width="300dp"
@@ -21,7 +17,6 @@
         android:contentDescription="@string/table"
         android:src="@drawable/tablemdpi"
         />
-
 
     <Button
         android:id="@+id/main_activity_stop_button"
@@ -118,7 +113,6 @@
             app:layout_constraintTop_toTopOf="@+id/main_activity_bottom_hoop"
             android:contentDescription="@string/hoop" />
     </android.support.constraint.ConstraintLayout>
-
 
 </RelativeLayout>
 
