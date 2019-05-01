@@ -13,13 +13,18 @@ import android.view.Display;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.TextView;
+
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final float G_ACCELERATION = 3000;
     private static final float ANIMATION_DURATION = 2000;
+
+    private View ball;
+    private RatingView ratingView;
+    private View hoop;
 
     private VelocityTracker velocityTracker;
     private AnimatorSet animatorSet;
@@ -34,14 +39,14 @@ public class MainActivity extends AppCompatActivity {
     private int width;
     private int height;
 
-    private View getBall() {
-        return findViewById(R.id.ball);
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ball = findViewById(R.id.ball);
+        ratingView = findViewById(R.id.star_rating);
+        hoop = findViewById(R.id.hoop);
 
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
@@ -49,37 +54,34 @@ public class MainActivity extends AppCompatActivity {
         width = size.x;
         height = size.y;
 
-        final View ball = getBall();
-        ViewTreeObserver ballObserver = ball.getViewTreeObserver();
-        ballObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        ball.post(new Runnable() {
             @Override
-            public void onGlobalLayout() {
+            public void run() {
                 int[] location = new int[2];
                 ball.getLocationOnScreen(location);
                 initBallX = location[0];
                 initBallY = location[1];
-                ball.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-
             }
         });
-        final View hoop = findViewById(R.id.hoop);
-        ViewTreeObserver hoopObserver = hoop.getViewTreeObserver();
-        hoopObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+
+        hoop.post(new Runnable() {
             @Override
-            public void onGlobalLayout() {
+            public void run() {
                 int[] location = new int[2];
                 hoop.getLocationOnScreen(location);
                 hoopTarget = new Rectangle();
                 hoopTarget.setBounds(location[0], location[1], hoop.getWidth(), hoop.getHeight());
-                hoop.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-
             }
         });
+
         ball.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN: {
+                        if (velocityTracker != null) {
+                            velocityTracker.recycle();
+                        }
                         velocityTracker = VelocityTracker.obtain();
                         break;
                     }
@@ -89,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     case MotionEvent.ACTION_UP: {
                         velocityTracker.computeCurrentVelocity(1000);
-                        animateBall(v, velocityTracker.getXVelocity(), velocityTracker.getYVelocity());
+                        animateBall(v, velocityTracker.getYVelocity());
                         break;
                     }
                     case MotionEvent.ACTION_CANCEL: {
@@ -101,12 +103,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void animateBall(final View ball, final float xVelocity, final float yVelocity) {
+    private void animateBall(final View ball, final float yVelocity) {
 
         TypeEvaluator<Float> xEvaluator = new TypeEvaluator<Float>() {
             @Override
             public Float evaluate(float fraction, Float startValue, Float endValue) {
-//                float result = startValue + fraction * xVelocity;
                 return startValue + fraction * (endValue - startValue);
             }
         };
@@ -163,23 +164,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateViews() {
-        RatingView ratingView = findViewById(R.id.star_rating);
         int starCount = ratingView.getStarCount();
         float rating = ((float) successfulThrows / allThrows) * starCount;
         ratingView.setActiveStarCount(Math.round(rating));
         TextView counter = findViewById(R.id.point_counter);
-        counter.setText(String.format("%d/%d", successfulThrows, allThrows));
+        counter.setText(String.format(Locale.ENGLISH, "%d/%d", successfulThrows, allThrows));
     }
 
     private boolean checkHit() {
-        View ball = getBall();
         return hoopTarget.contains((int) ball.getX(), (int) ball.getY());
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        velocityTracker.recycle();
-        animatorSet.cancel();
+        if (velocityTracker != null) {
+            velocityTracker.recycle();
+        }
+        if (animatorSet != null) {
+            animatorSet.cancel();
+        }
     }
 }
