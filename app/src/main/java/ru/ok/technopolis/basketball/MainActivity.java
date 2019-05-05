@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.ImageView;
 
 public class MainActivity extends AppCompatActivity {
-
     private StarScoreView scoreView;
     private ImageView hoop;
     private ImageView ball;
@@ -18,7 +17,6 @@ public class MainActivity extends AppCompatActivity {
     private float dY = 0;
     private float prevX = 0;
     private float prevY = 0;
-
 
     @SuppressLint("ClickableViewAccessibility")
     @Override

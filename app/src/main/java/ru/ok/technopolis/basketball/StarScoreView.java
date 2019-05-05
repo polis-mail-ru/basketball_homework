@@ -10,11 +10,9 @@ import android.util.AttributeSet;
 import android.view.View;
 
 public class StarScoreView extends View {
-
     byte score = 0;
     byte starCount = 0;
     boolean isCombo = false;
-
     int starSide = 0;
     int offsetStep = 0;
     Drawable defaultStar = getResources().getDrawable(R.drawable.star_default);
@@ -68,5 +66,4 @@ public class StarScoreView extends View {
         starSide = (int) Math.min(h, w / 5f);
         offsetStep = w / 5;
     }
-
 }
