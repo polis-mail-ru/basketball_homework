@@ -1,6 +1,7 @@
 package ru.ok.technopolis.basketball;
 
 import android.annotation.SuppressLint;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -31,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
         ball.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public boolean onTouch(View ball, MotionEvent event) {
+            public boolean onTouch(final View ball, MotionEvent event) {
                 switch (event.getAction() & MotionEvent.ACTION_MASK) {
                     case MotionEvent.ACTION_DOWN:
                         dX = ball.getX() - event.getRawX();
@@ -54,11 +55,12 @@ public class MainActivity extends AppCompatActivity {
                         ball.animate()
                                 .x(destinationX)
                                 .y(destinationY)
-                                .setDuration(500).
+                                .setDuration(600).
                                 withEndAction(new Runnable() {
                                     @Override
                                     public void run() {
-                                        reload();
+                                        ball.setY(prevY + dY);
+                                        ball.setX(prevX + dX);
                                     }
                                 }).start();
                         if (destinationX > hoop.getX() + hoop.getWidth() / 4
@@ -76,12 +78,5 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-    }
-
-    private void reload() {
-        DisplayMetrics metrics = new DisplayMetrics();
-        this.getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        ball.setX(120 * metrics.density);
-        ball.setY((metrics.heightPixels - 80) / metrics.density);
     }
 }
