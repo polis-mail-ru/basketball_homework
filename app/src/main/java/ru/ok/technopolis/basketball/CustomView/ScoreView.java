@@ -17,7 +17,6 @@ import ru.ok.technopolis.basketball.R;
 public class ScoreView extends View {
 
     private static final int DEFAULT_MARK_COLOR = Color.BLACK;
-    private static final int DEFAULT_MARK_STROKE_WIDTH_DP = 5;
     private Path markPath = new Path();
     private Paint markPaint = new Paint();
 
@@ -28,7 +27,7 @@ public class ScoreView extends View {
     public ScoreView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        int markStrokeWidthFromAttr = (int) (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, DEFAULT_MARK_STROKE_WIDTH_DP, displayMetrics) + 0.5f);
+        int markStrokeWidthFromAttr = (int) (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, R.dimen.default_point_stroke_width, displayMetrics) + 0.5f);
         int markColorFromAttr = DEFAULT_MARK_COLOR;
         if (attrs != null) {
             TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.ScoreView);
@@ -52,7 +51,6 @@ public class ScoreView extends View {
         int rightPadding = getPaddingRight();
         int topPadding = getPaddingTop();
         int bottomPadding = getPaddingBottom();
-        int w = getWidth();
         int width = getWidth() / 5 - leftPadding - rightPadding;
         int xStart = width / 2 + leftPadding;
         int yStart = getHeight() - bottomPadding;

@@ -3,8 +3,8 @@ package ru.ok.technopolis.basketball;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private Context context;
     private float G = 9800;
     private float maxDistance;
+    ValueAnimator animator;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -79,8 +80,12 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     }
 
     void initialiseAnimation() {
+        if (isScored(startPoint.getX(), fieldView.getHeight() - startPoint.getY())) {
+            Toast.makeText(context, R.string.cheater, Toast.LENGTH_SHORT).show();
+            return;
+        }
         float timeStart = 0;
-        ValueAnimator animator = ValueAnimator.ofFloat(timeStart, motionOfProjectile.getTimeFlight());
+        animator = ValueAnimator.ofFloat(timeStart, motionOfProjectile.getTimeFlight());
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -89,13 +94,16 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 ball.setX(currentX - ball.getWidth() / 2);
                 ball.setY(currentY - ball.getHeight() / 2);
                 if (isScored(currentX, currentY)) {
-                    Toast.makeText(context, R.string.scored, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, R.string.goll, Toast.LENGTH_SHORT).show();
                     maxDistance = Point.getDistance(player.getWidth(), fieldView.getHeight() - player.getHeight(), currentX, currentY);
                     startPoint.changeVerticalAxisTo(fieldView.getHeight());
                     scoreView.setMark(calculateScore(maxDistance, startPoint.getDistance(currentX, currentY)));
 
                 }
                 fieldView.drawDot(currentX, currentY);
+                if (animation.getAnimatedValue().equals(motionOfProjectile.getTimeFlight())) {
+                    Toast.makeText(context, R.string.not_goll, Toast.LENGTH_SHORT).show();
+                }
             }
         });
         animator.setInterpolator(new LinearInterpolator());
@@ -105,11 +113,17 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     private boolean isScored(float x, float y) {
         if (x > (hoop.getLeft() + hoop.getWidth() / 2 - hoop.getWidth() / 6) && x < (hoop.getLeft() + hoop.getWidth() / 2 + hoop.getWidth() / 6)) {
-            if (y > (hoop.getTop() + hoop.getHeight() / 2) && y < (hoop.getTop() + hoop.getHeight() / 2 + hoop.getHeight() / 3)) {
+            if (y > (hoop.getTop() + hoop.getHeight() / 3) && y < (hoop.getTop() + hoop.getHeight() / 2 + hoop.getHeight() / 3)) {
                 return true;
             }
         }
         return false;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        animator.cancel();
     }
 
     private int calculateScore(float maxDist, float dist) {

@@ -7,15 +7,15 @@ public class Point {
     private float vx;
     private float vy;
 
-    Point(float coordinate) {
+    public Point(float coordinate) {
         this(coordinate, coordinate);
     }
 
-    Point(float x, float y) {
+    public Point(float x, float y) {
         this(x, y, 0, 0);
     }
 
-    Point(float x, float y, float vx, float vy) {
+    public Point(float x, float y, float vx, float vy) {
         this.x = x;
         this.y = y;
         this.vx = vx;

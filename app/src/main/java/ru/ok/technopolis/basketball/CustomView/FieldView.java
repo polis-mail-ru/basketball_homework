@@ -20,11 +20,8 @@ public class FieldView extends View {
     private Float currentY;
     private Paint dotPaint = new Paint();
     private Path dotPath = new Path();
-    private static final int DEFAULT_POINT_COLOR = Color.BLACK;
-    private static final int DEFAULT_POINT_STROKE_WIDTH_DP = 5;
-    private static final int DEFAULT_POINT_RADIUS_DP = 5;
     private int pointRadius;
-
+    private static final int DEFAULT_POINT_COLOR = Color.BLACK;
     public FieldView(Context context) {
         super(context);
     }
@@ -33,8 +30,8 @@ public class FieldView extends View {
         super(context, attrs);
 
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        int pointStrokeWidthFromAttr = (int) (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, DEFAULT_POINT_STROKE_WIDTH_DP, displayMetrics) + 0.5f);
-        int pointRadiusFromAttr = (int) (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, DEFAULT_POINT_RADIUS_DP, displayMetrics) + 0.5f);
+        int pointStrokeWidthFromAttr = (int) (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, R.dimen.default_point_stroke_width, displayMetrics) + 0.5f);
+        int pointRadiusFromAttr = (int) (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, R.dimen.default_point_radius, displayMetrics) + 0.5f);
         int pointColorFromAttr = DEFAULT_POINT_COLOR;
         if (attrs != null) {
             TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.FieldView);
