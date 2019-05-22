@@ -27,7 +27,7 @@ public class ScoreView extends View {
     public ScoreView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        int markStrokeWidthFromAttr = (int) (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, R.dimen.default_point_stroke_width, displayMetrics) + 0.5f);
+        int markStrokeWidthFromAttr = Utils.pxFromDP(displayMetrics, R.dimen.default_point_stroke_width);
         int markColorFromAttr = DEFAULT_MARK_COLOR;
         if (attrs != null) {
             TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.ScoreView);

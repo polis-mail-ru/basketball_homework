@@ -9,7 +9,6 @@ import android.graphics.Path;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.TypedValue;
 import android.view.View;
 
 import ru.ok.technopolis.basketball.R;
@@ -30,8 +29,9 @@ public class FieldView extends View {
         super(context, attrs);
 
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        int pointStrokeWidthFromAttr = (int) (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, R.dimen.default_point_stroke_width, displayMetrics) + 0.5f);
-        int pointRadiusFromAttr = (int) (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, R.dimen.default_point_radius, displayMetrics) + 0.5f);
+        Utils.pxFromDP(displayMetrics, R.dimen.default_point_stroke_width);
+        int pointStrokeWidthFromAttr = Utils.pxFromDP(displayMetrics, R.dimen.default_point_stroke_width);
+        int pointRadiusFromAttr = Utils.pxFromDP(displayMetrics, R.dimen.default_point_radius);
         int pointColorFromAttr = DEFAULT_POINT_COLOR;
         if (attrs != null) {
             TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.FieldView);

@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private Context context;
     private float G = 9800;
     private float maxDistance;
-    ValueAnimator animator;
+    private ValueAnimator animator;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -123,7 +123,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     @Override
     protected void onPause() {
         super.onPause();
-        animator.cancel();
+        if (animator != null){
+            animator.cancel();
+        }
     }
 
     private int calculateScore(float maxDist, float dist) {
