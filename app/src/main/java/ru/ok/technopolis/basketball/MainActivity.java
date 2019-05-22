@@ -1,10 +1,8 @@
 package ru.ok.technopolis.basketball;
 
 import android.annotation.SuppressLint;
-import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -25,8 +23,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         scoreView = findViewById(R.id.activity_main__scores);
-        ball = findViewById(R.id.ball);
-        hoop = findViewById(R.id.hoop);
+        ball = findViewById(R.id.activity_main__ball);
+        hoop = findViewById(R.id.activity_main__hoop);
 
         ball.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -42,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
                         ball.animate()
                                 .x(event.getRawX() + dX)
                                 .y(event.getRawY() + dY)
-                                .setDuration(0)
+                                .setDuration(50)
                                 .start();
                         break;
                     case MotionEvent.ACTION_UP:
@@ -53,8 +51,8 @@ public class MainActivity extends AppCompatActivity {
                         ball.animate()
                                 .x(destinationX)
                                 .y(destinationY)
-                                .setDuration(600).
-                                withEndAction(new Runnable() {
+                                .setDuration(600)
+                                .withEndAction(new Runnable() {
                                     @Override
                                     public void run() {
                                         ball.setY(prevY + dY);
@@ -76,5 +74,11 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ball.clearAnimation();
     }
 }
