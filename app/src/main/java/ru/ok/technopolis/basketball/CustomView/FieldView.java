@@ -29,7 +29,6 @@ public class FieldView extends View {
         super(context, attrs);
 
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        Utils.pxFromDP(displayMetrics, R.dimen.default_point_stroke_width);
         int pointStrokeWidthFromAttr = Utils.pxFromDP(displayMetrics, R.dimen.default_point_stroke_width);
         int pointRadiusFromAttr = Utils.pxFromDP(displayMetrics, R.dimen.default_point_radius);
         int pointColorFromAttr = DEFAULT_POINT_COLOR;
