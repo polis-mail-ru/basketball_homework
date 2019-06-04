@@ -20,6 +20,14 @@ public class MainActivity extends AppCompatActivity {
     private float beginY;
     public int hits = 0;
     private boolean hit = false;
+    private  ValueAnimator animatorValue;
+    public Drawable redStar;
+    public Drawable blackStar;
+    public ImageView star1;
+    public ImageView star2;
+    public ImageView star3;
+    public ImageView star4;
+    public ImageView star5;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -28,8 +36,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ball = findViewById(R.id.activity_main_ball);
         hoop = findViewById(R.id.activity_main_hoop);
+        redStar = getResources().getDrawable(R.drawable.ic_grade_red_24dp);
+        blackStar = getResources().getDrawable(R.drawable.ic_grade_black_24dp);
+        star1=findViewById(R.id.image_star1);
+        star2=findViewById(R.id.image_star2);
+        star3=findViewById(R.id.image_star3);
+        star4=findViewById(R.id.image_star4);
+        star5=findViewById(R.id.image_star5);
 
-        final ConstraintLayout idMain = findViewById(R.id.activity_main);
+        final ConstraintLayout constraintLayout = findViewById(R.id.activity_main);
 
         final GestureDetector gestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
             @Override
@@ -41,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-
+                animatorValue = ValueAnimator.ofFloat(0, 1);
                 float targetSize = (float) hoop.getWidth() / 3 - (float) ball.getWidth() *0.8f;
                 float xHoop = hoop.getX();
                 float yHoop = hoop.getY();
@@ -50,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        idMain.setOnTouchListener(new View.OnTouchListener() {
+        constraintLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 gestureDetector.onTouchEvent(event);
@@ -59,10 +74,25 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public boolean AnimatorTrack(final float X, final float Y, final float xHoop, final float yHoop, final float targetSize) {
-        ValueAnimator anyView = ValueAnimator.ofFloat(0, 1);
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SetStars(0);
+    }
 
-        anyView.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (animatorValue != null) {
+            animatorValue.cancel();
+            hits =0;
+            SetStars(hits);
+        }
+    }
+
+    public boolean AnimatorTrack(final float X, final float Y, final float xHoop, final float yHoop, final float targetSize) {
+
+        animatorValue.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
                 float x = ball.getX();
@@ -76,11 +106,13 @@ public class MainActivity extends AppCompatActivity {
                 ball.setTranslationX((float) ((1 - Math.cos(angle)) * X));
                 ball.setTranslationY((float) (-Math.sin(angle) * Math.abs(Y)));
 
-                if ((Math.abs(xHoop - x) <= targetSize) && (Math.abs(yHoop - y) <= targetSize)) { hit = true;}
+                if ((Math.abs(xHoop - x) <= targetSize) && (Math.abs(yHoop - y) <= targetSize)) {
+                    hit = true;
+                }
             }
         });
 
-        anyView.addListener(new AnimatorListenerAdapter() {
+        animatorValue.addListener(new AnimatorListenerAdapter() {
 
             @Override
             public void onAnimationStart(Animator animation) {
@@ -105,20 +137,12 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        anyView.setDuration(1200);
-        anyView.start();
-
+        animatorValue.setDuration(1200);
+        animatorValue.start();
         return true;
     }
 
     public void SetStars(int hits) {
-        Drawable redStar = getResources().getDrawable(R.drawable.ic_grade_red_24dp);
-        Drawable blackStar = getResources().getDrawable(R.drawable.ic_grade_black_24dp);
-        ImageView star1=findViewById(R.id.image_Star1);
-        ImageView star2=findViewById(R.id.image_Star2);
-        ImageView star3=findViewById(R.id.image_Star3);
-        ImageView star4=findViewById(R.id.image_Star4);
-        ImageView star5=findViewById(R.id.image_Star5);
 
         switch (hits) {
             case 1:
@@ -135,7 +159,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case 5:
                 star5.setImageDrawable(redStar);
-                hits = 0;
                 break;
             default:
                 star1.setImageDrawable(blackStar);
@@ -143,9 +166,7 @@ public class MainActivity extends AppCompatActivity {
                 star3.setImageDrawable(blackStar);
                 star4.setImageDrawable(blackStar);
                 star5.setImageDrawable(blackStar);
-                hits = 0;
                 break;
-        }
-        return;
+        };
     }
 }

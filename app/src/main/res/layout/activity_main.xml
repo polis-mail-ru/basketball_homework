@@ -40,7 +40,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
-        android:id="@+id/image_Star1"
+        android:id="@+id/image_star1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -53,46 +53,46 @@
         android:contentDescription="TODO" />
 
     <ImageView
-        android:id="@+id/image_Star2"
+        android:id="@+id/image_star2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintStart_toEndOf="@+id/image_Star1"
+        app:layout_constraintStart_toEndOf="@+id/image_star1"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_grade_black_24dp" />
 
     <ImageView
-        android:id="@+id/image_Star3"
+        android:id="@+id/image_star3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintStart_toEndOf="@+id/image_Star2"
+        app:layout_constraintStart_toEndOf="@+id/image_star2"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_grade_black_24dp" />
 
     <ImageView
-        android:id="@+id/image_Star4"
+        android:id="@+id/image_star4"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintStart_toEndOf="@+id/image_Star3"
+        app:layout_constraintStart_toEndOf="@+id/image_star3"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_grade_black_24dp" />
 
     <ImageView
-        android:id="@+id/image_Star5"
+        android:id="@+id/image_star5"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintStart_toEndOf="@+id/image_Star4"
+        app:layout_constraintStart_toEndOf="@+id/image_star4"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_grade_black_24dp" />
 
