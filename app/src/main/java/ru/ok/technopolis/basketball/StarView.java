@@ -15,6 +15,7 @@ public class StarView extends View {
     public static final int STAR_HEIGHT = STAR_WIDTH;
     public static final int DEFAULT_STAR_COLOR = 0xFFFFC100;
     public static final int DEFAULT_STAR_COUNT = 0;
+    public static final int MAX_STAR_COUNT = 5;
 
     private int starCount;
     private int starColor;
@@ -35,6 +36,15 @@ public class StarView extends View {
         }
         starColor = starColorAttr;
         starCount = starCountAttr;
+    }
+
+    public void setCount(int starCount){
+        this.starCount = starCount;
+        this.invalidate();
+    }
+
+    public int getCount(){
+        return starCount;
     }
 
     @Override

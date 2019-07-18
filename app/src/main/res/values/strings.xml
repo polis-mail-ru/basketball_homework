@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">basketball_homework</string>
+    <string name="win">You win! Let\'s play again!</string>
 </resources>
