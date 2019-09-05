@@ -5,8 +5,10 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
+import android.widget.ImageView;
 
 import ru.ok.technopolis.basketball.BackView;
+import ru.ok.technopolis.basketball.Tools.PositionGenerator;
 
 public class Ball {
 
@@ -15,25 +17,23 @@ public class Ball {
     private float speedY;
     private float speedX;
     private final View object;
-    private final float startPosX;
-    private final float startPosY;
     private final float radius;
     private long lastCollisionXTime;
     private long lastCollisionYTime;
     private final AnimationController animationController;
     private boolean scored;
+    private boolean fading;
+    private ImageView nextBall;
 
     public Ball(Direction direction, View object) {
         this.direction = direction;
         this.object = object;
-        this.startPosX = object.getTranslationX();
-        this.startPosY = object.getTranslationY();
         this.radius = object.getHeight() / 2f;
         this.animationController = new AnimationController();
     }
 
-    public boolean isThrown() {
-        return isThrown;
+    public boolean isNotThrown() {
+        return !isThrown;
     }
 
     public float getSpeedY() {
@@ -80,17 +80,17 @@ public class Ball {
         animationController.startBallRotation(getObject());
     }
 
-    public void resetBall() {
+    private void resetBall() {
         object.setVisibility(View.VISIBLE);
         isThrown = false;
-        object.setTranslationX(startPosX);
-        object.setTranslationY(startPosY);
-        object.setAlpha(1f);
+        nextBall.setVisibility(View.VISIBLE);
+        nextBall.setX(PositionGenerator.posX());
+        nextBall.setTranslationY(PositionGenerator.posY());
     }
 
     public void update(float dY, float dX) {
         object.setTranslationY(dY);
-        object.setTranslationX(dX);
+        object.setX(dX);
     }
 
     public float getX() {
@@ -121,28 +121,34 @@ public class Ball {
                 && getDirection() == Ball.Direction.RIGHT && lastCollisionXTime != time;
     }
 
-    public boolean hirLeftWall(long time) {
+    public boolean hitLeftWall(long time) {
         return getX() <= 0
                 && getDirection() == Ball.Direction.LEFT && getLastCollisionXTime() != time;
     }
 
     public void rotateRight() {
-        animationController.setBallRotation(getObject(),-1);
-        animationController.setBallRotation(getObject(),1);
+        animationController.setBallRotation(getObject(), -1);
+        animationController.setBallRotation(getObject(), 1);
     }
 
     public void rotateLeft() {
-        animationController.setBallRotation(getObject(),1);
-        animationController.setBallRotation(getObject(),-1);
+        animationController.setBallRotation(getObject(), 1);
+        animationController.setBallRotation(getObject(), -1);
     }
 
-    public void fade() {
+    public void fade(ImageView nextBall) {
+        this.nextBall = nextBall;
         animationController.fadeBall(getObject());
+        fading = true;
     }
 
     public boolean hitBasket(Basket basket) {
         return getX() > basket.getX() - basket.getRadius() && getX() < basket.getX() + basket.getRadius()
                 && getY() > basket.getY() - basket.getRadius() && getY() < basket.getY() + basket.getRadius();
+    }
+
+    public boolean isFading() {
+        return fading;
     }
 
     public void score() {
@@ -153,11 +159,17 @@ public class Ball {
         return scored;
     }
 
-    public boolean hitLeftBasket(Basket basket, long time) {
-        return getX() + getRadius() * 3 >= basket.getX()
-                && getY() + getRadius() * 2 >= basket.getY()
-                && getY() + getRadius() * 3 <= basket.getY() + basket.getRadius() * 4
-                && getDirection() == Ball.Direction.RIGHT && lastCollisionXTime != time;
+    public boolean hitBottomBasket(Basket basket, long time) {
+        return getX() <= basket.getX()
+                && getY() >= basket.getY() -  basket.getRadius() * 3
+                && getDirection() == Direction.LEFT && lastCollisionXTime != time;
+    }
+
+    public boolean hitRightBasket(Basket basket, long time) {
+        return getX() - getRadius() * 3 <= basket.getX()
+                && getY() + getRadius() * 1.5f >= basket.getY()
+                && getY() + getRadius() * 3 <= basket.getY() + basket.getRadius() * 3.5f
+                && getDirection() == Direction.LEFT && lastCollisionXTime != time;
     }
 
     public AnimationController getAnimationController() {
@@ -199,7 +211,7 @@ public class Ball {
             anim.start();
         }
 
-        void fadeBall(View ball) {
+        void fadeBall(final View ball) {
             getAnimationController().setState(1);
             ObjectAnimator anim = ObjectAnimator.ofFloat(ball, "alpha", 0);
             anim.setDuration(1000);
@@ -210,6 +222,7 @@ public class Ball {
 
                 @Override
                 public void onAnimationEnd(Animator animation) {
+                    resetBall();
                     getAnimationController().setState(2);
                 }
 

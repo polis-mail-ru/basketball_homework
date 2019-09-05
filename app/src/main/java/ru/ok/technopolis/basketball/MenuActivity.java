@@ -244,7 +244,7 @@ public class MenuActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 chosenBall++;
-                if (chosenBall > balls.size()) {
+                if (chosenBall >= balls.size()) {
                     chosenBall = 0;
                 }
                 updateBall();
@@ -255,7 +255,7 @@ public class MenuActivity extends AppCompatActivity {
             public void onClick(View v) {
                 chosenBall--;
                 if (chosenBall < 0) {
-                    chosenBall = balls.size();
+                    chosenBall = balls.size() - 1;
                 }
                 updateBall();
             }

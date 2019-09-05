@@ -1,13 +1,16 @@
 package ru.ok.technopolis.basketball;
 
 import android.annotation.SuppressLint;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import ru.ok.technopolis.basketball.controllers.BallController;
 import ru.ok.technopolis.basketball.controllers.MusicController;
@@ -27,6 +30,15 @@ public class MainActivity extends AppCompatActivity {
     private Basket basket;
     private RelativeLayout layout;
     private ImageView ballTemplate;
+    private ImageView exitView;
+    private ImageView exitPanel;
+    private TextView exitText;
+    private Button exitYes;
+    private Button exitNo;
+    private ImageView radio;
+    private ImageView song;
+    private boolean radioMode;
+    private AnimationDrawable radioAnim;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -38,10 +50,12 @@ public class MainActivity extends AppCompatActivity {
         }
         //vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         backView = findViewById(R.id.back);
-       // getExtra();
+        // getExtra();
         basket = new Basket(findViewById(R.id.empty));
         final GestureDetector gestureDetector = new GestureDetector(this, gestureListener);
         layout = findViewById(R.id.main_layout);
+        initExitButton();
+        initRadioButton();
         startGame();
         layout.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -51,14 +65,81 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void initRadioButton() {
+        radio = findViewById(R.id.radio);
+        radio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switchRadio();
+            }
+        });
+        song = findViewById(R.id.song);
+        radioAnim = (AnimationDrawable) song.getBackground();
+        if (radioMode) {
+            radioAnim.start();
+        }
+        else{
+            song.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void switchRadio() {
+        if (!radioMode) {
+            radioAnim.start();
+            song.setVisibility(View.VISIBLE);
+
+        } else {
+            radioAnim.stop();
+            song.setVisibility(View.INVISIBLE);
+        }
+        radioMode = !radioMode;
+    }
+
+    private void initExitButton() {
+        exitView = findViewById(R.id.exit);
+        exitPanel = findViewById(R.id.exitView);
+        exitYes = findViewById(R.id.yesButton);
+        exitNo = findViewById(R.id.noButton);
+        exitText = findViewById(R.id.exitText);
+        switchExit(View.GONE);
+        exitView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switchExit(View.VISIBLE);
+                exitPanel.bringToFront();
+                exitNo.bringToFront();
+                exitText.bringToFront();
+                exitYes.bringToFront();
+            }
+        });
+        exitYes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        exitNo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switchExit(View.GONE);
+            }
+        });
+    }
+
+    private void switchExit(int visibility) {
+        exitView.setVisibility(visibility == View.VISIBLE ? View.GONE : View.VISIBLE);
+        exitPanel.setVisibility(visibility);
+        exitYes.setVisibility(visibility);
+        exitNo.setVisibility(visibility);
+        exitText.setVisibility(visibility);
+    }
+
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
             resetTemplate();
         }
-
     }
-
 
     private void startGame() {
         Game.setBackView(backView);
@@ -85,8 +166,8 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            if (Game.getGameMode() == Game.Mode.UNLIMITED || ball == null || ball.isThrown()) {
-                if (Game.getGameMode() == Game.Mode.DEFAULT && ball != null && ball.isThrown()) {
+            if (Game.getGameMode() == Game.Mode.UNLIMITED || ball == null || (Game.getGameMode() == Game.Mode.DEFAULT && ball.isNotThrown())) {
+                if (Game.getGameMode() == Game.Mode.DEFAULT && ball != null && ball.isNotThrown()) {
                     layout.removeView(ball.getObject());
                 }
                 final float dY = Math.abs((e2.getRawY() - e1.getRawY()) / (e2.getEventTime() - e1.getEventTime()));
@@ -94,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
                 ball = new Ball(dX > 0 ? Ball.Direction.RIGHT : Ball.Direction.LEFT, ballTemplate);
                 resetTemplate();
                 ball.throwBall(dY / 2, dX / 2);
-                BallController ballController = new BallController(ball);
+                BallController ballController = new BallController(ball, ballTemplate);
                 ballController.throwBall(MainActivity.this, dY, basket, layout);
             }
             return false;
@@ -107,7 +188,8 @@ public class MainActivity extends AppCompatActivity {
         ImageView ballView = findViewById(R.id.iv_translate_fling);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ballView.getWidth(), ballView.getHeight());
         params.addRule(RelativeLayout.ALIGN_BOTTOM, R.id.back);
-        params.setMargins((int) Game.getScoreController().getView().fromDpToPx(30), 0, 0, (int) Game.getScoreController().getView().fromDpToPx(125));
+        params.addRule(RelativeLayout.ALIGN_RIGHT, R.id.back);
+        params.setMargins(0, 0, (int) Game.getScoreController().getView().fromDpToPx(30), (int) Game.getScoreController().getView().fromDpToPx(125));
         ballTemplate.setLayoutParams(params);
         ballTemplate.setImageDrawable(ballView.getBackground());
         if (ball == null || Game.getGameMode() == Game.Mode.UNLIMITED) {

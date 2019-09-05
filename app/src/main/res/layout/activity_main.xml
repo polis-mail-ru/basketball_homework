@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -14,14 +15,23 @@
         android:layout_marginRight="200dp" />
 
     <ImageView
+        android:id="@+id/radio"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_alignLeft="@+id/back"
+        android:layout_alignBottom="@+id/back"
+        android:layout_marginLeft="150dp"
+        android:layout_marginBottom="70dp"
+        android:background="@drawable/radio" />
+
+    <ImageView
         android:id="@+id/colco"
-        android:layout_width="400dp"
-        android:layout_height="200dp"
-        android:layout_alignTop="@+id/back"
-        android:layout_marginStart="500dp"
-        android:layout_marginLeft="500dp"
-        android:contentDescription="@string/app_name"
-        app:srcCompat="@drawable/colco" />
+        android:layout_width="150dp"
+        android:layout_height="match_parent"
+        android:layout_alignBottom="@+id/back"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/basket2"
+        android:contentDescription="@string/app_name" />
 
     <TextView
         android:id="@+id/tv_fling_distance"
@@ -44,9 +54,8 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignBottom="@+id/back"
-        android:layout_marginStart="30dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginBottom="125dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginBottom="0dp"
         android:background="@drawable/ball2"
         android:contentDescription="@string/app_name"
         android:visibility="invisible"
@@ -56,9 +65,8 @@
         android:id="@+id/empty"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginStart="600dp"
-        android:layout_marginLeft="600dp"
-        android:layout_marginTop="140dp"
+        android:layout_marginLeft="85dp"
+        android:layout_marginTop="175dp"
         android:contentDescription="@string/app_name" />
 
     <ImageView
@@ -84,6 +92,87 @@
         android:textStyle="bold"
         android:visibility="visible"
         android:layout_marginStart="50dp" />
+
+    <ImageView
+        android:id="@+id/exitView"
+        android:layout_width="563dp"
+        android:layout_height="270dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="150dp"
+        android:layout_marginTop="70dp"
+        android:layout_marginRight="150dp"
+        android:layout_marginBottom="70dp"
+        app:srcCompat="@drawable/panel"
+        tools:visibility="gone" />
+
+    <TextView
+        android:id="@+id/exitText"
+        android:layout_width="match_parent"
+        android:layout_height="326dp"
+        android:layout_alignWithParentIfMissing="false"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:layout_marginRight="0dp"
+        android:layout_marginBottom="100dp"
+        android:gravity="center"
+        android:text="Exit?"
+        android:textColor="#FFFFFF"
+        android:textSize="48sp"
+        android:typeface="normal"
+        tools:visibility="gone" />
+
+    <Button
+        android:id="@+id/yesButton"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginLeft="200dp"
+        android:layout_marginTop="175dp"
+        android:background="@drawable/buttonstyle"
+        android:foreground="@drawable/ok"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:visibility="gone" />
+
+    <Button
+        android:id="@+id/noButton"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginLeft="425dp"
+        android:layout_marginTop="175dp"
+        android:background="@drawable/buttonstyle"
+        android:foreground="@drawable/no"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/exit"
+        android:layout_width="230dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="250dp"
+        android:layout_marginTop="125dp"
+        android:layout_marginRight="365dp"
+        android:layout_marginBottom="110dp" />
+
+    <ImageView
+        android:id="@+id/song"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_alignLeft="@+id/back"
+        android:layout_alignBottom="@+id/back"
+        android:layout_marginLeft="150dp"
+        android:layout_marginBottom="125dp"
+        android:background="@drawable/song" />
 
 
 </RelativeLayout>

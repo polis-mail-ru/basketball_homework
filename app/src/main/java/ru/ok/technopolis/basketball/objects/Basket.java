@@ -10,19 +10,15 @@ public class Basket {
         this.object = object;
     }
 
-    public View getObject() {
-        return object;
-    }
-
-    public float getX() {
+    float getX() {
         return object.getX();
     }
 
-    public float getY() {
+    float getY() {
         return object.getY();
     }
 
-    public float getRadius() {
+    float getRadius() {
         return object.getHeight() / 2f;
     }
 }
