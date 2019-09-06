@@ -165,6 +165,13 @@ public class Ball {
                 && getDirection() == Direction.LEFT && lastCollisionXTime != time;
     }
 
+    public boolean hitTopBasket(Basket basket, long time) {
+        return getX() <= basket.getX() - basket.getRadius() * 2
+                && getY() <= basket.getY() -  basket.getRadius() * 3
+                && getY() > basket.getRadius() * 2
+                && getDirection() == Direction.LEFT && lastCollisionXTime != time;
+    }
+
     public boolean hitRightBasket(Basket basket, long time) {
         return getX() - getRadius() * 3 <= basket.getX()
                 && getY() + getRadius() * 1.5f >= basket.getY()

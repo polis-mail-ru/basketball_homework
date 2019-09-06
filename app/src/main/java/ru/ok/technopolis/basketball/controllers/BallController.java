@@ -33,7 +33,6 @@ public class BallController {
 
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                Log.d("", "onAnimationUpdate: "+hitCoords[0]);
                 long time = animation.getCurrentPlayTime();
                 ball.setSpeedY(ball.getSpeedY() - 0.000075f * (time - ball.getLastCollisionYTime()));
                 ball.update(hitCoords[1] - (ball.getSpeedY()) * (time - ball.getLastCollisionYTime()),
@@ -73,7 +72,7 @@ public class BallController {
                     ball.score();
                 }
                 if (ball.hitRightBasket(basket, time) || ball.hitRightWall(Game.getBackView(), time) || ball.hitLeftWall(time)
-                        || ball.hitBottomBasket(basket, time)) {
+                        || ball.hitBottomBasket(basket, time) || ball.hitTopBasket(basket, time)) {
                     hitCoords[0] = ball.getX();
                     ball.changeDirection(time);
                 }
