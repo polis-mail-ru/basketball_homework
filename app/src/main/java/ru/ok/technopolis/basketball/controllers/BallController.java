@@ -3,23 +3,25 @@ package ru.ok.technopolis.basketball.controllers;
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import ru.ok.technopolis.basketball.R;
 import ru.ok.technopolis.basketball.objects.Ball;
 import ru.ok.technopolis.basketball.objects.Basket;
+import ru.ok.technopolis.basketball.objects.Coin;
 import ru.ok.technopolis.basketball.objects.Game;
 
 public class BallController {
 
     private final Ball ball;
     private final ImageView nextBall;
+    private final Coin coin;
 
-    public BallController(Ball ball, ImageView nextBall) {
+    public BallController(Ball ball, ImageView nextBall, Coin coin) {
         this.ball = ball;
         this.nextBall = nextBall;
+        this.coin = coin;
     }
 
     public void throwBall(final Context context, final float dY, final Basket basket, final RelativeLayout layout) {
@@ -52,7 +54,7 @@ public class BallController {
                         }
                     }
                     if (Math.abs(lastPosY - ball.getY()) < 3f && ball.getAnimationController().getState() == 0 && !ball.isFading()) { //fade ball
-                       ball.fade(nextBall);
+                        ball.fade(nextBall);
                     }
                     if (ball.getAnimationController().getState() == 2) {
                         ball.getAnimationController().setState(0);
@@ -76,6 +78,10 @@ public class BallController {
                     hitCoords[0] = ball.getX();
                     ball.changeDirection(time);
                 }
+                if (ball.hitCoin(coin) && !ball.isCollected() && coin.isVisible()) {
+                    ball.collect();
+                    coin.collect();
+                }
             }
         });
         animator.addListener(new Animator.AnimatorListener() {
@@ -86,11 +92,13 @@ public class BallController {
             @Override
             public void onAnimationEnd(Animator animation) {
                 ball.getAnimationController().setState(0);
-               // ball.resetBall();
+                // ball.resetBall();
                 ball.getAnimationController().getAnim().cancel();
                 if (Game.getGameMode() == Game.Mode.UNLIMITED) {
                     layout.removeView(ball.getObject());
                 }
+                if (Game.getThrowsCount() % 3 == 0)
+                    coin.show();
             }
 
             @Override

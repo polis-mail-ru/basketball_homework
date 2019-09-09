@@ -24,6 +24,7 @@ public class Ball {
     private boolean scored;
     private boolean fading;
     private ImageView nextBall;
+    private boolean collected;
 
     public Ball(Direction direction, View object) {
         this.direction = direction;
@@ -84,8 +85,8 @@ public class Ball {
         object.setVisibility(View.VISIBLE);
         isThrown = false;
         nextBall.setVisibility(View.VISIBLE);
-        nextBall.setX(PositionGenerator.posX());
-        nextBall.setTranslationY(PositionGenerator.posY());
+        nextBall.setX(PositionGenerator.ballX());
+        nextBall.setTranslationY(PositionGenerator.ballY());
     }
 
     public void update(float dY, float dX) {
@@ -181,6 +182,19 @@ public class Ball {
 
     public AnimationController getAnimationController() {
         return animationController;
+    }
+
+    public boolean hitCoin(Coin coin) {
+        return getX() > coin.getX() - coin.getRadius() && getX() < coin.getX() + coin.getRadius()
+                && getY() > coin.getY() - coin.getRadius() && getY() < coin.getY() + coin.getRadius();
+    }
+
+    public void collect() {
+        collected = true;
+    }
+
+    public boolean isCollected() {
+        return collected;
     }
 
     public enum Direction {

@@ -11,6 +11,7 @@ public class Game {
     private static MusicController musicController;
     private static ScoreController scoreController;
     private static Mode gameMode;
+    private static int throwsCount;
 
     private static Vibrator vibrator;
 
@@ -65,5 +66,13 @@ public class Game {
     public enum Mode {
         DEFAULT,
         UNLIMITED
+    }
+
+    public static int getThrowsCount() {
+        return throwsCount;
+    }
+
+    public static void throwIncrease() {
+        throwsCount++;
     }
 }

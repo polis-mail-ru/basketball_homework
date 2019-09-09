@@ -1,0 +1,63 @@
+package ru.ok.technopolis.basketball.objects;
+
+import android.graphics.drawable.AnimationDrawable;
+import android.view.View;
+import android.widget.ImageView;
+
+import ru.ok.technopolis.basketball.Tools.PositionGenerator;
+
+public class Coin {
+    private final ImageView coinView;
+    private final AnimationDrawable anim;
+
+    public Coin(View coinView) {
+        this.coinView = (ImageView) coinView;
+        anim = (AnimationDrawable) coinView.getBackground();
+    }
+
+    private void resetPosition() {
+        coinView.setX(PositionGenerator.coinX());
+        coinView.setY(PositionGenerator.coinY());
+    }
+
+    private void start() {
+        anim.start();
+    }
+
+    private void stop() {
+        anim.stop();
+    }
+
+    public void collect() {
+        Game.getScoreController().collect();
+        resetPosition();
+        hide();
+    }
+
+    float getX() {
+        return coinView.getX();
+    }
+
+    float getY() {
+        return coinView.getY();
+    }
+
+    float getRadius() {
+        return coinView.getHeight() / 2f;
+    }
+
+    public void show() {
+        start();
+        resetPosition();
+        coinView.setVisibility(View.VISIBLE);
+    }
+
+    public void hide() {
+        stop();
+        coinView.setVisibility(View.INVISIBLE);
+    }
+
+    public boolean isVisible() {
+        return coinView.getVisibility() == View.VISIBLE;
+    }
+}

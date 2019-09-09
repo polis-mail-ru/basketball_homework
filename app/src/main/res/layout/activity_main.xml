@@ -70,12 +70,13 @@
         android:contentDescription="@string/app_name" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/coinView"
         android:layout_width="35dp"
         android:layout_height="35dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginLeft="10dp"
         android:layout_marginTop="50dp"
+        android:layout_marginRight="15dp"
+        android:layout_toStartOf="@+id/money"
+        android:layout_toLeftOf="@+id/money"
         android:contentDescription="@string/app_name"
         android:visibility="visible"
         app:srcCompat="@drawable/coin" />
@@ -84,14 +85,14 @@
         android:id="@+id/money"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="50dp"
+        android:layout_alignRight="@+id/back"
         android:layout_marginTop="42dp"
+        android:layout_marginRight="50dp"
         android:text="0"
         android:textColor="@android:color/background_light"
         android:textSize="35sp"
         android:textStyle="bold"
-        android:visibility="visible"
-        android:layout_marginStart="50dp" />
+        android:visibility="visible" />
 
     <ImageView
         android:id="@+id/exitView"
@@ -152,6 +153,23 @@
         tools:visibility="gone" />
 
     <ImageView
+        android:id="@+id/song"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_alignLeft="@+id/back"
+        android:layout_alignBottom="@+id/back"
+        android:layout_marginLeft="150dp"
+        android:layout_marginBottom="125dp"
+        android:background="@drawable/song" />
+
+    <ImageView
+        android:id="@+id/coin"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/coing"
+        tools:visibility="invisible" />
+
+    <ImageView
         android:id="@+id/exit"
         android:layout_width="230dp"
         android:layout_height="wrap_content"
@@ -163,16 +181,6 @@
         android:layout_marginTop="125dp"
         android:layout_marginRight="365dp"
         android:layout_marginBottom="110dp" />
-
-    <ImageView
-        android:id="@+id/song"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
-        android:layout_alignLeft="@+id/back"
-        android:layout_alignBottom="@+id/back"
-        android:layout_marginLeft="150dp"
-        android:layout_marginBottom="125dp"
-        android:background="@drawable/song" />
 
 
 </RelativeLayout>

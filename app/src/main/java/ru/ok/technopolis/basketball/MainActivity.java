@@ -17,6 +17,7 @@ import ru.ok.technopolis.basketball.controllers.MusicController;
 import ru.ok.technopolis.basketball.controllers.ScoreController;
 import ru.ok.technopolis.basketball.objects.Ball;
 import ru.ok.technopolis.basketball.objects.Basket;
+import ru.ok.technopolis.basketball.objects.Coin;
 import ru.ok.technopolis.basketball.objects.Game;
 
 public class MainActivity extends AppCompatActivity {
@@ -39,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     private ImageView song;
     private boolean radioMode;
     private AnimationDrawable radioAnim;
+    private Coin coin;
+    private TextView coinText;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -56,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         layout = findViewById(R.id.main_layout);
         initExitButton();
         initRadioButton();
+        initCoin();
         startGame();
         layout.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -63,6 +67,12 @@ public class MainActivity extends AppCompatActivity {
                 return gestureDetector.onTouchEvent(event);
             }
         });
+    }
+
+    private void initCoin() {
+        coin = new Coin(findViewById(R.id.coin));
+        coinText = findViewById(R.id.money);
+        coin.hide();
     }
 
     private void initRadioButton() {
@@ -77,8 +87,7 @@ public class MainActivity extends AppCompatActivity {
         radioAnim = (AnimationDrawable) song.getBackground();
         if (radioMode) {
             radioAnim.start();
-        }
-        else{
+        } else {
             song.setVisibility(View.INVISIBLE);
         }
     }
@@ -144,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
     private void startGame() {
         Game.setBackView(backView);
         Game.setMusicController(new MusicController());
-        Game.setScoreController(new ScoreController((StarView) findViewById(R.id.scoreView)));
+        Game.setScoreController(new ScoreController((StarView) findViewById(R.id.scoreView), coinText));
         Game.setGameMode(Game.Mode.DEFAULT);
     }
 
@@ -170,12 +179,13 @@ public class MainActivity extends AppCompatActivity {
                 if (Game.getGameMode() == Game.Mode.DEFAULT && ball != null && ball.isNotThrown()) {
                     layout.removeView(ball.getObject());
                 }
+                Game.throwIncrease();
                 final float dY = Math.abs((e2.getRawY() - e1.getRawY()) / (e2.getEventTime() - e1.getEventTime()));
                 final float dX = (e2.getRawX() - e1.getRawX()) / (e2.getEventTime() - e1.getEventTime());
                 ball = new Ball(dX > 0 ? Ball.Direction.RIGHT : Ball.Direction.LEFT, ballTemplate);
                 resetTemplate();
                 ball.throwBall(dY / 2, dX / 2);
-                BallController ballController = new BallController(ball, ballTemplate);
+                BallController ballController = new BallController(ball, ballTemplate, coin);
                 ballController.throwBall(MainActivity.this, dY, basket, layout);
             }
             return false;
