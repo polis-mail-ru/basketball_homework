@@ -7,8 +7,10 @@ import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 
+import java.util.Stack;
+
 import ru.ok.technopolis.basketball.BackView;
-import ru.ok.technopolis.basketball.Tools.PositionGenerator;
+import ru.ok.technopolis.basketball.Tools.RandomGenerator;
 
 public class Ball {
 
@@ -85,8 +87,8 @@ public class Ball {
         object.setVisibility(View.VISIBLE);
         isThrown = false;
         nextBall.setVisibility(View.VISIBLE);
-        nextBall.setX(PositionGenerator.ballX());
-        nextBall.setTranslationY(PositionGenerator.ballY());
+        nextBall.setX(RandomGenerator.ballPosX());
+        nextBall.setTranslationY(RandomGenerator.ballPosY());
     }
 
     public void update(float dY, float dX) {
@@ -195,6 +197,24 @@ public class Ball {
 
     public boolean isCollected() {
         return collected;
+    }
+
+    public boolean hitWall(Stack<Wall> walls, long time) {
+        for (Wall wall : walls) {
+            if(getX() <= wall.getX() + wall.getRadius()
+                    && getX() >= wall.getX()
+                    && getY() <= wall.getY() + wall.getRadius()
+                    && getY() >= wall.getY() - wall.getRadius()
+                    && getDirection() == Direction.LEFT && lastCollisionXTime != time
+                    || getX() >= wall.getX() - wall.getRadius()
+                    && getX() <= wall.getX()
+                    && getY() <= wall.getY() + wall.getRadius()
+                    && getY() >= wall.getY() - wall.getRadius()
+                    && getDirection() == Direction.RIGHT && lastCollisionXTime != time)
+                return true;
+
+        }
+        return false;
     }
 
     public enum Direction {

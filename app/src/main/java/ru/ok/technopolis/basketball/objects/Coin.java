@@ -4,7 +4,7 @@ import android.graphics.drawable.AnimationDrawable;
 import android.view.View;
 import android.widget.ImageView;
 
-import ru.ok.technopolis.basketball.Tools.PositionGenerator;
+import ru.ok.technopolis.basketball.Tools.RandomGenerator;
 
 public class Coin {
     private final ImageView coinView;
@@ -16,8 +16,8 @@ public class Coin {
     }
 
     private void resetPosition() {
-        coinView.setX(PositionGenerator.coinX());
-        coinView.setY(PositionGenerator.coinY());
+        coinView.setX(RandomGenerator.coinPosX());
+        coinView.setY(RandomGenerator.coinPosY());
     }
 
     private void start() {

@@ -6,22 +6,33 @@ import android.content.Context;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import java.util.Stack;
+
 import ru.ok.technopolis.basketball.R;
+import ru.ok.technopolis.basketball.Tools.RandomGenerator;
 import ru.ok.technopolis.basketball.objects.Ball;
 import ru.ok.technopolis.basketball.objects.Basket;
 import ru.ok.technopolis.basketball.objects.Coin;
 import ru.ok.technopolis.basketball.objects.Game;
+import ru.ok.technopolis.basketball.objects.Wall;
 
 public class BallController {
 
     private final Ball ball;
     private final ImageView nextBall;
     private final Coin coin;
+    private Stack<Wall> wallsAlive;
+    private Stack<Wall> wallsDead;
 
     public BallController(Ball ball, ImageView nextBall, Coin coin) {
         this.ball = ball;
         this.nextBall = nextBall;
         this.coin = coin;
+    }
+
+    public void setWalls(Stack<Wall> wallsAlive, Stack<Wall> wallsDead) {
+        this.wallsAlive = wallsAlive;
+        this.wallsDead = wallsDead;
     }
 
     public void throwBall(final Context context, final float dY, final Basket basket, final RelativeLayout layout) {
@@ -74,7 +85,7 @@ public class BallController {
                     ball.score();
                 }
                 if (ball.hitRightBasket(basket, time) || ball.hitRightWall(Game.getBackView(), time) || ball.hitLeftWall(time)
-                        || ball.hitBottomBasket(basket, time) || ball.hitTopBasket(basket, time)) {
+                        || ball.hitBottomBasket(basket, time) || ball.hitTopBasket(basket, time) || ball.hitWall(wallsAlive, time)) {
                     hitCoords[0] = ball.getX();
                     ball.changeDirection(time);
                 }
@@ -92,13 +103,17 @@ public class BallController {
             @Override
             public void onAnimationEnd(Animator animation) {
                 ball.getAnimationController().setState(0);
-                // ball.resetBall();
                 ball.getAnimationController().getAnim().cancel();
                 if (Game.getGameMode() == Game.Mode.UNLIMITED) {
                     layout.removeView(ball.getObject());
                 }
                 if (Game.getThrowsCount() % 3 == 0)
                     coin.show();
+                if ((Game.getThrowsCount() + 1) % 3 == 0 && !wallsDead.empty()) {
+                    Wall wall = wallsDead.pop();
+                    wall.respawn();
+                    wallsAlive.push(wall);
+                }
             }
 
             @Override

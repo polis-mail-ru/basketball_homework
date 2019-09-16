@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.Stack;
+
 import ru.ok.technopolis.basketball.controllers.BallController;
 import ru.ok.technopolis.basketball.controllers.MusicController;
 import ru.ok.technopolis.basketball.controllers.ScoreController;
@@ -19,6 +21,7 @@ import ru.ok.technopolis.basketball.objects.Ball;
 import ru.ok.technopolis.basketball.objects.Basket;
 import ru.ok.technopolis.basketball.objects.Coin;
 import ru.ok.technopolis.basketball.objects.Game;
+import ru.ok.technopolis.basketball.objects.Wall;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
     private AnimationDrawable radioAnim;
     private Coin coin;
     private TextView coinText;
+    private Stack<Wall> wallsAlive;
+    private Stack<Wall> wallsDead;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -60,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
         initExitButton();
         initRadioButton();
         initCoin();
+        initWalls();
         startGame();
         layout.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -67,6 +73,23 @@ public class MainActivity extends AppCompatActivity {
                 return gestureDetector.onTouchEvent(event);
             }
         });
+    }
+
+    private void initWalls() {
+        wallsAlive = new Stack<>();
+        wallsDead = new Stack<>();
+        ImageView wall = findViewById(R.id.wallPlace1);
+        wallsDead.push(new Wall(wall, wallsDead, wallsAlive));
+        wall.setVisibility(View.INVISIBLE);
+        wall = findViewById(R.id.wallPlace2);
+        wallsDead.push(new Wall(wall, wallsDead, wallsAlive));
+        wall.setVisibility(View.INVISIBLE);
+        wall = findViewById(R.id.wallPlace3);
+        wallsDead.push(new Wall(wall, wallsDead, wallsAlive));
+        wall.setVisibility(View.INVISIBLE);
+        wall = findViewById(R.id.wallPlace4);
+        wallsDead.push(new Wall(wall, wallsDead, wallsAlive));
+        wall.setVisibility(View.INVISIBLE);
     }
 
     private void initCoin() {
@@ -186,6 +209,7 @@ public class MainActivity extends AppCompatActivity {
                 resetTemplate();
                 ball.throwBall(dY / 2, dX / 2);
                 BallController ballController = new BallController(ball, ballTemplate, coin);
+                ballController.setWalls(wallsAlive, wallsDead);
                 ballController.throwBall(MainActivity.this, dY, basket, layout);
             }
             return false;
