@@ -1,5 +1,6 @@
 package ru.ok.technopolis.basketball.objects;
 
+import android.graphics.drawable.AnimationDrawable;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -13,6 +14,7 @@ public class Wall {
     private int lives = 3;
     private final Stack<Wall> wallsDead;
     private final Stack<Wall> wallsAlive;
+    private AnimationDrawable anim;
 
     public Wall(final ImageView object, final Stack<Wall> wallsDead, final Stack<Wall> wallsAlive) {
         this.object = object;
@@ -29,7 +31,10 @@ public class Wall {
                     case 1:
                         object.setImageDrawable(object.getContext().getResources().getDrawable(R.drawable.wall3));
                         break;
-                    default:
+                    case 0:
+                        object.setImageDrawable(object.getContext().getResources().getDrawable(R.drawable.wallbreak));
+                        anim = (AnimationDrawable) object.getDrawable();
+                        anim.start();
                         die();
                         break;
                 }
@@ -52,15 +57,14 @@ public class Wall {
     }
 
     void die() {
-        object.setImageDrawable(object.getContext().getResources().getDrawable(R.drawable.wall));
-        object.setVisibility(View.INVISIBLE);
-        System.out.println(wallsAlive.size());
         wallsAlive.remove(this);
-        System.out.println(wallsAlive.size());
         wallsDead.push(this);
     }
 
     public void respawn() {
+        if (anim != null)
+            anim.stop();
+        object.setImageDrawable(object.getContext().getResources().getDrawable(R.drawable.wall));
         object.setX(RandomGenerator.wallPosX());
         object.setY(RandomGenerator.wallPosY());
         object.setVisibility(View.VISIBLE);

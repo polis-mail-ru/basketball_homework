@@ -16,7 +16,7 @@ public class RandomGenerator {
     }
 
     public static float coinPosX() {
-        return Game.getBackView().getWidth() / 3f
+        return Game.getBackView().getWidth() / 2f
                 - random.nextInt(Game.getBackView().getWidth() / 3);
     }
 
