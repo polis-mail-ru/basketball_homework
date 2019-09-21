@@ -5,11 +5,10 @@ import android.media.MediaPlayer;
 
 public class MusicController {
     private MediaPlayer soundsPlayer;
+    private boolean canPlay;
 
     public MusicController() {
     }
-
-
 
     void initMusic(Context context, int res) {
         soundsPlayer = MediaPlayer.create(context, res);
@@ -21,7 +20,14 @@ public class MusicController {
         }
     }
 
-    private boolean canPlay() {
-        return soundsPlayer != null;
+    public boolean canPlay() {
+        return canPlay && soundsPlayer != null;
+    }
+    public void setMode(boolean mode){
+        canPlay = mode;
+    }
+
+    public void release(){
+        soundsPlayer.release();
     }
 }

@@ -81,4 +81,8 @@ public class StarView extends View {
             canvas.drawText("x" + count, textX, textY, textPaint);
         }
     }
+
+    public int getCount() {
+        return count;
+    }
 }

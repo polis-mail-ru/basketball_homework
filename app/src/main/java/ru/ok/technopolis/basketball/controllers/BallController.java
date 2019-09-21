@@ -14,6 +14,7 @@ import ru.ok.technopolis.basketball.objects.Ball;
 import ru.ok.technopolis.basketball.objects.Basket;
 import ru.ok.technopolis.basketball.objects.Coin;
 import ru.ok.technopolis.basketball.objects.Game;
+import ru.ok.technopolis.basketball.objects.Record;
 import ru.ok.technopolis.basketball.objects.Wall;
 
 public class BallController {
@@ -23,6 +24,8 @@ public class BallController {
     private final Coin coin;
     private Stack<Wall> wallsAlive;
     private Stack<Wall> wallsDead;
+    private Record record;
+    private ValueAnimator animator;
 
     public BallController(Ball ball, ImageView nextBall, Coin coin) {
         this.ball = ball;
@@ -36,7 +39,7 @@ public class BallController {
     }
 
     public void throwBall(final Context context, final float dY, final Basket basket, final RelativeLayout layout) {
-        ValueAnimator animator = ValueAnimator.ofFloat(0, 1);
+        animator = ValueAnimator.ofFloat(0, 1);
         animator.setDuration(Ball.AnimationController.BALL_DURATION);
 
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -83,6 +86,8 @@ public class BallController {
                     }
                     Game.getScoreController().score();
                     ball.score();
+                    Game.updateHighScore();
+                    record.updateHighScore();
                 }
                 if (ball.hitRightBasket(basket, time) || ball.hitRightWall(Game.getBackView(), time) || ball.hitLeftWall(time)
                         || ball.hitBottomBasket(basket, time) || ball.hitTopBasket(basket, time) || ball.hitWall(wallsAlive, time)) {
@@ -91,6 +96,7 @@ public class BallController {
                 }
                 if (ball.hitCoin(coin) && !ball.isCollected() && coin.isVisible()) {
                     ball.collect();
+                    record.collect();
                     coin.collect();
                 }
             }
@@ -128,4 +134,13 @@ public class BallController {
     }
 
 
+    public void setRecord(Record record) {
+        this.record = record;
+        Game.setBallsCount(Game.getBallsCount() - 1);
+        this.record.updateBallCount();
+    }
+
+    public ValueAnimator getAnimator() {
+        return animator;
+    }
 }

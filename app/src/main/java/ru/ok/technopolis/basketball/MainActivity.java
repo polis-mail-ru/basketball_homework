@@ -1,8 +1,10 @@
 package ru.ok.technopolis.basketball;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -21,6 +23,7 @@ import ru.ok.technopolis.basketball.objects.Ball;
 import ru.ok.technopolis.basketball.objects.Basket;
 import ru.ok.technopolis.basketball.objects.Coin;
 import ru.ok.technopolis.basketball.objects.Game;
+import ru.ok.technopolis.basketball.objects.Record;
 import ru.ok.technopolis.basketball.objects.Wall;
 
 public class MainActivity extends AppCompatActivity {
@@ -47,6 +50,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView coinText;
     private Stack<Wall> wallsAlive;
     private Stack<Wall> wallsDead;
+    private Record record;
+    private boolean walls;
+    private BallController ballController;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -56,16 +62,17 @@ public class MainActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
-        //vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         backView = findViewById(R.id.back);
-        // getExtra();
         basket = new Basket(findViewById(R.id.empty));
         final GestureDetector gestureDetector = new GestureDetector(this, gestureListener);
         layout = findViewById(R.id.main_layout);
+        initControllers();
+        getExtra();
         initExitButton();
         initRadioButton();
         initCoin();
         initWalls();
+        initRecord();
         startGame();
         layout.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -73,6 +80,17 @@ public class MainActivity extends AppCompatActivity {
                 return gestureDetector.onTouchEvent(event);
             }
         });
+    }
+
+    private void initControllers() {
+        Game.setMusicController(new MusicController());
+        Game.setScoreController(new ScoreController((StarView) findViewById(R.id.scoreView)));
+    }
+
+    private void initRecord() {
+        record = new Record((TextView)findViewById(R.id.balls),
+                (TextView)findViewById(R.id.money),
+                (TextView)findViewById(R.id.high));
     }
 
     private void initWalls() {
@@ -175,20 +193,22 @@ public class MainActivity extends AppCompatActivity {
 
     private void startGame() {
         Game.setBackView(backView);
-        Game.setMusicController(new MusicController());
-        Game.setScoreController(new ScoreController((StarView) findViewById(R.id.scoreView), coinText));
         Game.setGameMode(Game.Mode.DEFAULT);
+        Game.setBallsCount(16);
+        record.updateBallCount();
     }
 
-//    private void getExtra() {
-//        Bundle extras = getIntent().getExtras();
-//        if (extras != null) {
-//            walls = extras.getBoolean(WALL_KEY, true);
-//            vibro = extras.getBoolean(VIBRO_KEY, false);
-//            music = extras.getBoolean(MUSIC_KEY, true);
-//            //ballView.setImageResource(extras.getInt(BALL_KEY, R.drawable.ball2));
-//        }
-//    }
+    private void getExtra() {
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            walls = extras.getBoolean(WALL_KEY, true);
+            if(extras.getBoolean(VIBRO_KEY, false))
+                Game.setVibrator((Vibrator) getSystemService(Context.VIBRATOR_SERVICE));
+            if(extras.getBoolean(MUSIC_KEY, true))
+                Game.getMusicController().setMode(true);
+            ((ImageView)findViewById(R.id.iv_translate_fling)).setImageResource(extras.getInt(BALL_KEY, R.drawable.ball2));
+        }
+    }
 
     private GestureDetector.OnGestureListener gestureListener = new GestureDetector.SimpleOnGestureListener() {
         @Override
@@ -208,8 +228,9 @@ public class MainActivity extends AppCompatActivity {
                 ball = new Ball(dX > 0 ? Ball.Direction.RIGHT : Ball.Direction.LEFT, ballTemplate);
                 resetTemplate();
                 ball.throwBall(dY / 2, dX / 2);
-                BallController ballController = new BallController(ball, ballTemplate, coin);
+                ballController = new BallController(ball, ballTemplate, coin);
                 ballController.setWalls(wallsAlive, wallsDead);
+                ballController.setRecord(record);
                 ballController.throwBall(MainActivity.this, dY, basket, layout);
             }
             return false;
@@ -220,12 +241,13 @@ public class MainActivity extends AppCompatActivity {
     private void resetTemplate() {
         ballTemplate = new ImageView(MainActivity.this);
         ImageView ballView = findViewById(R.id.iv_translate_fling);
+       // ballView.setVisibility(View.VISIBLE);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ballView.getWidth(), ballView.getHeight());
         params.addRule(RelativeLayout.ALIGN_BOTTOM, R.id.back);
         params.addRule(RelativeLayout.ALIGN_RIGHT, R.id.back);
         params.setMargins(0, 0, (int) Game.getScoreController().getView().fromDpToPx(30), (int) Game.getScoreController().getView().fromDpToPx(125));
         ballTemplate.setLayoutParams(params);
-        ballTemplate.setImageDrawable(ballView.getBackground());
+        ballTemplate.setImageDrawable(ballView.getDrawable());
         if (ball == null || Game.getGameMode() == Game.Mode.UNLIMITED) {
             ballTemplate.setVisibility(View.VISIBLE);
         } else {
@@ -238,14 +260,21 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        if (animator != null) {
-//            animator.cancel();
-//        }
-//        if (vibrator != null) {
-//            vibrator.cancel();
-//        }
-//        if (soundsPlayer != null) {
-//            soundsPlayer.release();
-//        }
+        Game.updateHighScore();
+        if (ballController != null && ballController.getAnimator() != null) {
+            ballController.getAnimator().cancel();
+        }
+        if (Game.hasVibrator()) {
+            Game.getVibrator().cancel();
+        }
+        if (Game.getMusicController().canPlay()) {
+            Game.getMusicController().release();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Game.updateHighScore();
     }
 }

@@ -8,11 +8,11 @@ public class RandomGenerator {
     private static final Random random = new Random();
 
     public static float ballPosX() {
-        return Game.getBackView().getWidth() * 7 / 8f - random.nextInt(Game.getBackView().getWidth() / 2);
+        return Game.getBackView() == null ? 0 : Game.getBackView().getWidth() * 7 / 8f - random.nextInt(Game.getBackView().getWidth() / 2);
     }
 
     public static float ballPosY() {
-        return random.nextInt(Game.getBackView().getHeight() / 5);
+        return Game.getBackView() == null ? 0 :  random.nextInt(Game.getBackView().getHeight() / 5);
     }
 
     public static float coinPosX() {

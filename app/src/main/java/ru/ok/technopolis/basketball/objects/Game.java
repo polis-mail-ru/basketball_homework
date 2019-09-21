@@ -12,11 +12,13 @@ public class Game {
     private static ScoreController scoreController;
     private static Mode gameMode;
     private static int throwsCount;
+    private static int ballsCount;
+    private static int coinsCount;
+    private static int highScore;
 
     private static Vibrator vibrator;
 
-    public Game(Vibrator vibrator) {
-        Game.vibrator = vibrator;
+    public Game() {
     }
 
     public static void setBackView(BackView backView) {
@@ -33,6 +35,10 @@ public class Game {
 
     public static boolean hasVibrator() {
         return vibrator != null;
+    }
+
+    public static void setVibrator(Vibrator vibrator) {
+        Game.vibrator = vibrator;
     }
 
     public static MusicController getMusicController() {
@@ -63,6 +69,14 @@ public class Game {
         return musicController != null;
     }
 
+    static int increaseCoins() {
+        return ++coinsCount;
+    }
+
+    static int getCoinsCount() {
+        return coinsCount;
+    }
+
     public enum Mode {
         DEFAULT,
         UNLIMITED
@@ -74,5 +88,21 @@ public class Game {
 
     public static void throwIncrease() {
         throwsCount++;
+    }
+
+    public static int getBallsCount() {
+        return ballsCount;
+    }
+
+    public static void setBallsCount(int ballsCount) {
+        Game.ballsCount = ballsCount;
+    }
+
+    static int getHighScore() {
+        return highScore;
+    }
+
+    public static void updateHighScore(){
+        highScore = Math.max(scoreController.getCount(), highScore);
     }
 }

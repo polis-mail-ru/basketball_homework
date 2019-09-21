@@ -29,7 +29,6 @@ public class Coin {
     }
 
     public void collect() {
-        Game.getScoreController().collect();
         resetPosition();
         hide();
     }
