@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_game__container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/back"
+    android:orientation="vertical"
+    tools:context=".GameActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary">
+
+        <TextView
+            android:id="@+id/activity_game__score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="end"
+            android:padding="5dp"
+            android:src="@drawable/ball"
+            android:text="@string/begin_score"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="30sp" />
+
+        <ru.ok.technopolis.basketball.RateView
+            android:id="@+id/activity_game__rateview"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:max="100"
+            android:progress="100"
+            app:count_stars="5"
+            app:star_color="@color/yellow"
+            app:star_size="30dp" />
+
+        <TextView
+            android:id="@+id/activity_game__player"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_toStartOf="@id/activity_game__score"
+            android:layout_toLeftOf="@id/activity_game__score"
+            android:layout_toEndOf="@id/activity_game__rateview"
+            android:layout_toRightOf="@id/activity_game__rateview"
+            android:padding="5dp"
+            android:src="@drawable/ball"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="30sp"
+            tools:text="Player 1" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_below="@id/activity_game__rateview"
+            android:background="@color/colorAccent" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/activity_game__hoop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="80dp"
+        android:src="@drawable/hoop" />
+
+    <ImageView
+        android:id="@+id/activity_game__person"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:src="@drawable/player" />
+
+    <ImageView
+        android:id="@+id/activity_game__ball"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:src="@drawable/ball" />
+
+</FrameLayout>

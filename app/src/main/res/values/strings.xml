@@ -1,3 +1,27 @@
 <resources>
     <string name="app_name">basketball_homework</string>
+    <string name="one_player">1 player</string>
+    <string name="two_players">2 players</string>
+    <string name="tools">Tools</string>
+    <string name="help">Help</string>
+    <string name="player1">Player 1</string>
+    <string name="player2">Player 2</string>
+    <string name="text_help">Throw the ball with a swipe.\nGoal of the game is to score as many balls as you can.\n
+        \nPress "1 Player" to play alone. Amount of stars shows ratio of scored throws to all throws.
+\n\nPress "2 Player" to play with your friend. Throw the ball one by one. Player who first scored N balls wins.
+\n\nUse tools to change N and difficulty. </string>
+    <string name="exit">Exit</string>
+    <string name="amount">Amount of throws</string>
+    <string name="easy">Easy</string>
+    <string name="medium">Medium</string>
+    <string name="hard">Hard</string>
+    <string name="begin_score">0/0</string>
+    <string name="player1_win">Player 1 WIN</string>
+    <string name="player2_win">Player 2 WIN</string>
+    <string name="draw">Draw</string>
+    <string name="yes">Yes</string>
+    <string name="amount_balls">%1$d</string>
+    <string name="score">%1$d/%2$d</string>
+    <string name="ok">OK</string>
+    <string name="exit_message">Do you really want to exit?</string>
 </resources>
