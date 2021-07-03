@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">basketball_homework</string>
+    <string name="start">START</string>
+    <string name="best">Best: %1$d</string>
 </resources>

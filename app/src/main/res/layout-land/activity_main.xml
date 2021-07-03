@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/activity_main"
+    tools:context=".MainActivity">
+    
+    <ru.ok.technopolis.basketball.views.ScoreCounter
+        android:id="@+id/activity_main__score_counter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="32dp"
+        android:paddingEnd="32dp"
+        android:textColor="#000"
+        android:textSize="24sp"
+        />
+
+    <TextView
+        android:id="@+id/activity_main__best_score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/activity_main__score_counter"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:textColor="#000"
+        android:textSize="24sp"
+        tools:text="Best: 461"
+        />
+
+    <ImageView
+        android:id="@+id/activity_main__player"
+        android:layout_width="100dp"
+        android:layout_height="150dp"
+        android:src="@drawable/player"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="1"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp" />
+
+    <ImageView
+        android:id="@+id/activity_main__ball"
+        android:src="@drawable/ball"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        app:layout_constraintBottom_toTopOf="@id/activity_main__player"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginLeft="55dp"
+        android:layout_marginStart="55dp" />
+
+    <ImageView
+        android:id="@+id/activity_main__hoop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/hoop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="30dp" />
+
+    <TextView
+        android:id="@+id/activity_main__timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:paddingStart="32dp"
+        android:paddingEnd="32dp"
+        android:textColor="#000"
+        android:textSize="24sp"
+        android:layout_margin="30dp"
+        android:visibility="gone"
+        />
+
+    <Button
+        android:id="@+id/activity_main__start_game"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginRight="55dp"
+        android:layout_marginEnd="55dp"
+        android:layout_marginBottom="30dp"
+        android:text="@string/start"
+        />
+
+</android.support.constraint.ConstraintLayout>
