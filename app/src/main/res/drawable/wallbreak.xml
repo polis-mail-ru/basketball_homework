@@ -1,0 +1,10 @@
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="true">
+    <item android:drawable="@drawable/wall3" android:duration="50"/>
+    <item android:drawable="@drawable/wallbreak1" android:duration="50"/>
+    <item android:drawable="@drawable/wallbreak2" android:duration="50"/>
+    <item android:drawable="@drawable/wallbreak3" android:duration="50"/>
+    <item android:drawable="@drawable/wallbreak4" android:duration="50"/>
+    <item android:drawable="@drawable/wallbreak5" android:duration="50"/>
+    <item android:drawable="@drawable/song8" android:duration="50"/>
+</animation-list>

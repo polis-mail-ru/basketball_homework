@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "711763687760",
+    "firebase_url": "https://basketball-championship-343729.firebaseio.com",
+    "project_id": "basketball-championship-343729",
+    "storage_bucket": "basketball-championship-343729.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:711763687760:android:bd576fa7d0d9c2d6",
+        "android_client_info": {
+          "package_name": "com.brainlux.basketball"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "711763687760-0hjkh4bij9fluqu3jk0nojbt064rchq3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.brainlux.basketball",
+            "certificate_hash": "9c4a872463405f77602885452c43528929fef3ee"
+          }
+        },
+        {
+          "client_id": "711763687760-uqmfq8if7ahrdhqfen6ttqa28aeooe9l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBY0WyLYvEB70JYB3hRvdmUAfCdWobM0O8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "711763687760-uqmfq8if7ahrdhqfen6ttqa28aeooe9l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
