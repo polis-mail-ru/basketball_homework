@@ -1,4 +1,4 @@
-package ru.ok.technopolis.basketball;
+package com.brainlux.basketball;
 
 import android.content.Context;
 import android.graphics.Canvas;

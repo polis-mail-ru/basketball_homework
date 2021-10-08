@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:711763687760:android:bd576fa7d0d9c2d6",
         "android_client_info": {
-          "package_name": "ru.ok.technopolis.basketball"
+          "package_name": "com.brainlux.basketball"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "711763687760-0hjkh4bij9fluqu3jk0nojbt064rchq3.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "ru.ok.technopolis.basketball",
+            "package_name": "com.brainlux.basketball",
             "certificate_hash": "9c4a872463405f77602885452c43528929fef3ee"
           }
         },

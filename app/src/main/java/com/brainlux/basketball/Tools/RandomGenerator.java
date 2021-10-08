@@ -1,8 +1,8 @@
-package ru.ok.technopolis.basketball.Tools;
+package com.brainlux.basketball.Tools;
 
 import java.util.Random;
 
-import ru.ok.technopolis.basketball.objects.Game;
+import com.brainlux.basketball.objects.Game;
 
 public class RandomGenerator {
     private static final Random random = new Random();

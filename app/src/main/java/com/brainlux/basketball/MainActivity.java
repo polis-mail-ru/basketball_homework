@@ -1,4 +1,4 @@
-package ru.ok.technopolis.basketball;
+package com.brainlux.basketball;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -16,15 +16,15 @@ import android.widget.TextView;
 
 import java.util.Stack;
 
-import ru.ok.technopolis.basketball.controllers.BallController;
-import ru.ok.technopolis.basketball.controllers.MusicController;
-import ru.ok.technopolis.basketball.controllers.ScoreController;
-import ru.ok.technopolis.basketball.objects.Ball;
-import ru.ok.technopolis.basketball.objects.Basket;
-import ru.ok.technopolis.basketball.objects.Coin;
-import ru.ok.technopolis.basketball.objects.Game;
-import ru.ok.technopolis.basketball.objects.Record;
-import ru.ok.technopolis.basketball.objects.Wall;
+import com.brainlux.basketball.controllers.BallController;
+import com.brainlux.basketball.controllers.MusicController;
+import com.brainlux.basketball.controllers.ScoreController;
+import com.brainlux.basketball.objects.Ball;
+import com.brainlux.basketball.objects.Basket;
+import com.brainlux.basketball.objects.Coin;
+import com.brainlux.basketball.objects.Game;
+import com.brainlux.basketball.objects.Record;
+import com.brainlux.basketball.objects.Wall;
 
 public class MainActivity extends AppCompatActivity {
 

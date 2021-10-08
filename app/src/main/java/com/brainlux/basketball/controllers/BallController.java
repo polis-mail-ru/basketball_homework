@@ -1,4 +1,4 @@
-package ru.ok.technopolis.basketball.controllers;
+package com.brainlux.basketball.controllers;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
@@ -8,14 +8,13 @@ import android.widget.RelativeLayout;
 
 import java.util.Stack;
 
-import ru.ok.technopolis.basketball.R;
-import ru.ok.technopolis.basketball.Tools.RandomGenerator;
-import ru.ok.technopolis.basketball.objects.Ball;
-import ru.ok.technopolis.basketball.objects.Basket;
-import ru.ok.technopolis.basketball.objects.Coin;
-import ru.ok.technopolis.basketball.objects.Game;
-import ru.ok.technopolis.basketball.objects.Record;
-import ru.ok.technopolis.basketball.objects.Wall;
+import com.brainlux.basketball.R;
+import com.brainlux.basketball.objects.Ball;
+import com.brainlux.basketball.objects.Basket;
+import com.brainlux.basketball.objects.Coin;
+import com.brainlux.basketball.objects.Game;
+import com.brainlux.basketball.objects.Record;
+import com.brainlux.basketball.objects.Wall;
 
 public class BallController {
 
@@ -86,6 +85,7 @@ public class BallController {
                     }
                     Game.getScoreController().score();
                     ball.score();
+                    Game.setBallsCount(Game.getBallsCount() + 1);
                     Game.updateHighScore();
                     record.updateHighScore();
                 }

@@ -1,6 +1,4 @@
-package ru.ok.technopolis.basketball.objects;
-
-import android.view.View;
+package com.brainlux.basketball.objects;
 
 public class Player {
 

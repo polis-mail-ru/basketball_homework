@@ -1,7 +1,7 @@
-package ru.ok.technopolis.basketball.controllers;
+package com.brainlux.basketball.controllers;
 
 
-import ru.ok.technopolis.basketball.StarView;
+import com.brainlux.basketball.StarView;
 
 public class ScoreController {
 

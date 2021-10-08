@@ -1,4 +1,4 @@
-package ru.ok.technopolis.basketball.objects;
+package com.brainlux.basketball.objects;
 
 import android.graphics.drawable.AnimationDrawable;
 import android.view.View;
@@ -6,8 +6,8 @@ import android.widget.ImageView;
 
 import java.util.Stack;
 
-import ru.ok.technopolis.basketball.R;
-import ru.ok.technopolis.basketball.Tools.RandomGenerator;
+import com.brainlux.basketball.R;
+import com.brainlux.basketball.Tools.RandomGenerator;
 
 public class Wall {
     private final ImageView object;

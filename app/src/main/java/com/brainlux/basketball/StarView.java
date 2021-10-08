@@ -1,4 +1,4 @@
-package ru.ok.technopolis.basketball;
+package com.brainlux.basketball;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.view.View;
 
 public class StarView extends View {

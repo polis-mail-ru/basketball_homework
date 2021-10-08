@@ -40,16 +40,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/guideline_horizontal" />
 
-    <Button
-        android:id="@+id/leaderboardsButton"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
-        android:background="@drawable/buttonstyle"
-        android:foreground="@drawable/options"
-        android:visibility="visible"
-        app:layout_constraintEnd_toStartOf="@id/guidelineLeft"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+<!--    <Button-->
+<!--        android:id="@+id/leaderboardsButton"-->
+<!--        android:layout_width="75dp"-->
+<!--        android:layout_height="75dp"-->
+<!--        android:background="@drawable/buttonstyle"-->
+<!--        android:foreground="@drawable/options"-->
+<!--        android:visibility="visible"-->
+<!--        app:layout_constraintEnd_toStartOf="@id/guidelineLeft"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
 
     <Button
         android:id="@+id/paintButton"

@@ -1,4 +1,4 @@
-package ru.ok.technopolis.basketball.objects;
+package com.brainlux.basketball.objects;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
@@ -9,8 +9,8 @@ import android.widget.ImageView;
 
 import java.util.Stack;
 
-import ru.ok.technopolis.basketball.BackView;
-import ru.ok.technopolis.basketball.Tools.RandomGenerator;
+import com.brainlux.basketball.BackView;
+import com.brainlux.basketball.Tools.RandomGenerator;
 
 public class Ball {
 

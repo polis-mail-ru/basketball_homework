@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/court">
 
-    <ru.ok.technopolis.basketball.StarView
+    <com.brainlux.basketball.StarView
         android:id="@+id/scoreView"
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -41,7 +41,7 @@
         android:layout_margin="10dp"
         android:padding="10dp" />
 
-    <ru.ok.technopolis.basketball.BackView
+    <com.brainlux.basketball.BackView
         android:id="@+id/back"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -1,10 +1,10 @@
-package ru.ok.technopolis.basketball.objects;
+package com.brainlux.basketball.objects;
 
 import android.os.Vibrator;
 
-import ru.ok.technopolis.basketball.BackView;
-import ru.ok.technopolis.basketball.controllers.MusicController;
-import ru.ok.technopolis.basketball.controllers.ScoreController;
+import com.brainlux.basketball.BackView;
+import com.brainlux.basketball.controllers.MusicController;
+import com.brainlux.basketball.controllers.ScoreController;
 
 public class Game {
     private static BackView backView;

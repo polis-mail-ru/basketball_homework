@@ -1,4 +1,4 @@
-package ru.ok.technopolis.basketball.objects;
+package com.brainlux.basketball.objects;
 
 import android.view.View;
 

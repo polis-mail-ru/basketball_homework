@@ -1,10 +1,10 @@
-package ru.ok.technopolis.basketball.objects;
+package com.brainlux.basketball.objects;
 
 import android.graphics.drawable.AnimationDrawable;
 import android.view.View;
 import android.widget.ImageView;
 
-import ru.ok.technopolis.basketball.Tools.RandomGenerator;
+import com.brainlux.basketball.Tools.RandomGenerator;
 
 public class Coin {
     private final ImageView coinView;

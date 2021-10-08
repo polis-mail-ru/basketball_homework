@@ -1,4 +1,4 @@
-package ru.ok.technopolis.basketball.controllers;
+package com.brainlux.basketball.controllers;
 
 import android.content.Context;
 import android.media.MediaPlayer;

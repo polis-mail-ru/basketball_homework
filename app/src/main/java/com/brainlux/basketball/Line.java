@@ -1,4 +1,4 @@
-package ru.ok.technopolis.basketball;
+package com.brainlux.basketball;
 
 public class Line {
     private final float x1;

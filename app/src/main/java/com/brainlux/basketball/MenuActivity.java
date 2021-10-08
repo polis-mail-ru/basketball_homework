@@ -1,26 +1,17 @@
-package ru.ok.technopolis.basketball;
+package com.brainlux.basketball;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Switch;
-import android.widget.Toast;
-
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.games.Games;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +33,6 @@ public class MenuActivity extends AppCompatActivity {
     private Button left;
     private Button right;
     private ImageView ballView;
-    private Button leaderboard;
     private boolean music;
     private boolean walls;
     private boolean vibro;
@@ -50,9 +40,7 @@ public class MenuActivity extends AppCompatActivity {
     private List<Integer> balls;
     private SharedPreferences sp;
     private static final String SP_NAME = "settings";
-    private static final int RC_LEADERBOARD_UI = 9004;
     private static final int RC_SIGN_IN = 9001;
-    GoogleSignInClient mGoogleSignInClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,94 +50,7 @@ public class MenuActivity extends AppCompatActivity {
         initUI();
         initValues();
         initListeners();
-        //startLogin();
     }
-
-//    private void startLogin() {
-//        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN)
-//                .requestScopes(Games.SCOPE_GAMES_LITE)
-//                .requestEmail()
-//                .build();
-//        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-//        GoogleSignIn.getClient(this, gso)
-//                .silentSignIn()
-//                .addOnCompleteListener(
-//                        this,
-//                        new OnCompleteListener<GoogleSignInAccount>() {
-//                            @Override
-//                            public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
-//                                if (task.isSuccessful()) {
-//                                    MenuActivity.this.signIn(task.getResult());
-//                                } else {
-//                                    Log.d("", "onCreate: SOSI");
-//                                }
-//                            }
-//                        });
-//    }
-
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//       // GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-//       // updateUI(account);
-//    }
-//
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if (requestCode == RC_SIGN_IN) {
-//            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-//            handleSignInResult(task);
-//        }
-//    }
-//
-//    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
-//        try {
-//            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-//            updateUI(account);
-//        } catch (ApiException e) {
-//            updateUI(null);
-//        }
-//    }
-//
-//    private void signIn(GoogleSignInAccount result) {
-//        if (result == null) {
-//            Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-//            startActivityForResult(signInIntent, RC_SIGN_IN);
-//        } else {
-//            Log.d("", "signIn: POOOOOOG");
-//        }
-//    }
-//
-//    private void updateUI(@Nullable GoogleSignInAccount account) {
-//        if (account != null) {
-//            Games.getLeaderboardsClient(MenuActivity.this, account)
-//                    .getLeaderboardIntent(getString(R.string.leaderboard_id))
-//                    .addOnSuccessListener(new OnSuccessListener<Intent>() {
-//                        @Override
-//                        public void onSuccess(Intent intent) {
-//                            startActivityForResult(intent, RC_LEADERBOARD_UI);
-//                        }
-//                    });
-//        } else {
-//            Log.d("", "updateUI: NE POG");
-//        }
-//    }
-
-    private void login() {
-        GoogleSignInOptions gso = new
-                GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN)
-                .requestScopes(Games.SCOPE_GAMES_LITE)
-                .requestEmail()
-                .build();
-
-        //Делаю вход в Google игры
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
-        GoogleSignIn.hasPermissions(GoogleSignIn.getLastSignedInAccount(getApplicationContext()), Games.SCOPE_GAMES_LITE);
-    }
-
 
     private void initValues() {
         sp = getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
@@ -215,6 +116,7 @@ public class MenuActivity extends AppCompatActivity {
             }
         });
         vibroView.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("MissingPermission")
             @Override
             public void onClick(View v) {
                 vibro = vibroView.isChecked();
@@ -252,26 +154,6 @@ public class MenuActivity extends AppCompatActivity {
                 updateBall();
             }
         });
-
-        leaderboard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Пытаюсь загрузить список лидеров
-                if (GoogleSignIn.getLastSignedInAccount(getApplicationContext()) != null) {
-                    mGoogleSignInClient.silentSignIn().addOnCompleteListener(new OnCompleteListener<GoogleSignInAccount>() {
-                        @Override
-                        public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
-                            loadLeaderBoard();
-                        }
-                    });
-                }
-
-            }
-        });
-    }
-
-    private void loadLeaderBoard() {
-
     }
 
 
@@ -304,7 +186,7 @@ public class MenuActivity extends AppCompatActivity {
         left = findViewById(R.id.left);
         right = findViewById(R.id.right);
         ballView = findViewById(R.id.choose_ball);
-        leaderboard = findViewById(R.id.leaderboardsButton);
+        //leaderboard = findViewById(R.id.leaderboardsButton);
     }
 
     private void setMenuInterface(int mode) {
@@ -351,6 +233,7 @@ public class MenuActivity extends AppCompatActivity {
         initPlayer();
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     protected void onDestroy() {
         super.onDestroy();
