@@ -1,10 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frame_layout_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <ru.ok.technopolis.basketball.CustomView.FieldView
+        android:id="@+id/field_view_basketball_field"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:padding="10dp"
+        app:pointColor="@android:color/holo_orange_dark"
+        app:pointRadius="5dp"
+        app:pointStrokeWidth="2dp" />
 
-</android.support.constraint.ConstraintLayout>
+    <ru.ok.technopolis.basketball.CustomView.ScoreView
+        android:id="@+id/score_view_score"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_gravity="top|start"
+        android:padding="5dp"
+        app:markColor="@android:color/holo_red_dark"
+        app:markStrokeWidth="2dp" />
+
+    <ImageView
+        android:id="@+id/image_ball"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:src="@drawable/ball" />
+
+    <ImageView
+        android:id="@+id/image_player"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:src="@drawable/player" />
+
+    <ImageView
+        android:id="@+id/image_hoop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:src="@drawable/hoop" />
+</FrameLayout>
